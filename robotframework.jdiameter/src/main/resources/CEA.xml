@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CAPABILITIES_EXCHANGE_ANSWER applicationId="4" endToEndId="19" hopByHopId="37">
+	<RESULT_CODE type="enum" value="SUCCESS"/>
+	<ORIGIN_HOST type="string" value="advantage.siemens.com" />
+	<ORIGIN_REALM type="string" value="siemens.com" />
+	<AUTH_APPLICATION_ID type="int" value="4" />
+	<VENDOR_ID type="int" value="4329"/>
+	<PRODUCT_NAME type="string" value="@vantage"/>
+</CAPABILITIES_EXCHANGE_ANSWER>

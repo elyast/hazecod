@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ABORT_SESSION_ANSWER applicationId="4" hopByHopId="37"
+	endToEndId="21" isForwardAllowed="true">
+	<ORIGIN_HOST value="10.10.10.10" type="string" />
+	<ORIGIN_REALM value="mno.net" type="string" />
+	<SESSION_ID value="12345" type="string" />
+	<RESULT_CODE type="enum" value="SUCCESS" />
+</ABORT_SESSION_ANSWER>

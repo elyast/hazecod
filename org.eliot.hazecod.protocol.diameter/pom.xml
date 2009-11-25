@@ -21,7 +21,7 @@
   
   <dependencies>
   	<dependency>
-      <groupId>${wrapped.groupId}</groupId>
+      <groupId>org.jdiameter</groupId>
       <artifactId>${wrapped.artifactId}</artifactId>
       <version>${wrapped.version}</version>
     </dependency>

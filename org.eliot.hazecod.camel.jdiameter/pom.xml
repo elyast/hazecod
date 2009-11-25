@@ -17,13 +17,17 @@
   		<artifactId>camel-core</artifactId>
   		<version>2.0.0</version>
   		<scope>compile</scope>
-  	</dependency>
+  	</dependency>	
   	<dependency>
-  		<groupId>org.apache.camel</groupId>
-  		<artifactId>camel-mina</artifactId>
-  		<version>2.0.0</version>
-  		<scope>compile</scope>
-  	</dependency>  	
+      <groupId>org.jdiameter</groupId>
+      <artifactId>server-impl</artifactId>
+      <version>1.5.3.1_350</version>
+    </dependency>
+  	<dependency>
+      <groupId>org.jdiameter</groupId>
+      <artifactId>server-api</artifactId>
+      <version>1.5.3</version>
+    </dependency>    	
   </dependencies>
   
   

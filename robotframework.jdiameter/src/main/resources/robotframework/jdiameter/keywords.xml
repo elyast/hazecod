@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+ <bean id="sendAVPs" class="com.nsn.hydra.robotframework.diameter.keyword.SendMessage">
+  	<property name="name" value="Send Message"></property>
+ 	<property name="client" ref="client"></property>
+ </bean>
+ 
+ <bean id="receiveAVPs" class="com.nsn.hydra.robotframework.diameter.keyword.ReceiveMessage">
+   	<property name="name" value="Receive Message"></property>
+ 	<property name="client" ref="client"></property>
+ </bean>
+ 
+ <bean id="connect" class="com.nsn.hydra.robotframework.diameter.keyword.OpenConnection">
+  	<property name="name" value="Connect"></property>
+ 	<property name="client" ref="client"></property>
+ </bean>
+ 
+ <bean id="disconnect" class="com.nsn.hydra.robotframework.diameter.keyword.CloseConnection">
+  	<property name="name" value="Disconnect"></property>
+ 	<property name="client" ref="client"></property>
+ </bean>
+ 
+ <bean id="robotCodec" class="com.nsn.hydra.robotframework.diameter.DiameterRobotCodec">
+ 	<property name="avps" ref="avpfactory"></property>
+ 	<property name="builder" ref="encoder"></property>
+ 	<property name="globals" ref="defaults"></property>
+ 	<property name="transformer" ref="builder"></property>
+ 	<property name="diameterMessageFactory" ref="diameterMessageFactory"></property>
+ </bean>
+ 
+ <bean id="avpfactory" class="com.nsn.advantage.platform.ph.diameter.avp.AvpFactoryImpl" ></bean>
+ <bean id="diameterMessageFactory" class="com.nsn.advantage.platform.ph.diameter.message.DiameterMessageFactoryImpl"/>
+ 
+ <bean id="encoder" class="com.nsn.hydra.robotframework.diameter.DiameterMessageBuilder">
+ 	<property name="avpFactory" ref="avpfactory"></property>
+ 	<property name="globalDefaults" ref="defaults"></property>
+ 	<property name="avpCodesResolver" ref="avpCodeResolver"></property>
+ 	<property name="avpEnumsResolver" ref="enumResolver"></property>
+ 	<property name="diameterMessageFactory" ref="diameterMessageFactory"></property>
+ </bean>
+ 
+ <bean id="defaults" class="com.nsn.hydra.robotframework.diameter.GlobalDefaults"></bean>
+ 
+ <bean id="builder" class="com.nsn.hydra.robotframework.diameter.TemplateBuilder">
+ 	<property name="templateApplier" ref="templateApplier"></property>
+ 	<property name="templateReader" ref="templateReader"></property>
+ 	<property name="userParamParser" ref="userParamParser"></property>
+ 	<property name="userParamTransformer" ref="userParamTransformer"></property>
+ 	<property name="mappingReader" ref="mappingReader"></property>
+ </bean>
+ 
+ <bean id="mappingReader" class="com.nsn.hydra.robotframework.diameter.MappingReader"></bean>
+ 
+ 
+ <bean id="codec" class="com.nsn.advantage.platform.ph.diameter.codec.DiameterCodecFactory"></bean>
+ 
+ <bean id="avpCodeResolver" class="com.nsn.hydra.robotframework.diameter.AvpCodeResolver"></bean>
+ 
+ <bean id="enumResolver" class="com.nsn.hydra.robotframework.diameter.AvpEnumResolver"></bean>
+ 
+ <bean id="templateApplier" class="com.nsn.hydra.robotframework.diameter.TemplateApplier"></bean>
+ <bean id="templateReader" class="com.nsn.hydra.robotframework.diameter.TemplateReader"></bean>
+ <bean id="userParamParser" class="com.nsn.hydra.robotframework.diameter.UserParameterParser"></bean>
+ <bean id="userParamTransformer" class="com.nsn.hydra.robotframework.diameter.UserParameterTransformer"></bean>
+ 
+</beans>

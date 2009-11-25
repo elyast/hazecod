@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEVICE_WATCHDOG_ANSWER applicationId="4" endToEndId="19" hopByHopId="37">
+	<RESULT_CODE type="enum" value="SUCCESS"/>
+	<ORIGIN_HOST type="string" value="diacl" />
+	<ORIGIN_REALM type="string" value="bln1.siemens.de" />
+</DEVICE_WATCHDOG_ANSWER>
