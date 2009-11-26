@@ -12,11 +12,43 @@
 	<name>org.eliot.parent.robotframework.library</name>
 	<packaging>pom</packaging>
 
+	<properties>
+		<libraryClass>tbd</libraryClass>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.robotframework</groupId>
 			<artifactId>javalib-core</artifactId>
 			<version>0.8.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>libdoc4j-maven-plugin</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>libdoc4j-maven-plugin</artifactId>
+					<version>0.0.1-SNAPSHOT</version>
+					<executions>
+						<execution>
+							<phase>process-classes</phase>
+							<goals>
+								<goal>generate-doc</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<libraryClass>${libraryClass}</libraryClass>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>

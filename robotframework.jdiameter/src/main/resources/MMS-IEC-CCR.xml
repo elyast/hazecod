@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CREDIT_CONTROL_REQUEST applicationId="4" endToEndId="19" hopByHopId="37">
 	<SESSION_ID type="string" value="diacl;12345;0"/>
-	<ORIGIN_HOST type="string" value="diacl" /> 
-	<ORIGIN_REALM type="string" value="bln1.siemens.de" />
-	<DESTINATION_REALM type="string" value="bln1.siemens.de" />
+	<ORIGIN_HOST type="string" value="localhost" /> 
+	<ORIGIN_REALM type="string" value="home" />
+	<DESTINATION_REALM type="string" value="eliot.org" />
 	<DESTINATION_HOST type="string" value="DestinationHost"/>
 	<AUTH_APPLICATION_ID type="int" value="4"/>
 	<SERVICE_CONTEXT_ID type="string" value="version1.12645.000.000.6.32270@3gpp.org"/>

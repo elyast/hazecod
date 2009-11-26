@@ -9,8 +9,9 @@
 	<description>Hazecod project</description>
 
 	<modules>
-		<module>parent</module>
+		<module>parent</module>		
 		<module>org.eliot.hazecod.protocol.diameter</module>
+		<module>robotframework.springdoc</module>
 		<module>robotframework.jdiameter</module>
 		<module>org.eliot.hazecod.camel.jdiameter</module>
 		<module>org.eliot.hazecod.integration.diameter</module>
