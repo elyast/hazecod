@@ -2,8 +2,10 @@ package org.robotframework.jdiameter;
 
 public class AvpEnumResolver extends CodeResolver {
 
+    private static final String ENUM_PROPERTIES = "enum.properties";
+
     public AvpEnumResolver() {
-	super("enum.properties");
+	super(ENUM_PROPERTIES);
     }
 
 }
