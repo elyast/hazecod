@@ -23,6 +23,7 @@ public class DiameterMessageBuilder {
 
     private static final String REQUEST_SUFFIX = "REQUEST";
     private static final String TYPE = "type";
+    private static final String UNSIGNED_INT32 = "asUnsignedInt32";
     private static final String VALUE = "value";
     private static final String VENDOR = "vendor";
     private static final String INT = "int";
@@ -87,13 +88,15 @@ public class DiameterMessageBuilder {
 	String type = element.getAttributeValue(TYPE);
 	String valueText = element.getAttributeValue(VALUE);
 	String vendorText = element.getAttributeValue(VENDOR);
+	String u32 = element.getAttributeValue(UNSIGNED_INT32);
+	boolean asUnsignedInt32 = Boolean.valueOf(u32);
 
 	Integer vendor = (vendorText == null) ? vendorId : new Integer(global
 		.getVendorId(vendorText));
 
 	// leaf case
 	if (element.getChildElements().size() == 0) {
-	    handleSimple(name, type, valueText, vendor, avps);
+	    handleSimple(name, type, valueText, asUnsignedInt32, vendor, avps);
 
 	} else {
 	    logger.info("Grouped avp: " + name);
@@ -108,7 +111,7 @@ public class DiameterMessageBuilder {
 
     }
 
-    void handleSimple(String name, String type, String valueText,
+    void handleSimple(String name, String type, String valueText, boolean asUnsignedInt32,
 	    Integer vendor, AvpSet avps) {
 	logger.info("Leaf avp: " + name + " value: " + valueText);
 	Object value = null;
@@ -138,7 +141,8 @@ public class DiameterMessageBuilder {
 	}
 	if (LONG.equals(type)) {
 	    value = new Long(valueText);
-	    avps.addAvp(code, (Long) value, vendor, true, false);
+	    
+	    avps.addAvp(code, (Long) value, vendor, true, false, asUnsignedInt32);
 	}
 	if (TIME.equals(type)) {
 	    value = convertTime(valueText);

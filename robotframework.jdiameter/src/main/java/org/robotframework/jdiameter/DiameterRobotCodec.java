@@ -1,11 +1,14 @@
 package org.robotframework.jdiameter;
 
+import java.io.InputStream;
+
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpDataException;
 import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Message;
 import org.jdiameter.api.Request;
 import org.jdiameter.api.Session;
+import org.jdiameter.client.impl.helpers.XMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,10 +25,10 @@ public class DiameterRobotCodec {
     Request request;
 
     public long decodeTimeout(Object[] parameters) {
-	if (parameters.length < 3) {
+	if (parameters.length < 2) {
 	    return globals.getDefaultTimeout();
 	}
-	return Long.parseLong(String.valueOf(parameters[2]));
+	return Long.parseLong(String.valueOf(parameters[1]));
     }
 
     public Object encodeMessage(Object[] params) {
@@ -107,7 +110,7 @@ public class DiameterRobotCodec {
 	case UTF8_STRING:
 	    assertEquals(expected.getUTF8String(), actual.getUTF8String());
 	    break;
-	case UNSIGNED_32:
+	case UNSIGNED_32: 
 	    assertEquals(expected.getUnsigned32(), actual.getUnsigned32());
 	    break;
 	case UNSIGNED_64:
@@ -123,12 +126,7 @@ public class DiameterRobotCodec {
     }
 
     private Avp findInActual(Avp avp, AvpSet ac) {
-	for (Avp avp2 : ac) {
-	    if (avp2.getCode() == avp.getCode()) {
-		return avp2;
-	    }
-	}
-	return null;
+	return ac.getAvp(avp.getCode());
     }
 
     private void assertEquals(Object expected, Object actual) {
@@ -156,6 +154,15 @@ public class DiameterRobotCodec {
     
     public void setAvptypeResolver(AvpTypeResolver avptypeResolver) {
 	this.avptypeResolver = avptypeResolver;
+    }
+
+    public XMLConfiguration decodeConfiguration(Object[] parameters) throws Exception {
+	if (parameters.length < 1) {
+	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+	    InputStream istream = cl.getResourceAsStream("configuration.xml");
+	    return new XMLConfiguration(istream);
+	}
+	return new XMLConfiguration((String) parameters[0]);
     }
 
 }
