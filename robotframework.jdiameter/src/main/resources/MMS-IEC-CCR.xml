@@ -9,7 +9,7 @@
 	<SERVICE_CONTEXT_ID type="string" value="version1.12645.000.000.6.32270@3gpp.org"/>
 	<CC_REQUEST_TYPE type="enum" value="EVENT_REQUEST"/>
 	<REQUESTED_ACTION type="int" value="2"/>
-	<CC_REQUEST_NUMBER type="long" value="0"/>
+	<CC_REQUEST_NUMBER type="long" asUnsignedInt32="true" value="0"/>
 	<EVENT_TIMESTAMP type="time" value="2009-08-07 00:00:00"/>
 	<SUBSCRIPTION_ID>
 		<SUBSCRIPTION_ID_TYPE type="enum" value="END_USER_E164"/>
@@ -43,7 +43,7 @@
 				</GPP_ADDRESS_DOMAIN>
 			</GPP_RECIPIENT_ADDRESS>
 			<GPP_MESSAGE_TYPE type="enum" value="SEND_REQUEST"/>
-			<GPP_MESSAGE_SIZE type="long" value="100"/>
+			<GPP_MESSAGE_SIZE type="long" asUnsignedInt32="true" value="100"/>
 			<GPP_SUBMISSION_TIME type="time" value="2009-08-07 00:00:00"/>
 		</GPP_MMS_INFORMATION>
 	</GPP_SERVICE_INFORMATION>
