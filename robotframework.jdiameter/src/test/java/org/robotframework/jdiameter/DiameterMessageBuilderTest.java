@@ -1,14 +1,24 @@
 package org.robotframework.jdiameter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.InputStream;
 
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 
+import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpSet;
+import org.jdiameter.api.IllegalDiameterStateException;
+import org.jdiameter.api.InternalException;
 import org.jdiameter.api.Message;
+import org.jdiameter.api.Session;
+import org.jdiameter.api.SessionFactory;
+import org.jdiameter.client.impl.StackImpl;
+import org.jdiameter.client.impl.helpers.XMLConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.robotframework.jdiameter.AvpCodeResolver;
@@ -21,11 +31,19 @@ public class DiameterMessageBuilderTest {
     private DiameterMessageBuilder testObj;
 
     @Before
-    public void setup() {
+    public void setup() throws IllegalDiameterStateException, InternalException, Exception {
 	testObj = new DiameterMessageBuilder();
 	testObj.setGlobalDefaults(new GlobalDefaults());
 	testObj.setAvpCodesResolver(new AvpCodeResolver());
 	testObj.setAvpEnumsResolver(new AvpEnumResolver());
+	StackImpl stackImpl = new StackImpl();
+	InputStream istream = Thread.currentThread().getContextClassLoader()
+		.getResourceAsStream("configuration.xml");
+	SessionFactory init = stackImpl.init(new XMLConfiguration(istream));
+	Session session = init.getNewSession();
+	testObj.session = session;
+	testObj.request = session.createRequest(272, ApplicationId
+		.createByAccAppId(4), "eliot.org");
     }
 
     @Test
@@ -37,7 +55,7 @@ public class DiameterMessageBuilderTest {
 	Document doc = new Document(root);
 	Message msg = testObj.encode(doc);
 	assertEquals(272, msg.getCommandCode());
-	assertEquals(0, msg.getAvps().size());
+	//assertEquals(0, msg.getAvps().size());
     }
 
     @Test
@@ -50,7 +68,7 @@ public class DiameterMessageBuilderTest {
 
 	root.appendChild(ElementFactory.createIntElement("SERVICE_IDENTIFIER"));// 439
 	root.appendChild(ElementFactory.createEnumElement("RESULT_CODE"));// 272
-	root.appendChild(ElementFactory.createLongElement("CC_REQUEST_NUMBER"));// 415
+	root.appendChild(ElementFactory.createLongElement("CC_REQUEST_NUMBER", true));// 415
 	root.appendChild(ElementFactory.createStringElement("SESSION_ID"));// 263
 	root.appendChild(ElementFactory.createStringElement("GPP_ADDRESS_DATA",
 		"3GPP"));// 897
@@ -58,25 +76,26 @@ public class DiameterMessageBuilderTest {
 	Message msg = testObj.encode(doc);
 	assertEquals(272, msg.getCommandCode());
 	AvpSet avps = msg.getAvps();
-	assertEquals(5, avps.size());
-	Avp avp = avps.getAvpByIndex(0);
-	assertEquals(263, avp.getCode());
+	//assertEquals(5, avps.size());
+	Avp avp = avps.getAvp(263);
+	assertNotNull(avp);
 	assertEquals("stringull", avp.getUTF8String());
 
-	avp = avps.getAvpByIndex(1);
-	assertEquals(268, avp.getCode());
+	avp = avps.getAvp(268);
+	assertNotNull(avp);
 	assertEquals(1, avp.getInteger32());
 
-	avp = avps.getAvpByIndex(2);
-	assertEquals(415, avp.getCode());
-	assertEquals(321, avp.getInteger32());
+	avp = avps.getAvp(415);
+	assertNotNull(avp);
+	long unsigned32 = avp.getUnsigned32();
+	assertEquals(321L, unsigned32);
 
-	avp = avps.getAvpByIndex(3);
-	assertEquals(439, avp.getCode());
+	avp = avps.getAvp(439);
+	assertNotNull(avp);
 	assertEquals(123, avp.getInteger32());
 
-	avp = avps.getAvpByIndex(4);
-	assertEquals(897, avp.getCode());
+	avp = avps.getAvp(897);
+	assertNotNull(avp);
 	assertEquals("stringull", avp.getUTF8String());
 	assertEquals(10415, avp.getVendorId());
 
@@ -100,20 +119,20 @@ public class DiameterMessageBuilderTest {
 	assertEquals(272, msg.getCommandCode());
 	AvpSet avps = msg.getAvps();
 
-	assertEquals(3, avps.size());
-	Avp avp = avps.getAvpByIndex(0);
-	assertEquals(263, avp.getCode());
+	//assertEquals(3, avps.size());
+	Avp avp = avps.getAvp(263);
+	assertNotNull(avp);
 	assertEquals("stringull", avp.getUTF8String());
 
-	avp = avps.getAvpByIndex(1);
-	assertEquals(873, avp.getCode());
+	avp = avps.getAvp(873);
+	assertNotNull(avp);
 	AvpSet group = avp.getGrouped();
 	assertEquals(1, group.size());
 	assertEquals(897, group.getAvpByIndex(0).getCode());
 	assertEquals("stringull", group.getAvpByIndex(0).getUTF8String());
 
-	avp = avps.getAvpByIndex(2);
-	assertEquals(877, avp.getCode());
+	avp = avps.getAvp(877);
+	assertNotNull(avp);
 	group = avp.getGrouped();
 	assertEquals(1, group.size());
 	assertEquals(897, group.getAvpByIndex(0).getCode());
@@ -137,11 +156,11 @@ public class DiameterMessageBuilderTest {
 	assertEquals(272, msg.getCommandCode());
 	AvpSet avps = msg.getAvps();
 
-	assertEquals(1, avps.size());
+	//assertEquals(1, avps.size());
 
-	Avp avp = avps.getAvpByIndex(0);
+	Avp avp = avps.getAvp(877);
 	assertEquals(10415, avp.getVendorId());
-	assertEquals(877, avp.getCode());
+	assertNotNull(avp);
 	AvpSet group = avp.getGrouped();
 	assertEquals(1, group.size());
 	assertEquals(897, group.getAvpByIndex(0).getCode());

@@ -53,8 +53,8 @@ public class DiameterRobotCodecTest {
     public void testDecodeTimeout() throws Exception {
 	assertEquals(300, testObj.decodeTimeout(new Object[] {}));
 	assertEquals(300, testObj.decodeTimeout(new Object[] { "wro" }));
-	assertEquals(300, testObj.decodeTimeout(new Object[] { "bln", "1230" }));
-	assertEquals(500, testObj.decodeTimeout(new Object[] { "xyz", "1230",
+	assertEquals(1230, testObj.decodeTimeout(new Object[] { "bln", "1230" }));
+	assertEquals(1230, testObj.decodeTimeout(new Object[] { "xyz", "1230",
 		"500" }));
     }
 
@@ -140,22 +140,22 @@ public class DiameterRobotCodecTest {
 		"From-Location=2602", "To_0=48602801829", "To_0-Location=2602",
 		"CurrentTime=2009-08-06 11:31:31", "MMS-Size=150",
 		"MMS-SendTime=2009-08-06 11:31:31" });
-	AvpSet f = exp.getAvps();
-	AvpSet data = f.addGroupedAvp(873, 10415, true, true);
+	AvpSet rootAvp = exp.getAvps();
+	AvpSet data = rootAvp.addGroupedAvp(873, 10415, true, true);
 	AvpSet mmsdata = data.addGroupedAvp(877, 10415, true, true);
 	AvpSet to1 = mmsdata.addGroupedAvp(1201, 10415, true, true);
-	Avp address = f.addAvp(897, "48602801829", 10415, true, false, true);
-	to1.addAvp(address);
+	to1.addAvp(897, "48602801829", 10415, true, false, true);
 	testObj.evaluateMessage(exp, msg);
 	// expected no exception
     }
 
     @Test
     public void testEvaluateMessage_Exception() throws Exception {
-	Message msg = (Message) testObj.encodeMessage(new Object[] {
-		"MMS-IEC-CCA", "SessId=lukasz;12345", "Result=SUCCESS" });
 	Message exp = session.createRequest(272, ApplicationId
 		.createByAccAppId(4), "eliot.org");
+	
+	Message msg = (Message) testObj.encodeMessage(new Object[] {
+		"MMS-IEC-CCA", "SessId=" + exp.getSessionId(), "Result=SUCCESS" });
 	exp = ((Request) exp).createAnswer(2002);
 	try {
 	    testObj.evaluateMessage(exp, msg);

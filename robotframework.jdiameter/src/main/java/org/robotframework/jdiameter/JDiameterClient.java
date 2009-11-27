@@ -33,7 +33,7 @@ public class JDiameterClient {
 	    long time = System.currentTimeMillis();
 	    this.timeout = encoder.decodeTimeout(arg0);
 	    stack = new org.jdiameter.client.impl.StackImpl();
-	    config = new XMLConfiguration((String) arg0[1]);
+	    config = encoder.decodeConfiguration(arg0);
 	    SessionFactory factory = stack.init(config);
 	    stack.start(Mode.ANY_PEER, 10, TimeUnit.SECONDS);
 	    connection = factory.getNewSession();
