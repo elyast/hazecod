@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEVICE_WATCHDOG_REQUEST applicationId="4" endToEndId="19" hopByHopId="37">
+	<ORIGIN_HOST type="string" value="siemens.com" />
+	<ORIGIN_REALM type="string" value="advantage.siemens.com" />
+</DEVICE_WATCHDOG_REQUEST>

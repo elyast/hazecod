@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CREDIT_CONTROL_REQUEST applicationId="4" endToEndId="19" hopByHopId="37">
+	<SESSION_ID type="string" value="diacl;12345;0"/>
+	<ORIGIN_HOST type="string" value="localhost" /> 
+	<ORIGIN_REALM type="string" value="home" />
+	<DESTINATION_REALM type="string" value="eliot.org" />
+	<DESTINATION_HOST type="string" value="DestinationHost"/>
+	<AUTH_APPLICATION_ID type="int" value="4"/>
+	<SERVICE_CONTEXT_ID type="string" value="version1.12645.000.000.6.32270@3gpp.org"/>
+	<CC_REQUEST_TYPE type="enum" value="EVENT_REQUEST"/>
+	<REQUESTED_ACTION type="int" value="2"/>
+	<CC_REQUEST_NUMBER type="long" value="0"/>
+	<EVENT_TIMESTAMP type="time" value="2009-08-07 00:00:00"/>
+	<SUBSCRIPTION_ID>
+		<SUBSCRIPTION_ID_TYPE type="enum" value="END_USER_E164"/>
+		<SUBSCRIPTION_ID_DATA type="string" value="49173100400020"/>
+	</SUBSCRIPTION_ID>
+	<SERVICE_IDENTIFIER type="int" value="123" />
+	<GPP_SERVICE_INFORMATION vendor="3GPP">
+		<GPP_PS_INFORMATION>
+			<GPP_CHARGING_ID type="string" value="12345"/>
+			<GPP_SGSN_ADDRESS type="string" value="223.123.123.64"/>
+			<GPP_GGSN_ADDRESS type="string" value="123.123.123.64"/>
+			<GPP_USER_LOCATION_INFO type="string" value="0x0062F220"/>
+		</GPP_PS_INFORMATION>
+		<GPP_MMS_INFORMATION>
+			<GPP_ORIGINATOR_ADDRESS>
+				<GPP_ADDRESS_TYPE type="enum" value="MSISDN" />
+				<GPP_ADDRESSEE_TYPE type="enum" value="TO" />
+				<GPP_ADDRESS_DATA type="string" value="49173100400020"/>
+				<GPP_ADDRESS_DOMAIN>
+					<GPP_DOMAIN_NAME type="string" value="mms.vodafone.de"/>
+					<GPP_IMSI_MCC_MNC type="string" value="262002"/>
+				</GPP_ADDRESS_DOMAIN>
+			</GPP_ORIGINATOR_ADDRESS>
+			<GPP_RECIPIENT_ADDRESS cardinality="0..n">
+				<GPP_ADDRESS_TYPE type="enum" value="MSISDN" />
+				<GPP_ADDRESSEE_TYPE type="enum" value="TO" />
+				<GPP_ADDRESS_DATA type="string" value="98765"/>
+				<GPP_ADDRESS_DOMAIN>
+					<GPP_DOMAIN_NAME type="string" value="mms.vodafone.de"/>
+					<GPP_IMSI_MCC_MNC type="string" value="987654"/>
+				</GPP_ADDRESS_DOMAIN>
+			</GPP_RECIPIENT_ADDRESS>
+			<GPP_MESSAGE_TYPE type="enum" value="SEND_REQUEST"/>
+			<GPP_MESSAGE_SIZE type="long" value="100"/>
+			<GPP_SUBMISSION_TIME type="time" value="2009-08-07 00:00:00"/>
+		</GPP_MMS_INFORMATION>
+	</GPP_SERVICE_INFORMATION>
+</CREDIT_CONTROL_REQUEST>

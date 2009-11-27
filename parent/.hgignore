@@ -1,0 +1,37 @@
+
+syntax: regexp
+^target$
+syntax: regexp
+^parent\.gwt/target$
+syntax: regexp
+^parent\.osgi/target$
+syntax: regexp
+^parent\.osgi\.wrapper/target$
+syntax: regexp
+^parent\.robotframework\.library/target$
+syntax: regexp
+^parent\.robotframework\.tests/target$
+syntax: regexp
+^\.settings$
+syntax: regexp
+^\.project$
+syntax: regexp
+^parent\.robotframework\.tests/\.settings$
+syntax: regexp
+^parent\.robotframework\.library/\.settings$
+syntax: regexp
+^parent\.osgi\.wrapper/\.settings$
+syntax: regexp
+^parent\.osgi/\.settings$
+syntax: regexp
+^parent\.gwt/\.settings$
+syntax: regexp
+^parent\.gwt/\.project$
+syntax: regexp
+^parent\.osgi/\.project$
+syntax: regexp
+^parent\.osgi\.wrapper/\.project$
+syntax: regexp
+^parent\.robotframework\.library/\.project$
+syntax: regexp
+^parent\.robotframework\.tests/\.project$
