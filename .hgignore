@@ -1,0 +1,8 @@
+
+syntax: glob
+.project
+relre:.settings
+relre:target
+relre:.classpath
+glob:org.eliot.hazecod.integration.diameter/.springBeans
+relre:.springBeans

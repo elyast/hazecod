@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CREDIT_CONTROL_ANSWER applicationId="4" endToEndId="19" hopByHopId="37">
+	<CC_REQUEST_TYPE type="enum" value="EVENT_REQUEST"/>
+	<CC_REQUEST_NUMBER type="long" asUnsignedInt32="true" value="0"/>
+	<SESSION_ID type="string" value="12345"/>
+	<RESULT_CODE type="enum" value="SUCCESS"/>
+</CREDIT_CONTROL_ANSWER>

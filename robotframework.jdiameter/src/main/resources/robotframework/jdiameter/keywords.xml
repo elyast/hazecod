@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+ <bean id="sendAVPs" class="org.robotframework.jdiameter.keyword.SendMessage">
+  	<property name="name" value="Send AVPs"></property>
+ </bean>
+ 
+ <bean id="receiveAVPs" class="org.robotframework.jdiameter.keyword.ReceiveMessage">
+   	<property name="name" value="Receive AVPs"></property>
+ </bean>
+ 
+ <bean id="connect" class="org.robotframework.jdiameter.keyword.OpenConnection">
+  	<property name="name" value="Connect"></property>
+ </bean>
+ 
+ <bean id="disconnect" class="org.robotframework.jdiameter.keyword.CloseConnection">
+  	<property name="name" value="Disconnect"></property>
+ </bean>
+ 
+ <bean id="robotCodec" class="org.robotframework.jdiameter.DiameterRobotCodec">
+ 	<property name="builder" ref="encoder"></property>
+ 	<property name="globals" ref="defaults"></property>
+ 	<property name="transformer" ref="builder"></property>
+ 	<property name="avptypeResolver" ref="avpTypeResolver"></property>
+ </bean>
+ <bean id="avpTypeResolver" class="org.robotframework.jdiameter.AvpTypeResolver"></bean>
+ 
+ <bean id="encoder" class="org.robotframework.jdiameter.DiameterMessageBuilder">
+ 	<property name="globalDefaults" ref="defaults"></property>
+ 	<property name="avpCodesResolver" ref="avpCodeResolver"></property>
+ 	<property name="avpEnumsResolver" ref="enumResolver"></property>
+ </bean>
+ 
+ <bean id="defaults" class="org.robotframework.jdiameter.GlobalDefaults"></bean>
+ 
+ <bean id="builder" class="org.robotframework.jdiameter.TemplateBuilder">
+ 	<property name="templateApplier" ref="templateApplier"></property>
+ 	<property name="templateReader" ref="templateReader"></property>
+ 	<property name="userParamParser" ref="userParamParser"></property>
+ 	<property name="userParamTransformer" ref="userParamTransformer"></property>
+ 	<property name="mappingReader" ref="mappingReader"></property>
+ </bean>
+ 
+ <bean id="mappingReader" class="org.robotframework.jdiameter.MappingReader"></bean>
+ 
+ <bean id="avpCodeResolver" class="org.robotframework.jdiameter.AvpCodeResolver"></bean>
+ 
+ <bean id="enumResolver" class="org.robotframework.jdiameter.AvpEnumResolver"></bean>
+ 
+ <bean id="templateApplier" class="org.robotframework.jdiameter.TemplateApplier"></bean>
+ <bean id="templateReader" class="org.robotframework.jdiameter.TemplateReader"></bean>
+ <bean id="userParamParser" class="org.robotframework.jdiameter.UserParameterParser"></bean>
+ <bean id="userParamTransformer" class="org.robotframework.jdiameter.UserParameterTransformer"></bean>
+ 
+</beans>
