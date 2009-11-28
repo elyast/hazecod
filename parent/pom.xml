@@ -11,10 +11,43 @@
 	<developers>
 		<developer>
 			<id>elyast</id>
-			<name>Luasz Jastrzebski</name>
+			<name>Lukasz Jastrzebski</name>
 			<email>lukasz.jastrzebski@gmail.com</email>
 			<organization>Nokia Siemens Networks</organization>
 			<organizationUrl>www.nokiasiemensnetworks.com</organizationUrl>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>1</timezone>
+		</developer>
+		<developer>
+			<id>yankee</id>
+			<name>Michal Jankowski</name>
+			<email>jankowski.michal.tomasz@gmail.com</email>
+			<organization>Nokia Siemens Networks</organization>
+			<organizationUrl>www.nokiasiemensnetworks.com</organizationUrl>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>1</timezone>			
+		</developer>
+		<developer>
+			<id>fekat</id>
+			<name>Przemyslaw Sasnal</name>
+			<email>przemyslaw.sasnal@gmail.com</email>
+			<organization>Nokia Siemens Networks</organization>
+			<organizationUrl>http://www.nokiasiemensnetworks.com</organizationUrl>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>1</timezone>			
+		</developer>
+		<developer>
+			<id>tremor</id>
+			<name>Slawomir Solkiewicz</name>
+			<email>slawomir.solkiewicz@gmail.com</email>
+			<organization>Tieto</organization>
+			<organizationUrl>http://www.tieto.com</organizationUrl>
 			<roles>
 				<role>Developer</role>
 			</roles>
@@ -24,24 +57,24 @@
 
 	<distributionManagement>
 		<site>
-			<id>redmine</id>
-			<url>http://lukasz-desktop/projects/show/rater</url>
+			<id>Code Google</id>
+			<url>http://code.google.com/p/hazecod/</url>
 		</site>
-		<downloadUrl>http://lukasz-desktop/projects/list_files/rater</downloadUrl>
+		<downloadUrl>http://code.google.com/p/hazecod/downloads/list</downloadUrl>
 		<repository>
 			<id>release</id>
-			<url>http://lukasz-desktop:8080/nexus/content/repositories/releases/</url>
+			<url>http://localhost:8080/nexus/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshot</id>
-			<url>http://lukasz-desktop:8080/nexus/content/repositories/snapshots/</url>
+			<url>http://localhost:8080/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:svn:https://lukasz.jastrzebski:v5v8v4d6@eliot-projects.googlecode.com/svn/trunk</connection>
-		<developerConnection>scm:svn:https://lukasz.jastrzebski:v5v8v4d6@eliot-projects.googlecode.com/svn/trunk</developerConnection>
-		<url>https://eliot-projects.googlecode.com/svn/trunk</url>
+		<connection>scm:hg:https://hazecod.googlecode.com/hg/</connection>
+		<developerConnection>scm:hg:https://sasnal.net.hudson:xH2ST8zC2xB7@hazecod.googlecode.com/hg/</developerConnection>
+		<url>https://hazecod.googlecode.com/hg/</url>
 	</scm>
 
 	<inceptionYear>2009</inceptionYear>
@@ -54,20 +87,20 @@
 	</licenses>
 
 	<issueManagement>
-		<system>Redmine</system>
-		<url>http://lukasz-desktop/projects/show/rater</url>
+		<system>Code Google</system>
+		<url>http://code.google.com/p/hazecod/issues/list</url>
 	</issueManagement>
 
 	<organization>
-		<name>Eliot.org</name>
-		<url>http://lukasz-desktop</url>
+		<name>Sasnal.net</name>
+		<url>http://www.sasnal.net/</url>
 	</organization>
 
-	<url>http://lukasz-desktop/projects/show/rater</url>
+	<url>http://code.google.com/p/hazecod/</url>
 
 	<ciManagement>
-		<system>hudson</system>
-		<url>http://lukasz-desktop:8080/hudson</url>
+		<system>Hudson</system>
+		<url>http://localhost:8080/hudson</url>
 	</ciManagement>
 
 	<dependencyManagement>
