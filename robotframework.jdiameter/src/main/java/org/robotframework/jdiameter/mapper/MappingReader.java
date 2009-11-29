@@ -7,38 +7,30 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
- * Resolves additional aliases to xml template
- * 
- * @author wro02896
- * 
+ * Helper used to read and transform mapping files from InputStream
  */
 public class MappingReader extends PropertiesReader {
 
     private Map<String, List<String>> mappings = new HashMap<String, List<String>>();
 
-    public MappingReader() {
-    }
-
     private void transformProperties() {
 	for (String key : props.stringPropertyNames()) {
-	    mappings.put(key, parseAliases(key));
+	    transformProperty(key);
 	}
     }
 
-    private List<String> parseAliases(String key) {
+    private void transformProperty(String key) {
 	List<String> values = new ArrayList<String>();
-	String[] aliases = props.getProperty(key).split(",");
-	for (String value : aliases) {
+	for (String value : props.getProperty(key).split(",")) {
 	    if (!value.isEmpty()) {
 		values.add(value.trim());
 	    }
 	}
-	return values;
+	mappings.put(key, values);
     }
 
     /**
-     * Gets xml temaplate node from used alias
+     * retrieves earlier prepared mapping for a given key
      * 
      * @param key
      * @return
@@ -52,7 +44,7 @@ public class MappingReader extends PropertiesReader {
     }
 
     /**
-     * Gets all the aliases two xml nodes
+     * retrieves earlier prepared mappings loaded from InputStream
      * 
      * @return
      */

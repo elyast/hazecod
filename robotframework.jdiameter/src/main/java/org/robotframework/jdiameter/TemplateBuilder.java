@@ -53,19 +53,20 @@ public class TemplateBuilder {
      * 
      * @param params
      * @param defaultApplicationId
+     * @param defaultEndToEndId
+     * @param defaultHopByHopId
      * @return
      */
-    public Document build(Object[] params, int defaultApplicationId) {
+    public Document build(String template, String[] params,
+	    int defaultApplicationId) {
 
-	Object templateParam = params[0];
-	Template path = getPath(String.valueOf(templateParam));
+	Template path = getPath(template);
 	Document doc = templateReader.read(path.xmlIn);
 	mappingReader.loadPropertiesFile(path.propIn);
 
 	Map<String, List<String>> mapping = mappingReader.getMappings();
 
-	List<Object> parameters = new ArrayList<Object>(Arrays.asList(params));
-	parameters.remove(0);
+	List<String> parameters = new ArrayList<String>(Arrays.asList(params));
 
 	List<Entry<String, String>> userParameters = userParamParser
 		.parse(parameters);

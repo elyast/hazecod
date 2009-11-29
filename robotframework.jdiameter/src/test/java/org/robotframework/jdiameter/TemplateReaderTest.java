@@ -6,11 +6,10 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.io.FileInputStream;
 
+import nu.xom.Document;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.robotframework.jdiameter.TemplateReader;
-
-import nu.xom.Document;
 
 public class TemplateReaderTest {
 

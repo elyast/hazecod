@@ -26,7 +26,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 @RunWith(JMockit.class)
-public class DiameterRobotCodecTest {
+public class DiameterMessageEncoderTest {
 
     private DiameterMessageEncoder testObj;
     private ApplicationContext context;
@@ -49,14 +49,24 @@ public class DiameterRobotCodecTest {
 		.createByAccAppId(4), "eliot.org");
     }
 
+    // @Test
+    // public void testDecodeTimeout() throws Exception {
+    // assertEquals(300, testObj.getTimeout(new Object[] {}));
+    // assertEquals(300, testObj.getTimeout(new Object[] { "wro" }));
+    // assertEquals(1230, testObj.getTimeout(new Object[] { "bln", "1230" }));
+    // assertEquals(1230, testObj.getTimeout(new Object[] { "xyz", "1230",
+    // "500" }));
+    // }
+
     @Test
     public void testEncodeMessage_MMS_IEC_CCR() throws Exception {
 	// TODO refactor this tests to be more descriptive!!!
-	Message msg = (Message) testObj.encodeMessage(new Object[] {
-		"MMS-IEC-CCR", "SessId=lukasz;12345", "From=486018020793",
-		"From-Location=2602", "To_0=48602801829", "To_0-Location=2602",
-		"CurrentTime=2009-08-07 00:00:00", "MMS-Size=150",
-		"MMS-SendTime=2009-08-07 00:00:00" });
+	Message msg = (Message) testObj.encodeMessage("MMS-IEC-CCR",
+		new String[] { "SessId=lukasz;12345", "From=486018020793",
+			"From-Location=2602", "To_0=48602801829",
+			"To_0-Location=2602",
+			"CurrentTime=2009-08-07 00:00:00", "MMS-Size=150",
+			"MMS-SendTime=2009-08-07 00:00:00" });
 	assertEquals(272, msg.getCommandCode());
 	assertEquals(4, msg.getApplicationId());
 	assertTrue(msg.isRequest());
@@ -94,8 +104,8 @@ public class DiameterRobotCodecTest {
 
     @Test
     public void testEncodeMessage_MMS_IEC_CCA() throws Exception {
-	Message msg = (Message) testObj.encodeMessage(new Object[] {
-		"MMS-IEC-CCA", "SessId=lukasz;12345", "Result=SUCCESS" });
+	Message msg = (Message) testObj.encodeMessage("MMS-IEC-CCA",
+		new String[] { "SessId=lukasz;12345", "Result=SUCCESS" });
 	assertEquals(272, msg.getCommandCode());
 	assertEquals(4, msg.getApplicationId());
 	assertFalse(msg.isRequest());
@@ -113,9 +123,10 @@ public class DiameterRobotCodecTest {
     public void testEvaluateMessage_NoException() throws Exception {
 	Request exp = session.createRequest(272, ApplicationId
 		.createByAccAppId(4), "eliot.org");
-	
-	Message msg = (Message) testObj.encodeMessage(new Object[] {
-		"MMS-IEC-CCA", "SessId=" + exp.getSessionId(), "Result=SUCCESS" });
+
+	Message msg = (Message) testObj
+		.encodeMessage("MMS-IEC-CCA", new String[] {
+			"SessId=" + exp.getSessionId(), "Result=SUCCESS" });
 
 	testObj.evaluateMessage(exp.createAnswer(2001), msg);
 	// expected no exception
@@ -125,12 +136,13 @@ public class DiameterRobotCodecTest {
     public void testEvaluateMessage_NoException_DeepSubtree() throws Exception {
 	Request exp = session.createRequest(272, ApplicationId
 		.createByAccAppId(4), "eliot.org");
-	
-	Message msg = (Message) testObj.encodeMessage(new Object[] {
-		"MMS-IEC-CCR", "SessId=" + exp.getSessionId(), "From=486018020793",
-		"From-Location=2602", "To_0=48602801829", "To_0-Location=2602",
-		"CurrentTime=2009-08-06 11:31:31", "MMS-Size=150",
-		"MMS-SendTime=2009-08-06 11:31:31" });
+
+	Message msg = (Message) testObj.encodeMessage("MMS-IEC-CCR",
+		new String[] { "SessId=" + exp.getSessionId(),
+			"From=486018020793", "From-Location=2602",
+			"To_0=48602801829", "To_0-Location=2602",
+			"CurrentTime=2009-08-06 11:31:31", "MMS-Size=150",
+			"MMS-SendTime=2009-08-06 11:31:31" });
 	AvpSet rootAvp = exp.getAvps();
 	AvpSet data = rootAvp.addGroupedAvp(873, 10415, true, true);
 	AvpSet mmsdata = data.addGroupedAvp(877, 10415, true, true);
@@ -144,9 +156,10 @@ public class DiameterRobotCodecTest {
     public void testEvaluateMessage_Exception() throws Exception {
 	Message exp = session.createRequest(272, ApplicationId
 		.createByAccAppId(4), "eliot.org");
-	
-	Message msg = (Message) testObj.encodeMessage(new Object[] {
-		"MMS-IEC-CCA", "SessId=" + exp.getSessionId(), "Result=SUCCESS" });
+
+	Message msg = (Message) testObj
+		.encodeMessage("MMS-IEC-CCA", new String[] {
+			"SessId=" + exp.getSessionId(), "Result=SUCCESS" });
 	exp = ((Request) exp).createAnswer(2002);
 	try {
 	    testObj.evaluateMessage(exp, msg);

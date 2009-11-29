@@ -1,6 +1,6 @@
 package org.robotframework.jdiameter;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.robotframework.jdiameter.UserParameterParser;
 
 public class UserParameterParserTest {
 
@@ -43,7 +42,7 @@ public class UserParameterParserTest {
 
     @Test
     public void testParse_2Params() throws Exception {
-	List<Object> parameters = new ArrayList<Object>();
+	List<String> parameters = new ArrayList<String>();
 	parameters.add("ke=v");
 	parameters.add("ve = 1");
 
@@ -58,7 +57,7 @@ public class UserParameterParserTest {
 
     @Test
     public void testParse_NoParams() throws Exception {
-	List<Object> parameters = new ArrayList<Object>();
+	List<String> parameters = new ArrayList<String>();
 
 	List<Map.Entry<String, String>> result = testObj.parse(parameters);
 	assertEquals(0, result.size());

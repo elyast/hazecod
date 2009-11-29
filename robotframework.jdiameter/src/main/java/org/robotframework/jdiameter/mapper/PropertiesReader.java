@@ -5,9 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Loads properties file
- * @author Eliot
- *
+ * Abstract helper class enabling loading properties from InputStream
  */
 public abstract class PropertiesReader {
 
@@ -18,8 +16,10 @@ public abstract class PropertiesReader {
     }
 
     /**
-     * Loads properties file from stream
+     * loads properties from given InputStream
+     * 
      * @param input
+     *            InputStream used to load properties
      */
     public void loadPropertiesFile(InputStream input) {
 	try {

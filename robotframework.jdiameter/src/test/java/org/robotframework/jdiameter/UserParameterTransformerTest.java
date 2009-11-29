@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.robotframework.jdiameter.UserParameterTransformer;
 
 public class UserParameterTransformerTest {
 
@@ -50,8 +49,8 @@ public class UserParameterTransformerTest {
 	userParameters.add(new AbstractMap.SimpleEntry<String, String>("Al",
 		"15"));
 
-	List<Entry<String, String>> qualified = testObj.expandUserParametersWithAliases(mapping,
-		userParameters);
+	List<Entry<String, String>> qualified = testObj
+		.expandUserParametersWithAliases(mapping, userParameters);
 
 	// for(Entry<String,String> entry : qualified){
 	// entry.getKey()
@@ -77,7 +76,8 @@ public class UserParameterTransformerTest {
 
     @Test
     public void testTransform_NullParams() throws Exception {
-	List<Entry<String, String>> qualified = testObj.expandUserParametersWithAliases(null, null);
+	List<Entry<String, String>> qualified = testObj
+		.expandUserParametersWithAliases(null, null);
 	assertEquals(0, qualified.size());
     }
 
