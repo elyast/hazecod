@@ -11,7 +11,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Robotframework JDiameter</name>
 	<properties>
-		<libraryClass>org.robotframework.jdiameter.JDiameterLibrary</libraryClass>
+		<libraryClass>org.robotframework.jdiameter.keyword.JDiameterLibrary</libraryClass>
 	</properties>
 	<dependencies>
 		<dependency>
