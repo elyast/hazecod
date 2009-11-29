@@ -3,9 +3,13 @@ package org.robotframework.jdiameter.keyword;
 import org.robotframework.jdiameter.JDiameterClient;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
-
+/**
+ * RobotFramework keyword used to close connection to System Under Test
+ */
 public class CloseConnection implements EnhancedDocumentedKeyword {
 
+    private static final String DOCUMENTATION = "Close currently opened connection.";
+    
     private String name;
 
     @Override
@@ -20,7 +24,7 @@ public class CloseConnection implements EnhancedDocumentedKeyword {
 
     @Override
     public String getDocumentation() {
-	return "Close currently opened connection.";
+	return DOCUMENTATION;
     }
 
     @Override

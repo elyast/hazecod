@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Map.Entry;
 
 /**
- * Parser user parameters into list of key, value
+ * Parses user parameters into list of key, value.
  * 
  */
 public class UserParameterParser {
 
+    private static final String EQUAL_SIGN = "=";
+
     /**
-     * Do the parsing
+     * parses the list of objects and returns the list of entries representing
+     * pairs key-value
      * 
      * @param parameters
      *            List of string with format (key = value)
@@ -34,7 +37,7 @@ public class UserParameterParser {
     }
 
     Entry<String, String> createEntry(String avp) {
-	String[] splitted = avp.split("=");
+	String[] splitted = avp.split(EQUAL_SIGN);
 	if (splitted.length != 2) {
 	    throw new RuntimeException("Invalid syntax: key=value expected");
 	}

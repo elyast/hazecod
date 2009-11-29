@@ -20,6 +20,7 @@ public class JDiameterClient {
 	    .getLogger(JDiameterClient.class);
     private static JDiameterClient client = new JDiameterClient();
 
+    //TODO timeout is not used anywhere, can it be removed?
     long timeout;
     DiameterRobotCodec encoder;
     Session connection;
@@ -30,16 +31,16 @@ public class JDiameterClient {
 
     public Object openConnection(Object[] arg0) {
 	try {
-	    long time = System.currentTimeMillis();
+	    long startTime = System.currentTimeMillis();
 	    this.timeout = encoder.decodeTimeout(arg0);
 	    stack = new org.jdiameter.client.impl.StackImpl();
 	    config = encoder.decodeConfiguration(arg0);
 	    SessionFactory factory = stack.init(config);
 	    stack.start(Mode.ANY_PEER, 10, TimeUnit.SECONDS);
 	    connection = factory.getNewSession();
-	    long timeb = System.currentTimeMillis() - time;
-	    logger.info("Time handling the open: " + timeb);
-	    return timeb;
+	    long endTime = System.currentTimeMillis() - startTime;
+	    logger.info("Time handling the open: " + endTime);
+	    return endTime;
 	} catch (Exception e) {
 	    logger.error(e.getMessage(), e);
 	    throw new RuntimeException(e);
@@ -72,13 +73,13 @@ public class JDiameterClient {
 
     public Object sendMessage(Object[] arg0) {
 	try {
-	    long time = System.currentTimeMillis();
+	    long startTime = System.currentTimeMillis();
 	    encoder.session = connection;
 	    request = (Request) encoder.encodeMessage(arg0);
 	    responder = connection.send(request);
-	    long timeb = System.currentTimeMillis() - time;
-	    logger.info("Time handling the sendMessage: " + timeb);
-	    return timeb;
+	    long endTime = System.currentTimeMillis() - startTime;
+	    logger.info("Time handling the sendMessage: " + endTime);
+	    return endTime;
 	} catch (Exception e) {
 	    logger.error(e.getMessage(), e);
 	    throw new RuntimeException(e);
@@ -87,12 +88,12 @@ public class JDiameterClient {
 
     public Object closeConnection(Object[] arg0) {
 	try {
-	    long time = System.currentTimeMillis();
+	    long startTime = System.currentTimeMillis();
 	    connection.release();
 	    stack.stop(10, TimeUnit.SECONDS);
-	    long timeb = System.currentTimeMillis() - time;
-	    logger.info("Time handling the close: " + timeb);
-	    return timeb;
+	    long endTime = System.currentTimeMillis() - startTime;
+	    logger.info("Time handling the close: " + endTime);
+	    return endTime;
 	} catch (Exception e) {
 	    logger.error(e.getMessage(), e);
 	    throw new RuntimeException(e);
