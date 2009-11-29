@@ -9,7 +9,7 @@ import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 public class CloseConnection implements EnhancedDocumentedKeyword {
 
     private static final String DOCUMENTATION = "Close currently opened connection.";
-    
+
     private String name;
 
     @Override
@@ -34,6 +34,6 @@ public class CloseConnection implements EnhancedDocumentedKeyword {
 
     @Override
     public Object execute(Object[] arguments) {
-	return JDiameterClient.getInstance().closeConnection(arguments);
+	return JDiameterClient.getInstance().closeConnection();
     }
 }

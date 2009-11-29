@@ -1,5 +1,7 @@
 package org.robotframework.jdiameter.keyword;
 
+import java.util.Arrays;
+
 import org.robotframework.jdiameter.JDiameterClient;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
@@ -13,10 +15,28 @@ public class SendMessage implements EnhancedDocumentedKeyword {
 	    + "AVP names are describes in xml templates.\n"
 	    + "templateName is without *.xml extension";
 
-    private static final String AVPS_WITH_VALUES_TO_BE_OVERWRITTEN = "*avps_with_values_to_be_overwritten";
-    private static final String TEMPLATE_NAME = "templateName";
-    private static final String[] ARGUMENTS = { TEMPLATE_NAME,
-	    AVPS_WITH_VALUES_TO_BE_OVERWRITTEN };
+    private enum Argument {
+	TEMPLATE_NAME("templateName"), AVPS_WITH_VALUES_TO_BE_OVERWRITTEN(
+		"*avps_with_values_to_be_overwritten");
+
+	private String argName;
+
+	Argument(String argName) {
+	    this.argName = argName;
+	}
+
+	public static String[] getArgumentNames() {
+	    String[] argumentNames = new String[Argument.values().length];
+	    for (int i = 0; i < Argument.values().length; i++) {
+		argumentNames[i] = Argument.values()[i].getName();
+	    }
+	    return argumentNames;
+	}
+
+	public String getName() {
+	    return argName;
+	}
+    }
 
     private String name;
 
@@ -32,7 +52,7 @@ public class SendMessage implements EnhancedDocumentedKeyword {
 
     @Override
     public String[] getArgumentNames() {
-	return ARGUMENTS;
+	return Argument.getArgumentNames();
     }
 
     @Override
@@ -42,6 +62,13 @@ public class SendMessage implements EnhancedDocumentedKeyword {
 
     @Override
     public Object execute(Object[] arguments) {
-	return JDiameterClient.getInstance().sendMessage(arguments);
+	if (arguments.length == 0) {
+	    throw new RuntimeException("Template argument missing");
+	}
+	String template = (String) arguments[Argument.TEMPLATE_NAME.ordinal()];
+	String[] avps = Arrays.copyOfRange(arguments,
+		Argument.AVPS_WITH_VALUES_TO_BE_OVERWRITTEN.ordinal(),
+		arguments.length, String[].class);
+	return JDiameterClient.getInstance().sendMessage(template, avps);
     }
 }

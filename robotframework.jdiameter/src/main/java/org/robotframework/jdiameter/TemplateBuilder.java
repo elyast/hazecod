@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import nu.xom.Document;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import nu.xom.Document;
 
 /**
  * 
@@ -41,18 +41,17 @@ public class TemplateBuilder {
      * @param defaultHopByHopId
      * @return
      */
-    public Document build(Object[] params, int defaultApplicationId,
-	    int defaultEndToEndId, int defaultHopByHopId) {
+    public Document build(String template, String[] params,
+	    int defaultApplicationId, int defaultEndToEndId,
+	    int defaultHopByHopId) {
 
-	Object templateParam = params[0];
-	Template path = getPath(String.valueOf(templateParam));
+	Template path = getPath(template);
 	Document doc = templateReader.read(path.xmlIn);
 	mappingReader.loadPropertiesFile(path.propIn);
 	Map<String, List<String>> mapping = mappingReader.getMappings();
 	logger.info("Mappings: " + mapping);
 
-	List<Object> parameters = new ArrayList<Object>(Arrays.asList(params));
-	parameters.remove(0);
+	List<String> parameters = new ArrayList<String>(Arrays.asList(params));
 
 	List<Entry<String, String>> qualifiedUserParameters = userParamTransformer
 		.transform(mapping, userParamParser.parse(parameters));
