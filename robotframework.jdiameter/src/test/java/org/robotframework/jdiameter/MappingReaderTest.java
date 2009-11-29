@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.robotframework.jdiameter.MappingReader;
+import org.robotframework.jdiameter.mapper.MappingReader;
 
 public class MappingReaderTest {
 

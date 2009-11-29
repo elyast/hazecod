@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.robotframework.jdiameter.JDiameterLibrary;
+import org.robotframework.jdiameter.keyword.JDiameterLibrary;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

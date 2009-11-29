@@ -10,14 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import nu.xom.Document;
 
+import org.robotframework.jdiameter.mapper.MappingReader;
+
 /**
+ * Applies user parameters to xml template
  * 
- *
  */
 public class TemplateBuilder {
 
@@ -27,42 +26,62 @@ public class TemplateBuilder {
 
     private static final String PROPS = ".properties";
 
+    /**
+     * Read xml template
+     */
     TemplateReader templateReader;
+    /**
+     * Read additional aliases to xml elements
+     */
     MappingReader mappingReader;
+    /**
+     * Parses user parameters
+     */
     UserParameterParser userParamParser;
+    /**
+     * Applies aliases to user parameters
+     */
     UserParameterTransformer userParamTransformer;
+    /**
+     * Applies user parameters to choosen xml template
+     */
     TemplateApplier templateApplier;
-    Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
+     * Builds from user parameter two xml document that represents diameter
+     * message
+     * 
      * @param params
      * @param defaultApplicationId
-     * @param defaultEndToEndId
-     * @param defaultHopByHopId
      * @return
      */
-    public Document build(Object[] params, int defaultApplicationId,
-	    int defaultEndToEndId, int defaultHopByHopId) {
+    public Document build(Object[] params, int defaultApplicationId) {
 
 	Object templateParam = params[0];
 	Template path = getPath(String.valueOf(templateParam));
 	Document doc = templateReader.read(path.xmlIn);
 	mappingReader.loadPropertiesFile(path.propIn);
+
 	Map<String, List<String>> mapping = mappingReader.getMappings();
-	logger.info("Mappings: " + mapping);
 
 	List<Object> parameters = new ArrayList<Object>(Arrays.asList(params));
 	parameters.remove(0);
 
+	List<Entry<String, String>> userParameters = userParamParser
+		.parse(parameters);
 	List<Entry<String, String>> qualifiedUserParameters = userParamTransformer
-		.transform(mapping, userParamParser.parse(parameters));
-
-	logger.info("QPs: " + qualifiedUserParameters);
+		.expandUserParametersWithAliases(mapping, userParameters);
 
 	templateApplier.apply(qualifiedUserParameters, doc);
 	return doc;
     }
 
+    /**
+     * Gets xml templated file (from predefined storage or custom one)
+     * 
+     * @param param
+     * @return
+     */
     Template getPath(String param) {
 	String[] splitted = param.split("=");
 	if (splitted.length == 2) {
@@ -104,6 +123,14 @@ public class TemplateBuilder {
 	this.mappingReader = mappingReader;
     }
 
+    /**
+     * 
+     * Diameter message template consists of xml template file and additional
+     * aliases
+     * 
+     * @author Eliot
+     * 
+     */
     static class Template {
 
 	InputStream xmlIn;

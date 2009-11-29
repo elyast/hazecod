@@ -1,6 +1,5 @@
 package org.robotframework.jdiameter.keyword;
 
-import org.robotframework.jdiameter.JDiameterClient;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
 

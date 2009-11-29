@@ -1,5 +1,13 @@
-package org.robotframework.jdiameter;
+package org.robotframework.jdiameter.mapper;
 
+import org.robotframework.jdiameter.DataType;
+
+/**
+ * 
+ * Avp code -> data type mapping
+ * @author Eliot
+ *
+ */
 public class AvpTypeResolver extends CodeResolver {
 
     public AvpTypeResolver() {

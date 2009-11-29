@@ -50,7 +50,7 @@ public class UserParameterTransformerTest {
 	userParameters.add(new AbstractMap.SimpleEntry<String, String>("Al",
 		"15"));
 
-	List<Entry<String, String>> qualified = testObj.transform(mapping,
+	List<Entry<String, String>> qualified = testObj.expandUserParametersWithAliases(mapping,
 		userParameters);
 
 	// for(Entry<String,String> entry : qualified){
@@ -77,7 +77,7 @@ public class UserParameterTransformerTest {
 
     @Test
     public void testTransform_NullParams() throws Exception {
-	List<Entry<String, String>> qualified = testObj.transform(null, null);
+	List<Entry<String, String>> qualified = testObj.expandUserParametersWithAliases(null, null);
 	assertEquals(0, qualified.size());
     }
 

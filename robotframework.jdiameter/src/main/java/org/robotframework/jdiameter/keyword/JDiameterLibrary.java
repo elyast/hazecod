@@ -1,4 +1,4 @@
-package org.robotframework.jdiameter;
+package org.robotframework.jdiameter.keyword;
 
 import org.robotframework.springdoc.SpringDocumentedLibrary;
 
