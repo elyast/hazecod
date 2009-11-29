@@ -13,10 +13,23 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 
+/**
+ * Applies full qualified user parameters into xml template
+ * 
+ * @author Sasnal.net
+ * 
+ */
 public class TemplateApplier {
 
     static Logger logger = LoggerFactory.getLogger(TemplateApplier.class);
 
+    /**
+     * Do the applying
+     * 
+     * @param qualifiedUserParameters
+     * @param doc
+     *            xml template
+     */
     public void apply(List<Entry<String, String>> qualifiedUserParameters,
 	    Document doc) {
 
@@ -36,26 +49,8 @@ public class TemplateApplier {
 	for (Entry<String, String> userParameter : qualifiedUserParameters) {
 	    Element currentElement = doc.getRootElement();
 	    logger.info("Current element: " + currentElement);
-	    // get reference to final element in XML tree
-	    for (String nodeName : userParameter.getKey().split("\\.")) {
-
-		if (nodeName.lastIndexOf("[") != -1) {
-		    // indexed node
-		    logger.info("Indexed Node name: " + nodeName);
-		    currentElement = getElementFromIndexedNode(currentElement,
-			    nodeName);
-		} else {
-		    // non-indexed node
-		    logger.info("Non Indexed Node name: " + nodeName);
-		    currentElement = currentElement
-			    .getFirstChildElement(nodeName);
-		}
-
-		if (currentElement == null) {
-		    throw new IllegalArgumentException("node " + nodeName
-			    + " does not exists");
-		}
-	    }
+	    currentElement = getReferenceToFinalElementInTree(userParameter,
+		    currentElement);
 
 	    // add to delayed list of task - overwrite attribute with user value
 	    delayedTaskList.add(new AbstractMap.SimpleEntry<Element, String>(
@@ -63,6 +58,30 @@ public class TemplateApplier {
 	}
 
 	return delayedTaskList;
+    }
+
+    private Element getReferenceToFinalElementInTree(
+	    Entry<String, String> userParameter, Element currentElement) {
+	String[] parsedParameter = userParameter.getKey().split("\\.");
+	for (String nodeName : parsedParameter) {
+
+	    if (nodeName.lastIndexOf("[") != -1) {
+		// indexed node
+		logger.info("Indexed Node name: " + nodeName);
+		currentElement = getElementFromIndexedNode(currentElement,
+			nodeName);
+	    } else {
+		// non-indexed node
+		logger.info("Non Indexed Node name: " + nodeName);
+		currentElement = currentElement.getFirstChildElement(nodeName);
+	    }
+
+	    if (currentElement == null) {
+		throw new IllegalArgumentException("node " + nodeName
+			+ " does not exists");
+	    }
+	}
+	return currentElement;
     }
 
     private Element getElementFromIndexedNode(Element currentElement,

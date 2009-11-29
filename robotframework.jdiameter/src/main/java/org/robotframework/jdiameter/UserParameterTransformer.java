@@ -6,11 +6,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * Resolves aliases names into full qualified xml element names
+ * @author Eliot
+ *
+ */
 public class UserParameterTransformer {
 
-    public List<Entry<String, String>> transform(
+    /**
+     * Resolves aliases names into full qualified xml element names
+     * @param mapping
+     * @param userParameters
+     * @return
+     */
+    public List<Entry<String, String>> expandUserParametersWithAliases(
 	    Map<String, List<String>> mapping,
 	    List<Entry<String, String>> userParameters) {
+	
 	List<Entry<String, String>> result = new ArrayList<Entry<String, String>>();
 	if (userParameters == null) {
 	    return result;
@@ -23,6 +35,7 @@ public class UserParameterTransformer {
 
     private List<Entry<String, String>> expand(Entry<String, String> entry,
 	    Map<String, List<String>> mapping) {
+	
 	List<Entry<String, String>> result = new ArrayList<Entry<String, String>>();
 	List<String> mappedBy = mapping.get(entry.getKey());
 	if (mappedBy != null) {

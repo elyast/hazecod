@@ -28,7 +28,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 @RunWith(JMockit.class)
 public class DiameterRobotCodecTest {
 
-    private DiameterRobotCodec testObj;
+    private DiameterMessageEncoder testObj;
     private ApplicationContext context;
     private Session session;
 
@@ -38,24 +38,15 @@ public class DiameterRobotCodecTest {
 	    context = new ClassPathXmlApplicationContext(
 		    "robotframework/jdiameter/keywords.xml");
 	}
-	testObj = (DiameterRobotCodec) context.getBean("robotCodec");
+	testObj = (DiameterMessageEncoder) context.getBean("robotCodec");
 	StackImpl stackImpl = new StackImpl();
 	InputStream istream = Thread.currentThread().getContextClassLoader()
 		.getResourceAsStream("configuration.xml");
 	SessionFactory init = stackImpl.init(new XMLConfiguration(istream));
 	session = init.getNewSession();
 	testObj.session = session;
-	testObj.request = session.createRequest(272, ApplicationId
+	testObj.lastRequest = session.createRequest(272, ApplicationId
 		.createByAccAppId(4), "eliot.org");
-    }
-
-    @Test
-    public void testDecodeTimeout() throws Exception {
-	assertEquals(300, testObj.decodeTimeout(new Object[] {}));
-	assertEquals(300, testObj.decodeTimeout(new Object[] { "wro" }));
-	assertEquals(1230, testObj.decodeTimeout(new Object[] { "bln", "1230" }));
-	assertEquals(1230, testObj.decodeTimeout(new Object[] { "xyz", "1230",
-		"500" }));
     }
 
     @Test

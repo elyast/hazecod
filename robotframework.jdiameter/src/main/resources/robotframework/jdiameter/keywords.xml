@@ -25,7 +25,7 @@
  	<property name="transformer" ref="builder"></property>
  	<property name="avptypeResolver" ref="avpTypeResolver"></property>
  </bean>
- <bean id="avpTypeResolver" class="org.robotframework.jdiameter.AvpTypeResolver"></bean>
+ <bean id="avpTypeResolver" class="org.robotframework.jdiameter.properties.AvpTypeResolver"></bean>
  
  <bean id="encoder" class="org.robotframework.jdiameter.DiameterMessageBuilder">
  	<property name="globalDefaults" ref="defaults"></property>
@@ -33,7 +33,7 @@
  	<property name="avpEnumsResolver" ref="enumResolver"></property>
  </bean>
  
- <bean id="defaults" class="org.robotframework.jdiameter.GlobalDefaults"></bean>
+ <bean id="defaults" class="org.robotframework.jdiameter.properties.GlobalDefaults"></bean>
  
  <bean id="builder" class="org.robotframework.jdiameter.TemplateBuilder">
  	<property name="templateApplier" ref="templateApplier"></property>
@@ -43,11 +43,11 @@
  	<property name="mappingReader" ref="mappingReader"></property>
  </bean>
  
- <bean id="mappingReader" class="org.robotframework.jdiameter.MappingReader"></bean>
+ <bean id="mappingReader" class="org.robotframework.jdiameter.properties.MappingReader"></bean>
  
- <bean id="avpCodeResolver" class="org.robotframework.jdiameter.AvpCodeResolver"></bean>
+ <bean id="avpCodeResolver" class="org.robotframework.jdiameter.properties.AvpCodeResolver"></bean>
  
- <bean id="enumResolver" class="org.robotframework.jdiameter.AvpEnumResolver"></bean>
+ <bean id="enumResolver" class="org.robotframework.jdiameter.properties.AvpEnumResolver"></bean>
  
  <bean id="templateApplier" class="org.robotframework.jdiameter.TemplateApplier"></bean>
  <bean id="templateReader" class="org.robotframework.jdiameter.TemplateReader"></bean>

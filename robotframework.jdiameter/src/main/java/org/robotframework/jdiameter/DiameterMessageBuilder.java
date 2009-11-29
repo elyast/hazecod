@@ -16,11 +16,21 @@ import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Message;
 import org.jdiameter.api.Request;
 import org.jdiameter.api.Session;
+import org.robotframework.jdiameter.mapper.AvpCodeResolver;
+import org.robotframework.jdiameter.mapper.AvpEnumResolver;
+import org.robotframework.jdiameter.mapper.GlobalDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Builds diameter message on xml document (template + parameters applied)
+ * 
+ * @author Eliot
+ * 
+ */
 public class DiameterMessageBuilder {
 
+    private static final String REALM = "eliot.org";
     private static final String REQUEST_SUFFIX = "REQUEST";
     private static final String TYPE = "type";
     private static final String UNSIGNED_INT32 = "asUnsignedInt32";
@@ -34,13 +44,34 @@ public class DiameterMessageBuilder {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * global defaults
+     */
     GlobalDefaults global;
+    /**
+     * avp mnemonic name -> avp code
+     */
     AvpCodeResolver codes;
+    /**
+     * avp enum mnemonic -> int
+     */
     AvpEnumResolver enums;
+    /**
+     * JDiameter client session, diameter message factory
+     */
     Session session;
+    /**
+     * Last request (allows creates answer on this request)
+     */
+    Request lastRequest;
+    /**
+     * Allows user to input in following format yyyy-MM-dd HH:mm:ss
+     */
     DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    /**
+     * Start time according to diameter specification Used in time conversion
+     */
     long startTime;
-    Request request;
     {
 	dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 	try {
@@ -50,6 +81,12 @@ public class DiameterMessageBuilder {
 	}
     }
 
+    /**
+     * Encodes xml document into diameter message
+     * 
+     * @param doc
+     * @return
+     */
     public Message encode(Document doc) {
 	Element root = doc.getRootElement();
 	int commandCode = global.getCommandCode(root.getLocalName());
@@ -58,68 +95,84 @@ public class DiameterMessageBuilder {
 	Message msg = null;
 	if (root.getLocalName().endsWith(REQUEST_SUFFIX)) {
 	    msg = session.createRequest(commandCode, ApplicationId
-		    .createByAccAppId(applicationId), "eliot.org");
+		    .createByAccAppId(applicationId), REALM);
 	} else {
-	    msg = request.createAnswer(0);
+	    msg = lastRequest.createAnswer(0);
 	}
 	process(root.getChildElements(), null, msg.getAvps());
 
-	// AvpSet avps = msg.getAvps();
-	// for (Avp avp : codes) {
-	// Avp f1 = avps.getAvp(avp.getCode());
-	// if (f1 != null) {
-	// avps.removeAvp(avp.getCode());
-	// }
-	// avps.addAvp(avp);
-	// }
 	return msg;
     }
 
+    /**
+     * Go over xml children element
+     * 
+     * @param children
+     * @param vendor
+     * @param avps
+     */
     void process(Elements children, Integer vendor, AvpSet avps) {
 	for (int i = 0; i < children.size(); i++) {
 	    inspect(children.get(i), vendor, avps);
 	}
     }
 
-    // Print the properties of each element
+    /**
+     * Transform xml element into AVP
+     * 
+     * @param element
+     * @param vendorId
+     * @param avps
+     *            AVP factory and container
+     */
     void inspect(Element element, Integer vendorId, AvpSet avps) {
 	String name = element.getLocalName();
 
 	String type = element.getAttributeValue(TYPE);
 	String valueText = element.getAttributeValue(VALUE);
 	String vendorText = element.getAttributeValue(VENDOR);
-	String u32 = element.getAttributeValue(UNSIGNED_INT32);
-	boolean asUnsignedInt32 = Boolean.valueOf(u32);
+	boolean asUnsignedInt32 = Boolean.valueOf(element
+		.getAttributeValue(UNSIGNED_INT32));
 
 	Integer vendor = (vendorText == null) ? vendorId : new Integer(global
 		.getVendorId(vendorText));
-
+	if (vendor == null) {
+	    vendor = 0;
+	}
 	// leaf case
 	if (element.getChildElements().size() == 0) {
 	    handleSimple(name, type, valueText, asUnsignedInt32, vendor, avps);
 
 	} else {
-	    logger.info("Grouped avp: " + name);
-	    AvpSet avpset = null;
-	    if (vendor == null) {
-		vendor = 0;
-	    }
-	    avpset = avps.addGroupedAvp(codes.getCode(name), vendor, true,
-		    false);
+	    AvpSet avpset = avps.addGroupedAvp(codes.getCode(name), vendor,
+		    true, false);
 	    process(element.getChildElements(), vendor, avpset);
 	}
 
     }
 
-    void handleSimple(String name, String type, String valueText, boolean asUnsignedInt32,
-	    Integer vendor, AvpSet avps) {
+    /**
+     * Transform not grouped xml element to AVP
+     * 
+     * @param name
+     *            Name of AVP
+     * @param type
+     *            Type of AVP
+     * @param valueText
+     *            Value in text format
+     * @param asUnsignedInt32
+     *            If long to be treated like unsignedInt
+     * @param vendor
+     *            AVP vendor
+     * @param avps
+     *            AVP container
+     */
+    void handleSimple(String name, String type, String valueText,
+	    boolean asUnsignedInt32, Integer vendor, AvpSet avps) {
 	logger.info("Leaf avp: " + name + " value: " + valueText);
 	Object value = null;
 	if (ENUM.equals(type)) {
 	    value = enums.getCode(valueText);
-	}
-	if (vendor == null) {
-	    vendor = 0;
 	}
 	int code = codes.getCode(name);
 	Avp addedByDiameterApi = avps.getAvp(code);
@@ -130,7 +183,7 @@ public class DiameterMessageBuilder {
 	if (ENUM.equals(type)) {
 	    avps.addAvp(code, (Integer) value, vendor, true, false);
 	}
-	
+
 	if (INT.equals(type)) {
 	    value = new Integer(valueText);
 	    avps.addAvp(code, (Integer) value, vendor, true, false);
@@ -141,8 +194,8 @@ public class DiameterMessageBuilder {
 	}
 	if (LONG.equals(type)) {
 	    value = new Long(valueText);
-	    
-	    avps.addAvp(code, (Long) value, vendor, true, false, asUnsignedInt32);
+	    avps.addAvp(code, (Long) value, vendor, true, false,
+		    asUnsignedInt32);
 	}
 	if (TIME.equals(type)) {
 	    value = convertTime(valueText);
@@ -155,6 +208,11 @@ public class DiameterMessageBuilder {
 	}
     }
 
+    /**
+     * Converts time to Octet string
+     * @param valueText
+     * @return
+     */
     private String convertTime(String valueText) {
 	try {
 	    Date date = dateFormatter.parse(valueText);
@@ -176,6 +234,14 @@ public class DiameterMessageBuilder {
 
     public void setAvpEnumsResolver(AvpEnumResolver enums) {
 	this.enums = enums;
+    }
+
+    public void setSession(Session session) {
+	this.session = session;
+    }
+
+    public void setLastRequest(Request lastRequest) {
+	this.lastRequest = lastRequest;
     }
 
 }

@@ -21,10 +21,10 @@ import org.jdiameter.client.impl.StackImpl;
 import org.jdiameter.client.impl.helpers.XMLConfiguration;
 import org.junit.Before;
 import org.junit.Test;
-import org.robotframework.jdiameter.AvpCodeResolver;
-import org.robotframework.jdiameter.AvpEnumResolver;
 import org.robotframework.jdiameter.DiameterMessageBuilder;
-import org.robotframework.jdiameter.GlobalDefaults;
+import org.robotframework.jdiameter.mapper.AvpCodeResolver;
+import org.robotframework.jdiameter.mapper.AvpEnumResolver;
+import org.robotframework.jdiameter.mapper.GlobalDefaults;
 
 public class DiameterMessageBuilderTest {
 
@@ -42,7 +42,7 @@ public class DiameterMessageBuilderTest {
 	SessionFactory init = stackImpl.init(new XMLConfiguration(istream));
 	Session session = init.getNewSession();
 	testObj.session = session;
-	testObj.request = session.createRequest(272, ApplicationId
+	testObj.lastRequest = session.createRequest(272, ApplicationId
 		.createByAccAppId(4), "eliot.org");
     }
 

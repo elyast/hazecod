@@ -1,4 +1,4 @@
-package org.robotframework.jdiameter;
+package org.robotframework.jdiameter.mapper;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -6,6 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ * Resolves additional aliases to xml template
+ * 
+ * @author wro02896
+ * 
+ */
 public class MappingReader extends PropertiesReader {
 
     private Map<String, List<String>> mappings = new HashMap<String, List<String>>();
@@ -15,16 +22,27 @@ public class MappingReader extends PropertiesReader {
 
     private void transformProperties() {
 	for (String key : props.stringPropertyNames()) {
-	    List<String> values = new ArrayList<String>();
-	    for (String value : props.getProperty(key).split(",")) {
-		if (!value.isEmpty()) {
-		    values.add(value.trim());
-		}
-	    }
-	    mappings.put(key, values);
+	    mappings.put(key, parseAliases(key));
 	}
     }
 
+    private List<String> parseAliases(String key) {
+	List<String> values = new ArrayList<String>();
+	String[] aliases = props.getProperty(key).split(",");
+	for (String value : aliases) {
+	    if (!value.isEmpty()) {
+		values.add(value.trim());
+	    }
+	}
+	return values;
+    }
+
+    /**
+     * Gets xml temaplate node from used alias
+     * 
+     * @param key
+     * @return
+     */
     public List<String> getMapping(String key) {
 	List<String> result = mappings.get(key);
 	if (result == null) {
@@ -33,6 +51,11 @@ public class MappingReader extends PropertiesReader {
 	return result;
     }
 
+    /**
+     * Gets all the aliases two xml nodes
+     * 
+     * @return
+     */
     public Map<String, List<String>> getMappings() {
 	return mappings;
     }

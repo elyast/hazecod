@@ -1,6 +1,60 @@
 package org.robotframework.jdiameter;
 
+/**
+ * 
+ * Diameter data types
+ * 
+ * @author Eliot
+ *
+ */
 public enum DataType {
-    OCTET_STRING, ADDRESS, FLOAT_32, GROUPED, FLOAT_64, INT_32, INT_64, TIME, UTF8_STRING, UNSIGNED_32, UNSIGNED_64
+    /**
+     * String that starts with 0x
+     */
+    OCTET_STRING,
+    
+    /**
+     * Other strings 
+     */
+    UTF8_STRING,
+    
+    /**
+     * InetAddress type
+     */
+    ADDRESS, 
+    
+    /**
+     * Grouped of AVPs
+     */
+    GROUPED, 
+    
+    /**
+     * float type 
+     */
+    FLOAT_32, 
+    /**
+     * double type
+     */
+    FLOAT_64, 
+    /**
+     * integer
+     */
+    INT_32, 
+    /**
+     * long 
+     */
+    INT_64, 
+    /**
+     * Date
+     */
+    TIME, 
+    /**
+     * long 
+     */
+    UNSIGNED_32, 
+    /**
+     * long
+     */
+    UNSIGNED_64
 
 }

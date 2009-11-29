@@ -2,6 +2,8 @@ package org.robotframework.jdiameter;
 
 import java.io.InputStream;
 
+import nu.xom.Document;
+
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpDataException;
 import org.jdiameter.api.AvpSet;
@@ -9,46 +11,66 @@ import org.jdiameter.api.Message;
 import org.jdiameter.api.Request;
 import org.jdiameter.api.Session;
 import org.jdiameter.client.impl.helpers.XMLConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.robotframework.jdiameter.mapper.AvpTypeResolver;
+import org.robotframework.jdiameter.mapper.GlobalDefaults;
 
-public class DiameterRobotCodec {
+/**
+ * Encodes parameters of keywords into diameter message
+ * 
+ * @author Eliot
+ *
+ */
+public class DiameterMessageEncoder {
 
-    private static Logger logger = LoggerFactory
-	    .getLogger(DiameterRobotCodec.class);
-
+    /**
+     * Builds diameter message from xml tree
+     */
     DiameterMessageBuilder builder;
+    /**
+     * Applies user parameters to choosen template
+     */
     TemplateBuilder transformer;
+    
+    /**
+     * Retrieves global defaults for parameters 
+     */
     GlobalDefaults globals;
+    /**
+     * Gets avp data type depending on avp code
+     */
     AvpTypeResolver avptypeResolver;
+    /**
+     * Current JDiameter client session
+     */
     Session session;
-    Request request;
+    /**
+     * Last JDiameter client request
+     */
+    Request lastRequest;
 
-    public long decodeTimeout(Object[] parameters) {
-	if (parameters.length < 2) {
-	    return globals.getDefaultTimeout();
-	}
-	return Long.parseLong(String.valueOf(parameters[1]));
-    }
-
+    /**
+     * Encodes into diameter message: user parameter and choosen template
+     * @param params template, and name, value pairs
+     * @return Diameter Message
+     */
     public Object encodeMessage(Object[] params) {
-	builder.session = session;
-	builder.request = request;
-	int e2eid = globals.getDefaultEndToEndId();
+	builder.setSession(session);
+	builder.setLastRequest(lastRequest);
 	int appId = globals.getDefaultApplicationId();
-	int hbhid = globals.getDefaultHopByHopId();
 
-	return builder.encode(transformer.build(params, appId, e2eid, hbhid));
+	Document xmlTemplate = transformer.build(params, appId);
+	return builder.encode(xmlTemplate);
     }
 
+    /**
+     * Asserts expected and actual diameter messages
+     * @param exp expected
+     * @param act actual
+     * @throws AvpDataException
+     */
     public void evaluateMessage(Object exp, Object act) throws AvpDataException {
 	Message expected = (Message) exp;
 	Message actual = (Message) act;
-	evaluate(expected, actual);
-    }
-
-    private void evaluate(Message expected, Message actual)
-	    throws AvpDataException {
 	assertEquals(expected.getApplicationId(), actual.getApplicationId());
 	assertEquals(expected.getCommandCode(), actual.getCommandCode());
 	assertEquals(expected.isError(), actual.isError());
@@ -56,18 +78,28 @@ public class DiameterRobotCodec {
 	assertEquals(expected.isRequest(), actual.isRequest());
 	assertEquals(expected.isReTransmitted(), actual.isReTransmitted());
 	AvpSet allAvps = actual.getAvps();
-	logger.info("Actual message: " + allAvps);
 	evaluate(expected.getAvps(), allAvps);
     }
 
+    /**
+     * Asserts avp sets
+     * @param expected
+     * @param actual
+     * @throws AvpDataException
+     */
     private void evaluate(AvpSet expected, AvpSet actual)
 	    throws AvpDataException {
-
-	for (Avp avp : expected) {
-	    evaluate(avp, findInActual(avp, actual));
+	for (Avp exp : expected) {
+	    evaluate(exp, actual.getAvp(exp.getCode()));
 	}
     }
 
+    /**
+     * Asserts two avp
+     * @param expected
+     * @param actual
+     * @throws AvpDataException
+     */
     private void evaluate(Avp expected, Avp actual) throws AvpDataException {
 	if (actual == null) {
 	    assertEquals(expected, actual);
@@ -79,9 +111,16 @@ public class DiameterRobotCodec {
 
     }
 
+    /**
+     * Checks avp values
+     * 
+     * @param expected
+     * @param actual
+     * @throws AvpDataException
+     */
     private void evaluateValue(Avp expected, Avp actual)
 	    throws AvpDataException {
-	DataType type = getType(expected.getCode());
+	DataType type = avptypeResolver.getType(expected.getCode());
 	switch (type) {
 	case INT_32:
 	    assertEquals(expected.getInteger32(), actual.getInteger32());
@@ -121,14 +160,11 @@ public class DiameterRobotCodec {
 	}
     }
 
-    private DataType getType(int code) {
-	return avptypeResolver.getType(code);
-    }
-
-    private Avp findInActual(Avp avp, AvpSet ac) {
-	return ac.getAvp(avp.getCode());
-    }
-
+    /**
+     * Asserts simple type values
+     * @param expected
+     * @param actual
+     */
     private void assertEquals(Object expected, Object actual) {
 	if (expected == actual) {
 	    return;
@@ -139,23 +175,13 @@ public class DiameterRobotCodec {
 
 	}
     }
-
-    public void setBuilder(DiameterMessageBuilder builder) {
-	this.builder = builder;
-    }
-
-    public void setGlobals(GlobalDefaults globals) {
-	this.globals = globals;
-    }
-
-    public void setTransformer(TemplateBuilder transformer) {
-	this.transformer = transformer;
-    }
     
-    public void setAvptypeResolver(AvpTypeResolver avptypeResolver) {
-	this.avptypeResolver = avptypeResolver;
-    }
-
+    /**
+     * Loads JDiameter client configuration from file
+     * @param parameters
+     * @return Configuration object
+     * @throws Exception
+     */
     public XMLConfiguration decodeConfiguration(Object[] parameters) throws Exception {
 	if (parameters.length < 1) {
 	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -164,5 +190,55 @@ public class DiameterRobotCodec {
 	}
 	return new XMLConfiguration((String) parameters[0]);
     }
+
+    /**
+     * Sets diameter message builder
+     * @param builder
+     */
+    public void setBuilder(DiameterMessageBuilder builder) {
+	this.builder = builder;
+    }
+
+    /**
+     * Sets global defaults
+     * @param globals
+     */
+    public void setGlobals(GlobalDefaults globals) {
+	this.globals = globals;
+    }
+
+    /**
+     * Sets template builder
+     * @param transformer
+     */
+    public void setTransformer(TemplateBuilder transformer) {
+	this.transformer = transformer;
+    }
+    
+    /**
+     * Sets data type resolver
+     * @param avptypeResolver
+     */
+    public void setAvptypeResolver(AvpTypeResolver avptypeResolver) {
+	this.avptypeResolver = avptypeResolver;
+    }
+    
+    /**
+     * Sets current request
+     * @param request
+     */
+    public void setLastRequest(Request request) {
+	this.lastRequest = request;
+    }
+    
+    /**
+     * Sets current session
+     * @param session
+     */
+    public void setSession(Session session) {
+	this.session = session;
+    }
+
+
 
 }

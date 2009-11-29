@@ -33,6 +33,12 @@ public class UserParameterParser {
 	return result;
     }
 
+    /**
+     * Parses string with following regexp: key=value
+     * 
+     * @param avp
+     * @return
+     */
     Entry<String, String> createEntry(String avp) {
 	String[] splitted = avp.split("=");
 	if (splitted.length != 2) {

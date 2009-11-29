@@ -20,13 +20,13 @@ import nu.xom.Element;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robotframework.jdiameter.MappingReader;
 import org.robotframework.jdiameter.TemplateApplier;
 import org.robotframework.jdiameter.TemplateBuilder;
 import org.robotframework.jdiameter.TemplateReader;
 import org.robotframework.jdiameter.UserParameterParser;
 import org.robotframework.jdiameter.UserParameterTransformer;
 import org.robotframework.jdiameter.TemplateBuilder.Template;
+import org.robotframework.jdiameter.mapper.MappingReader;
 
 
 @RunWith(JMockit.class)
@@ -71,11 +71,11 @@ public class TemplateBuilderTest {
 			List<Entry<String, String>> parsed = new ArrayList<Entry<String, String>>();
 			parsed.add(new AbstractMap.SimpleEntry<String, String>("SessId", "123"));
 			returns(parsed);
-			userParamTransform.transform(mapping, parsed);
+			userParamTransform.expandUserParametersWithAliases(mapping, parsed);
 			returns(parsed);
 			applier.apply(parsed, doc);
 		}};
-		Document doc = testObj.build(new Object[] {"MMS-IEC-CCR", "SessId=123"}, 4, 19, 37);
+		Document doc = testObj.build(new Object[] {"MMS-IEC-CCR", "SessId=123"}, 4);
 		assertEquals(0, doc.getRootElement().getChildCount());
 		assertEquals("CREDIT_CONTROL_REQUEST", doc.getRootElement().getLocalName());
 	}
