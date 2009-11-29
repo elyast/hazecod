@@ -2,8 +2,6 @@ package org.robotframework.jdiameter;
 
 import java.io.InputStream;
 
-import nu.xom.Document;
-
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpDataException;
 import org.jdiameter.api.AvpSet;
@@ -13,14 +11,21 @@ import org.jdiameter.api.Session;
 import org.jdiameter.client.impl.helpers.XMLConfiguration;
 import org.robotframework.jdiameter.mapper.AvpTypeResolver;
 import org.robotframework.jdiameter.mapper.GlobalDefaults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Encodes parameters of keywords into diameter message
  * 
  * @author Eliot
- *
+ * 
  */
 public class DiameterMessageEncoder {
+
+    private static final String CONFIGURATION_XML = "configuration.xml";
+
+    private static Logger logger = LoggerFactory
+	    .getLogger(DiameterMessageEncoder.class);
 
     /**
      * Builds diameter message from xml tree
@@ -30,9 +35,8 @@ public class DiameterMessageEncoder {
      * Applies user parameters to choosen template
      */
     TemplateBuilder transformer;
-    
     /**
-     * Retrieves global defaults for parameters 
+     * Retrieves global defaults for parameters
      */
     GlobalDefaults globals;
     /**
@@ -49,28 +53,33 @@ public class DiameterMessageEncoder {
     Request lastRequest;
 
     /**
-     * Encodes into diameter message: user parameter and choosen template
-     * @param params template, and name, value pairs
-     * @return Diameter Message
+     * encodes Message with given parameters
+     * 
+     * @param params
+     *            parameters table
+     * @return
      */
-    public Object encodeMessage(Object[] params) {
-	builder.setSession(session);
+    public Message encodeMessage(String template, String[] params) {
+	builder.session = session;
 	builder.setLastRequest(lastRequest);
+	int e2eid = globals.getDefaultEndToEndId();
 	int appId = globals.getDefaultApplicationId();
+	int hbhid = globals.getDefaultHopByHopId();
 
-	Document xmlTemplate = transformer.build(params, appId);
-	return builder.encode(xmlTemplate);
+	return builder.encode(transformer.build(template, params, appId));
     }
 
     /**
-     * Asserts expected and actual diameter messages
-     * @param exp expected
-     * @param act actual
+     * evaluates if expected Message is equal to received one
+     * 
+     * @param exp
+     *            expected Message
+     * @param act
+     *            received Message
      * @throws AvpDataException
      */
-    public void evaluateMessage(Object exp, Object act) throws AvpDataException {
-	Message expected = (Message) exp;
-	Message actual = (Message) act;
+    public void evaluateMessage(Message expected, Message actual)
+	    throws AvpDataException {
 	assertEquals(expected.getApplicationId(), actual.getApplicationId());
 	assertEquals(expected.getCommandCode(), actual.getCommandCode());
 	assertEquals(expected.isError(), actual.isError());
@@ -78,24 +87,28 @@ public class DiameterMessageEncoder {
 	assertEquals(expected.isRequest(), actual.isRequest());
 	assertEquals(expected.isReTransmitted(), actual.isReTransmitted());
 	AvpSet allAvps = actual.getAvps();
+	logger.info("Actual message: " + allAvps);
 	evaluate(expected.getAvps(), allAvps);
     }
 
     /**
      * Asserts avp sets
+     * 
      * @param expected
      * @param actual
      * @throws AvpDataException
      */
     private void evaluate(AvpSet expected, AvpSet actual)
 	    throws AvpDataException {
-	for (Avp exp : expected) {
-	    evaluate(exp, actual.getAvp(exp.getCode()));
+
+	for (Avp avp : expected) {
+	    evaluate(avp, findInActual(avp, actual));
 	}
     }
 
     /**
      * Asserts two avp
+     * 
      * @param expected
      * @param actual
      * @throws AvpDataException
@@ -108,7 +121,6 @@ public class DiameterMessageEncoder {
 	assertEquals(expected.getVendorId(), actual.getVendorId());
 
 	evaluateValue(expected, actual);
-
     }
 
     /**
@@ -120,7 +132,7 @@ public class DiameterMessageEncoder {
      */
     private void evaluateValue(Avp expected, Avp actual)
 	    throws AvpDataException {
-	DataType type = avptypeResolver.getType(expected.getCode());
+	DataType type = getType(expected.getCode());
 	switch (type) {
 	case INT_32:
 	    assertEquals(expected.getInteger32(), actual.getInteger32());
@@ -149,7 +161,7 @@ public class DiameterMessageEncoder {
 	case UTF8_STRING:
 	    assertEquals(expected.getUTF8String(), actual.getUTF8String());
 	    break;
-	case UNSIGNED_32: 
+	case UNSIGNED_32:
 	    assertEquals(expected.getUnsigned32(), actual.getUnsigned32());
 	    break;
 	case UNSIGNED_64:
@@ -160,8 +172,17 @@ public class DiameterMessageEncoder {
 	}
     }
 
+    private DataType getType(int code) {
+	return avptypeResolver.getType(code);
+    }
+
+    private Avp findInActual(Avp avp, AvpSet ac) {
+	return ac.getAvp(avp.getCode());
+    }
+
     /**
      * Asserts simple type values
+     * 
      * @param expected
      * @param actual
      */
@@ -172,27 +193,12 @@ public class DiameterMessageEncoder {
 	if ((expected != null && !expected.equals(actual))) {
 	    throw new RuntimeException("expected different that actual : "
 		    + "expected: " + expected + ", actual: " + actual);
-
 	}
-    }
-    
-    /**
-     * Loads JDiameter client configuration from file
-     * @param parameters
-     * @return Configuration object
-     * @throws Exception
-     */
-    public XMLConfiguration decodeConfiguration(Object[] parameters) throws Exception {
-	if (parameters.length < 1) {
-	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-	    InputStream istream = cl.getResourceAsStream("configuration.xml");
-	    return new XMLConfiguration(istream);
-	}
-	return new XMLConfiguration((String) parameters[0]);
     }
 
     /**
      * Sets diameter message builder
+     * 
      * @param builder
      */
     public void setBuilder(DiameterMessageBuilder builder) {
@@ -201,6 +207,7 @@ public class DiameterMessageEncoder {
 
     /**
      * Sets global defaults
+     * 
      * @param globals
      */
     public void setGlobals(GlobalDefaults globals) {
@@ -209,36 +216,45 @@ public class DiameterMessageEncoder {
 
     /**
      * Sets template builder
+     * 
      * @param transformer
      */
     public void setTransformer(TemplateBuilder transformer) {
 	this.transformer = transformer;
     }
-    
+
     /**
      * Sets data type resolver
+     * 
      * @param avptypeResolver
      */
     public void setAvptypeResolver(AvpTypeResolver avptypeResolver) {
 	this.avptypeResolver = avptypeResolver;
     }
-    
+
     /**
-     * Sets current request
-     * @param request
+     * Loads JDiameter client configuration from file
+     * 
+     * @param parameters
+     * @return Configuration object
+     * @throws Exception
      */
-    public void setLastRequest(Request request) {
-	this.lastRequest = request;
+    public XMLConfiguration decodeConfiguration(String configuration)
+	    throws Exception {
+	if (configuration.isEmpty()) {
+	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+	    InputStream istream = cl.getResourceAsStream(CONFIGURATION_XML);
+	    return new XMLConfiguration(istream);
+	}
+	return new XMLConfiguration(configuration);
     }
-    
-    /**
-     * Sets current session
-     * @param session
-     */
+
+    public void setLastRequest(Request lastRequest) {
+	this.lastRequest = lastRequest;
+    }
+
     public void setSession(Session session) {
 	this.session = session;
     }
-
-
 
 }

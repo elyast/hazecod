@@ -1,6 +1,6 @@
 package org.robotframework.jdiameter;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.AbstractMap;
 import java.util.LinkedList;
@@ -14,7 +14,6 @@ import nu.xom.Elements;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.robotframework.jdiameter.TemplateApplier;
 
 public class TemplateApplierTest {
     private Document doc;

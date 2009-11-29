@@ -30,6 +30,12 @@ import org.slf4j.LoggerFactory;
  */
 public class DiameterMessageBuilder {
 
+    private static final String APPLICATION_ID = "applicationId";
+    private static final String TIMEZONE_ID_UTC = "UTC";
+    private static final String HEX_PREFIX = "0x";
+    private static final int DEFAULT_VENDOR = 0;
+    private static final String DEFAULT_START_TIME = "1900-01-01 00:00:00";
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String REALM = "eliot.org";
     private static final String REQUEST_SUFFIX = "REQUEST";
     private static final String TYPE = "type";
@@ -67,22 +73,23 @@ public class DiameterMessageBuilder {
     /**
      * Allows user to input in following format yyyy-MM-dd HH:mm:ss
      */
-    DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    DateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
     /**
      * Start time according to diameter specification Used in time conversion
      */
     long startTime;
     {
-	dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+	dateFormatter.setTimeZone(TimeZone.getTimeZone(TIMEZONE_ID_UTC));
 	try {
-	    startTime = dateFormatter.parse("1900-01-01 00:00:00").getTime();
+	    startTime = dateFormatter.parse(DEFAULT_START_TIME).getTime();
 	} catch (ParseException e) {
 	    throw new RuntimeException(e);
 	}
     }
 
     /**
-     * Encodes xml document into diameter message
+     * encodes Diameter Message according to given xml doc, which is processed,
+     * for each element proper Avp is created and added to Message
      * 
      * @param doc
      * @return
@@ -91,7 +98,7 @@ public class DiameterMessageBuilder {
 	Element root = doc.getRootElement();
 	int commandCode = global.getCommandCode(root.getLocalName());
 	int applicationId = Integer.parseInt(root
-		.getAttributeValue("applicationId"));
+		.getAttributeValue(APPLICATION_ID));
 	Message msg = null;
 	if (root.getLocalName().endsWith(REQUEST_SUFFIX)) {
 	    msg = session.createRequest(commandCode, ApplicationId
@@ -99,9 +106,13 @@ public class DiameterMessageBuilder {
 	} else {
 	    msg = lastRequest.createAnswer(0);
 	}
-	process(root.getChildElements(), null, msg.getAvps());
 
+	processElements(root.getChildElements(), msg.getAvps());
 	return msg;
+    }
+
+    void processElements(Elements children, AvpSet avps) {
+	processElements(children, null, avps);
     }
 
     /**
@@ -111,76 +122,75 @@ public class DiameterMessageBuilder {
      * @param vendor
      * @param avps
      */
-    void process(Elements children, Integer vendor, AvpSet avps) {
+    void processElements(Elements children, Integer vendor, AvpSet avps) {
 	for (int i = 0; i < children.size(); i++) {
-	    inspect(children.get(i), vendor, avps);
+	    processElement(children.get(i), vendor, avps);
 	}
     }
 
     /**
-     * Transform xml element into AVP
+     * Prints the properties of element and all child elements if represents
+     * groupedAvp, modifies the given AvpSet and adds avp according to its
+     * properties (name, type, value, vendorId etc.)
      * 
      * @param element
+     *            processed element representing Avp
      * @param vendorId
      * @param avps
-     *            AVP factory and container
+     *            AvpSet which contains all message Avps,
      */
-    void inspect(Element element, Integer vendorId, AvpSet avps) {
-	String name = element.getLocalName();
+    void processElement(Element element, Integer vendorId, AvpSet avps) {
 
-	String type = element.getAttributeValue(TYPE);
-	String valueText = element.getAttributeValue(VALUE);
-	String vendorText = element.getAttributeValue(VENDOR);
-	boolean asUnsignedInt32 = Boolean.valueOf(element
-		.getAttributeValue(UNSIGNED_INT32));
+	ElementProperties elementProperties = new ElementProperties(element);
+	Integer vendor = calculateVendor(vendorId, elementProperties
+		.getVendorText());
 
+	if (element.getChildElements().size() == 0) {
+	    handleSimpleAvp(elementProperties, vendor, avps);
+	} else {
+	    handleGroupedAvp(element, avps, elementProperties.getName(), vendor);
+	}
+
+    }
+
+    Integer calculateVendor(Integer vendorId, String vendorText) {
 	Integer vendor = (vendorText == null) ? vendorId : new Integer(global
 		.getVendorId(vendorText));
 	if (vendor == null) {
-	    vendor = 0;
+	    vendor = DEFAULT_VENDOR;
 	}
-	// leaf case
-	if (element.getChildElements().size() == 0) {
-	    handleSimple(name, type, valueText, asUnsignedInt32, vendor, avps);
-
-	} else {
-	    AvpSet avpset = avps.addGroupedAvp(codes.getCode(name), vendor,
-		    true, false);
-	    process(element.getChildElements(), vendor, avpset);
-	}
-
+	return vendor;
     }
 
-    /**
-     * Transform not grouped xml element to AVP
-     * 
-     * @param name
-     *            Name of AVP
-     * @param type
-     *            Type of AVP
-     * @param valueText
-     *            Value in text format
-     * @param asUnsignedInt32
-     *            If long to be treated like unsignedInt
-     * @param vendor
-     *            AVP vendor
-     * @param avps
-     *            AVP container
-     */
-    void handleSimple(String name, String type, String valueText,
-	    boolean asUnsignedInt32, Integer vendor, AvpSet avps) {
-	logger.info("Leaf avp: " + name + " value: " + valueText);
+    void handleGroupedAvp(Element element, AvpSet avps, String name,
+	    Integer vendor) {
+	logger.info("Grouped avp: " + name);
+	AvpSet avpset = avps.addGroupedAvp(codes.getCode(name), vendor, true,
+		false);
+	processElements(element.getChildElements(), vendor, avpset);
+    }
+
+    void handleSimpleAvp(ElementProperties elementProperties, Integer vendor,
+	    AvpSet avps) {
+	logger.info("Leaf avp: " + elementProperties.getName() + " value: "
+		+ elementProperties.getValueText());
+
+	int code = codes.getCode(elementProperties.getName());
+	handleAvpsAddedByDiameterApi(avps, code);
+
+	addAvpToSetAccordingToItsType(elementProperties, vendor, avps, code);
+    }
+
+    private void addAvpToSetAccordingToItsType(
+	    ElementProperties elementProperties, Integer vendor, AvpSet avps,
+	    int code) {
+
 	Object value = null;
-	if (ENUM.equals(type)) {
-	    value = enums.getCode(valueText);
-	}
-	int code = codes.getCode(name);
-	Avp addedByDiameterApi = avps.getAvp(code);
-	if (addedByDiameterApi != null) {
-	    avps.removeAvp(code);
-	}
+	String type = elementProperties.getType();
+	String valueText = elementProperties.getValueText();
 
 	if (ENUM.equals(type)) {
+	    value = enums.getCode(valueText);
 	    avps.addAvp(code, (Integer) value, vendor, true, false);
 	}
 
@@ -194,22 +204,32 @@ public class DiameterMessageBuilder {
 	}
 	if (LONG.equals(type)) {
 	    value = new Long(valueText);
+
 	    avps.addAvp(code, (Long) value, vendor, true, false,
-		    asUnsignedInt32);
+		    elementProperties.isAsUnsignedInt32());
 	}
 	if (TIME.equals(type)) {
 	    value = convertTime(valueText);
 	    avps.addAvp(code, (String) value, vendor, true, false, true);
 	}
 	if (value == null) {
-	    throw new IllegalArgumentException("Avp: " + name
+	    throw new IllegalArgumentException("Avp: "
+		    + elementProperties.getName()
 		    + " has null or unrecognized type: " + type + " value: "
 		    + valueText);
 	}
     }
 
+    void handleAvpsAddedByDiameterApi(AvpSet avps, int code) {
+	Avp addedByDiameterApi = avps.getAvp(code);
+	if (addedByDiameterApi != null) {
+	    avps.removeAvp(code);
+	}
+    }
+
     /**
      * Converts time to Octet string
+     * 
      * @param valueText
      * @return
      */
@@ -217,11 +237,10 @@ public class DiameterMessageBuilder {
 	try {
 	    Date date = dateFormatter.parse(valueText);
 	    long time = (date.getTime() - startTime) / 1000;
-	    return "0x" + Long.toHexString(time);
+	    return HEX_PREFIX + Long.toHexString(time);
 	} catch (ParseException e) {
-	    e.printStackTrace();
+	    throw new RuntimeException(e);
 	}
-	return valueText;
     }
 
     public void setAvpCodesResolver(AvpCodeResolver codes) {
@@ -236,6 +255,45 @@ public class DiameterMessageBuilder {
 	this.enums = enums;
     }
 
+    private class ElementProperties {
+
+	String name;
+	String type;
+	String valueText;
+	String vendorText;
+	boolean asUnsignedInt32;
+
+	public ElementProperties(Element element) {
+	    name = element.getLocalName();
+	    type = element.getAttributeValue(TYPE);
+	    valueText = element.getAttributeValue(VALUE);
+	    vendorText = element.getAttributeValue(VENDOR);
+	    String u32 = element.getAttributeValue(UNSIGNED_INT32);
+	    asUnsignedInt32 = Boolean.valueOf(u32);
+	}
+
+	public String getName() {
+	    return name;
+	}
+
+	public String getType() {
+	    return type;
+	}
+
+	public String getValueText() {
+	    return valueText;
+	}
+
+	public String getVendorText() {
+	    return vendorText;
+	}
+
+	public boolean isAsUnsignedInt32() {
+	    return asUnsignedInt32;
+	}
+
+    }
+
     public void setSession(Session session) {
 	this.session = session;
     }
@@ -243,5 +301,4 @@ public class DiameterMessageBuilder {
     public void setLastRequest(Request lastRequest) {
 	this.lastRequest = lastRequest;
     }
-
 }

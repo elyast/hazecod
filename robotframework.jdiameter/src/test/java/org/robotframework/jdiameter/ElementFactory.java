@@ -28,12 +28,14 @@ public class ElementFactory {
     public static Element createLongElement(String string, String... vendor) {
 	return createLongElement(string, false, vendor);
     }
-    
-    public static Element createLongElement(String string, boolean asUnsignedInt32, String... vendor) {
+
+    public static Element createLongElement(String string,
+	    boolean asUnsignedInt32, String... vendor) {
 	Element e = new Element(string);
 	e.addAttribute(new Attribute("type", "long"));
 	e.addAttribute(new Attribute("value", "321"));
-	e.addAttribute(new Attribute("asUnsignedInt32", String.valueOf(asUnsignedInt32)));
+	e.addAttribute(new Attribute("asUnsignedInt32", String
+		.valueOf(asUnsignedInt32)));
 	if (vendor.length == 1) {
 	    e.addAttribute(new Attribute("vendor", String.valueOf(vendor[0])));
 	}

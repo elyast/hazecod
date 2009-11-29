@@ -1,10 +1,8 @@
 package org.robotframework.jdiameter.mapper;
 
-
 /**
- * Abstract code resolver from properties files
- * @author wro02896
- *
+ * Abstract helper class enabling loading properties from file, parsing and
+ * receiving integer properties
  */
 public abstract class CodeResolver extends PropertiesReader {
 
@@ -14,9 +12,11 @@ public abstract class CodeResolver extends PropertiesReader {
     }
 
     /**
-     * Gets code as int
+     * gets an int value of property defined by given name
+     * 
      * @param name
-     * @return
+     *            name of property
+     * @return int value of property
      */
     public int getCode(String name) {
 	return Integer.parseInt(props.getProperty(name).trim());
