@@ -14,6 +14,12 @@ import org.slf4j.LoggerFactory;
 
 public class DiameterRobotCodec {
 
+    private static final int CONFIGURATION_POSSITION = 0;
+
+    private static final String CONFIGURATION_XML = "configuration.xml";
+
+    private static final int TIMEOUT_POSSITION = 1;
+
     private static Logger logger = LoggerFactory
 	    .getLogger(DiameterRobotCodec.class);
 
@@ -24,13 +30,24 @@ public class DiameterRobotCodec {
     Session session;
     Request request;
 
+    /**
+     * retrieves timeout value from parameters table
+     * @param parameters parameter table
+     * @return
+     */
     public long decodeTimeout(Object[] parameters) {
-	if (parameters.length < 2) {
+	//TODO consider moving decoding parameters to keyword class
+	if (parameters.length < TIMEOUT_POSSITION+1) {
 	    return globals.getDefaultTimeout();
 	}
-	return Long.parseLong(String.valueOf(parameters[1]));
+	return Long.parseLong(String.valueOf(parameters[TIMEOUT_POSSITION]));
     }
 
+    /**
+     * encodes Message with given parameters
+     * @param params parameters table
+     * @return
+     */
     public Object encodeMessage(Object[] params) {
 	builder.session = session;
 	builder.request = request;
@@ -41,7 +58,14 @@ public class DiameterRobotCodec {
 	return builder.encode(transformer.build(params, appId, e2eid, hbhid));
     }
 
+    /**
+     * evaluates if expected Message is equal to received one
+     * @param exp expected Message
+     * @param act received Message
+     * @throws AvpDataException
+     */
     public void evaluateMessage(Object exp, Object act) throws AvpDataException {
+	//TODO why parameters are Object type, probably Message should be used
 	Message expected = (Message) exp;
 	Message actual = (Message) act;
 	evaluate(expected, actual);
@@ -76,7 +100,6 @@ public class DiameterRobotCodec {
 	assertEquals(expected.getVendorId(), actual.getVendorId());
 
 	evaluateValue(expected, actual);
-
     }
 
     private void evaluateValue(Avp expected, Avp actual)
@@ -136,7 +159,6 @@ public class DiameterRobotCodec {
 	if ((expected != null && !expected.equals(actual))) {
 	    throw new RuntimeException("expected different that actual : "
 		    + "expected: " + expected + ", actual: " + actual);
-
 	}
     }
 
@@ -157,12 +179,12 @@ public class DiameterRobotCodec {
     }
 
     public XMLConfiguration decodeConfiguration(Object[] parameters) throws Exception {
-	if (parameters.length < 1) {
+	if (parameters.length < CONFIGURATION_POSSITION + 1) {
 	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-	    InputStream istream = cl.getResourceAsStream("configuration.xml");
+	    InputStream istream = cl.getResourceAsStream(CONFIGURATION_XML);
 	    return new XMLConfiguration(istream);
 	}
-	return new XMLConfiguration((String) parameters[0]);
+	return new XMLConfiguration((String) parameters[CONFIGURATION_POSSITION]);
     }
 
 }

@@ -6,25 +6,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Helper used to read and transform mapping files from InputStream
+ */
 public class MappingReader extends PropertiesReader {
 
     private Map<String, List<String>> mappings = new HashMap<String, List<String>>();
 
-    public MappingReader() {
-    }
-
     private void transformProperties() {
 	for (String key : props.stringPropertyNames()) {
-	    List<String> values = new ArrayList<String>();
-	    for (String value : props.getProperty(key).split(",")) {
-		if (!value.isEmpty()) {
-		    values.add(value.trim());
-		}
-	    }
-	    mappings.put(key, values);
+	    transformProperty(key);
 	}
     }
 
+    private void transformProperty(String key) {
+	List<String> values = new ArrayList<String>();
+	for (String value : props.getProperty(key).split(",")) {
+	    if (!value.isEmpty()) {
+		values.add(value.trim());
+	    }
+	}
+	mappings.put(key, values);
+    }
+
+    /**
+     * retrieves earlier prepared mapping for a given key
+     * 
+     * @param key
+     * @return
+     */
     public List<String> getMapping(String key) {
 	List<String> result = mappings.get(key);
 	if (result == null) {
@@ -33,6 +43,11 @@ public class MappingReader extends PropertiesReader {
 	return result;
     }
 
+    /**
+     * retrieves earlier prepared mappings loaded from InputStream
+     * 
+     * @return
+     */
     public Map<String, List<String>> getMappings() {
 	return mappings;
     }

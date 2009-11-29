@@ -3,8 +3,16 @@ package org.robotframework.jdiameter.keyword;
 import org.robotframework.jdiameter.JDiameterClient;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
-
+/**
+ * RobotFramework keyword used to open connection to System Under Test
+ */
 public class OpenConnection implements EnhancedDocumentedKeyword {
+
+    private static final String DOCUMENTATION = "Open connection with server.";
+    private static final String TIMEOUT = "timeout";
+    private static final String PORT = "port";
+    private static final String HOST = "host";
+    private static final String[] ARGUMENTS = { HOST, PORT, TIMEOUT };
 
     private String name;
 
@@ -19,12 +27,12 @@ public class OpenConnection implements EnhancedDocumentedKeyword {
     }
 
     public String getDocumentation() {
-	return "Open connection with server.";
+	return DOCUMENTATION;
     }
 
     @Override
     public String[] getArgumentNames() {
-	return new String[] { "host", "port", "timeout" };
+	return ARGUMENTS;
     }
 
     @Override

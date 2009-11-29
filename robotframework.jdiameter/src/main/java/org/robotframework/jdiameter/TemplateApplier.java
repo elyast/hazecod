@@ -5,28 +5,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TemplateApplier {
 
+    private static final String VALUE_ATTRIBUTE_NAME = "value";
     static Logger logger = LoggerFactory.getLogger(TemplateApplier.class);
 
     public void apply(List<Entry<String, String>> qualifiedUserParameters,
 	    Document doc) {
-
-	List<Entry<Element, String>> taskList = createFinalTeeStructureAndGenerateTaskList(
+	List<Entry<Element, String>> taskList = createFinalTreeStructureAndGenerateTaskList(
 		doc, qualifiedUserParameters);
 	processTaskList(doc, taskList);
 	removeEmptyNodes(doc);
     }
 
-    private List<Entry<Element, String>> createFinalTeeStructureAndGenerateTaskList(
+    private List<Entry<Element, String>> createFinalTreeStructureAndGenerateTaskList(
 	    Document doc, List<Entry<String, String>> qualifiedUserParameters) {
 	assert (doc != null);
 	assert (qualifiedUserParameters != null);
@@ -106,13 +106,14 @@ public class TemplateApplier {
 	for (Entry<Element, String> task : delayedTaskList) {
 	    Element currentElement = task.getKey();
 	    String userValue = task.getValue();
-	    Attribute attrib = currentElement.getAttribute("value");
+	    Attribute attrib = currentElement
+		    .getAttribute(VALUE_ATTRIBUTE_NAME);
 	    if (attrib != null) {
 		// overwrite with qualified user value
 		attrib.setValue(userValue);
 	    } else {
 		// create new attribute with qualified user value
-		attrib = new Attribute("value", userValue);
+		attrib = new Attribute(VALUE_ATTRIBUTE_NAME, userValue);
 		currentElement.addAttribute(attrib);
 	    }
 	}
@@ -128,7 +129,6 @@ public class TemplateApplier {
 	assert (element != null);
 
 	Elements children = element.getChildElements();
-
 	int i = 0;
 	while (i < children.size()) {
 	    if (isEmpty(children.get(i))) {
@@ -137,7 +137,6 @@ public class TemplateApplier {
 		removeEmptyChildren(children.get(i));
 		i++;
 	    }
-
 	    children = element.getChildElements();
 	}
     }
@@ -145,17 +144,21 @@ public class TemplateApplier {
     private boolean isEmpty(Element element) {
 	assert (element != null);
 
-	if (element.getAttribute("value") != null) {
+	if (element.getAttribute(VALUE_ATTRIBUTE_NAME) != null) {
 	    return false;
 	}
 
+	return !isAnyChildNotEmpty(element);
+    }
+
+    private boolean isAnyChildNotEmpty(Element element) {
 	Elements children = element.getChildElements();
 	for (int i = 0; i < children.size(); i++) {
-	    if (!isEmpty(children.get(i))) {
-		return false;
+	    Element child = children.get(i);
+	    if (!isEmpty(child)) {
+		return true;
 	    }
 	}
-
-	return true;
+	return false;
     }
 }
