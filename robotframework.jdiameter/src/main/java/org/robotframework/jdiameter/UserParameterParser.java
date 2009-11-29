@@ -21,7 +21,7 @@ public class UserParameterParser {
      *            List of string with format (key = value)
      * @return List of map.entry
      */
-    public List<Entry<String, String>> parse(List<Object> parameters) {
+    public List<Entry<String, String>> parse(List<String> parameters) {
 	if (parameters == null) {
 	    return new ArrayList<Entry<String, String>>(0);
 	}

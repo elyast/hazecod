@@ -14,11 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class DiameterRobotCodec {
 
-    private static final int CONFIGURATION_POSSITION = 0;
-
     private static final String CONFIGURATION_XML = "configuration.xml";
-
-    private static final int TIMEOUT_POSSITION = 1;
 
     private static Logger logger = LoggerFactory
 	    .getLogger(DiameterRobotCodec.class);
@@ -31,47 +27,33 @@ public class DiameterRobotCodec {
     Request request;
 
     /**
-     * retrieves timeout value from parameters table
-     * @param parameters parameter table
-     * @return
-     */
-    public long decodeTimeout(Object[] parameters) {
-	//TODO consider moving decoding parameters to keyword class
-	if (parameters.length < TIMEOUT_POSSITION+1) {
-	    return globals.getDefaultTimeout();
-	}
-	return Long.parseLong(String.valueOf(parameters[TIMEOUT_POSSITION]));
-    }
-
-    /**
      * encodes Message with given parameters
-     * @param params parameters table
+     * 
+     * @param params
+     *            parameters table
      * @return
      */
-    public Object encodeMessage(Object[] params) {
+    public Message encodeMessage(String template, String[] params) {
 	builder.session = session;
 	builder.request = request;
 	int e2eid = globals.getDefaultEndToEndId();
 	int appId = globals.getDefaultApplicationId();
 	int hbhid = globals.getDefaultHopByHopId();
 
-	return builder.encode(transformer.build(params, appId, e2eid, hbhid));
+	return builder.encode(transformer.build(template, params, appId, e2eid,
+		hbhid));
     }
 
     /**
      * evaluates if expected Message is equal to received one
-     * @param exp expected Message
-     * @param act received Message
+     * 
+     * @param exp
+     *            expected Message
+     * @param act
+     *            received Message
      * @throws AvpDataException
      */
-    public void evaluateMessage(Object exp, Object act) throws AvpDataException {
-	//TODO why parameters are Object type, probably Message should be used
-	Message expected = (Message) exp;
-	Message actual = (Message) act;
-	evaluate(expected, actual);
-    }
-
-    private void evaluate(Message expected, Message actual)
+    public void evaluateMessage(Message expected, Message actual)
 	    throws AvpDataException {
 	assertEquals(expected.getApplicationId(), actual.getApplicationId());
 	assertEquals(expected.getCommandCode(), actual.getCommandCode());
@@ -133,7 +115,7 @@ public class DiameterRobotCodec {
 	case UTF8_STRING:
 	    assertEquals(expected.getUTF8String(), actual.getUTF8String());
 	    break;
-	case UNSIGNED_32: 
+	case UNSIGNED_32:
 	    assertEquals(expected.getUnsigned32(), actual.getUnsigned32());
 	    break;
 	case UNSIGNED_64:
@@ -173,18 +155,19 @@ public class DiameterRobotCodec {
     public void setTransformer(TemplateBuilder transformer) {
 	this.transformer = transformer;
     }
-    
+
     public void setAvptypeResolver(AvpTypeResolver avptypeResolver) {
 	this.avptypeResolver = avptypeResolver;
     }
 
-    public XMLConfiguration decodeConfiguration(Object[] parameters) throws Exception {
-	if (parameters.length < CONFIGURATION_POSSITION + 1) {
+    public XMLConfiguration decodeConfiguration(String configuration)
+	    throws Exception {
+	if (configuration.isEmpty()) {
 	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
 	    InputStream istream = cl.getResourceAsStream(CONFIGURATION_XML);
 	    return new XMLConfiguration(istream);
 	}
-	return new XMLConfiguration((String) parameters[CONFIGURATION_POSSITION]);
+	return new XMLConfiguration(configuration);
     }
 
 }

@@ -20,7 +20,7 @@ public class JDiameterClient {
 	    .getLogger(JDiameterClient.class);
     private static JDiameterClient client = new JDiameterClient();
 
-    //TODO timeout is not used anywhere, can it be removed?
+    // TODO timeout is not used anywhere, can it be removed?
     long timeout;
     DiameterRobotCodec encoder;
     Session connection;
@@ -29,15 +29,18 @@ public class JDiameterClient {
     private XMLConfiguration config;
     private Request request;
 
-    public Object openConnection(Object[] arg0) {
+    public long openConnection(String configuration, long timeout) {
 	try {
 	    long startTime = System.currentTimeMillis();
-	    this.timeout = encoder.decodeTimeout(arg0);
+
+	    this.timeout = timeout;
+	    config = encoder.decodeConfiguration(configuration);
+
 	    stack = new org.jdiameter.client.impl.StackImpl();
-	    config = encoder.decodeConfiguration(arg0);
 	    SessionFactory factory = stack.init(config);
 	    stack.start(Mode.ANY_PEER, 10, TimeUnit.SECONDS);
 	    connection = factory.getNewSession();
+
 	    long endTime = System.currentTimeMillis() - startTime;
 	    logger.info("Time handling the open: " + endTime);
 	    return endTime;
@@ -47,18 +50,19 @@ public class JDiameterClient {
 	}
     }
 
-    public Object receiveMessage(Object[] arg0) {
+    public Object receiveMessage(String template, String[] avps) {
 	try {
 	    long time = System.currentTimeMillis();
-	    Object actual = responder.get();
+	    Message actual = responder.get();
 	    if (actual == null) {
 		logger.info("Time handling the receive: "
 			+ (System.currentTimeMillis() - time));
 		throw new RuntimeException("No message was received...");
 	    }
-	    logger.info("Input from user: " + Arrays.toString(arg0));
+	    logger.info("Input from user: " + template + ", "
+		    + Arrays.toString(avps));
 	    encoder.request = request;
-	    Object expected = encoder.encodeMessage(arg0);
+	    Message expected = encoder.encodeMessage(template, avps);
 	    logger.info("Decoded expected: " + expected);
 	    logger.info("Received: " + actual);
 	    encoder.evaluateMessage(expected, actual);
@@ -71,11 +75,11 @@ public class JDiameterClient {
 	}
     }
 
-    public Object sendMessage(Object[] arg0) {
+    public Object sendMessage(String template, String[] avps) {
 	try {
 	    long startTime = System.currentTimeMillis();
 	    encoder.session = connection;
-	    request = (Request) encoder.encodeMessage(arg0);
+	    request = (Request) encoder.encodeMessage(template, avps);
 	    responder = connection.send(request);
 	    long endTime = System.currentTimeMillis() - startTime;
 	    logger.info("Time handling the sendMessage: " + endTime);
@@ -86,7 +90,7 @@ public class JDiameterClient {
 	}
     }
 
-    public Object closeConnection(Object[] arg0) {
+    public Object closeConnection() {
 	try {
 	    long startTime = System.currentTimeMillis();
 	    connection.release();

@@ -1,5 +1,7 @@
 package org.robotframework.jdiameter.keyword;
 
+import java.util.Arrays;
+
 import org.robotframework.jdiameter.JDiameterClient;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
@@ -13,10 +15,28 @@ public class ReceiveMessage implements EnhancedDocumentedKeyword {
 	    + "AVP names are describes in xml templates.\n"
 	    + "templateName is without *.xml extension";
 
-    private static final String AVPS_WITH_EXPECTED_VALUES = "*avps_with_expected_values";
-    private static final String TEMPLATE_NAME = "templateName";
-    private static final String[] ARGUMENTS = { TEMPLATE_NAME,
-	    AVPS_WITH_EXPECTED_VALUES };
+    private enum Argument {
+	TEMPLATE_NAME("templateName"), AVPS_WITH_EXPECTED_VALUES(
+		"*avps_with_expected_values");
+
+	private String argName;
+
+	Argument(String argName) {
+	    this.argName = argName;
+	}
+
+	public static String[] getArgumentNames() {
+	    String[] argumentNames = new String[Argument.values().length];
+	    for (int i = 0; i < Argument.values().length; i++) {
+		argumentNames[i] = Argument.values()[i].getName();
+	    }
+	    return argumentNames;
+	}
+
+	public String getName() {
+	    return argName;
+	}
+    }
 
     private String name;
 
@@ -32,7 +52,7 @@ public class ReceiveMessage implements EnhancedDocumentedKeyword {
 
     @Override
     public String[] getArgumentNames() {
-	return ARGUMENTS;
+	return Argument.getArgumentNames();
     }
 
     @Override
@@ -42,6 +62,10 @@ public class ReceiveMessage implements EnhancedDocumentedKeyword {
 
     @Override
     public Object execute(Object[] arguments) {
-	return JDiameterClient.getInstance().receiveMessage(arguments);
+	String template = (String) arguments[Argument.TEMPLATE_NAME.ordinal()];
+	String[] avps = Arrays.copyOfRange(arguments,
+		Argument.AVPS_WITH_EXPECTED_VALUES.ordinal(), arguments.length,
+		String[].class);
+	return JDiameterClient.getInstance().receiveMessage(template, avps);
     }
 }
