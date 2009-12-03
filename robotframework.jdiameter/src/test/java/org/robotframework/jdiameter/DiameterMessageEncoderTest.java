@@ -7,7 +7,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Random;
 
+import mockit.Expectations;
+import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 
 import org.jdiameter.api.ApplicationId;
@@ -48,15 +52,6 @@ public class DiameterMessageEncoderTest {
 	testObj.lastRequest = session.createRequest(272, ApplicationId
 		.createByAccAppId(4), "eliot.org");
     }
-
-    // @Test
-    // public void testDecodeTimeout() throws Exception {
-    // assertEquals(300, testObj.getTimeout(new Object[] {}));
-    // assertEquals(300, testObj.getTimeout(new Object[] { "wro" }));
-    // assertEquals(1230, testObj.getTimeout(new Object[] { "bln", "1230" }));
-    // assertEquals(1230, testObj.getTimeout(new Object[] { "xyz", "1230",
-    // "500" }));
-    // }
 
     @Test
     public void testEncodeMessage_MMS_IEC_CCR() throws Exception {
@@ -165,9 +160,75 @@ public class DiameterMessageEncoderTest {
 	    testObj.evaluateMessage(exp, msg);
 	    fail();
 	} catch (RuntimeException e) {
-	    System.out.println(e.getMessage());
 	    assertTrue(e.getMessage().contains("2002")
 		    && e.getMessage().contains("2001"));
 	}
+    }
+    
+    @Mocked Message actual;
+    @Mocked Message expected;
+    
+    @Test(expected=RuntimeException.class)
+    public void testEvaluateMessage_NullActualAvp() throws Exception {
+	new Expectations(){
+	    
+	    @Mocked AvpSet actualAvps;
+	    @Mocked AvpSet expectedAvps;
+	    
+	    @Mocked Avp expectedAvp;
+	    @Mocked Iterator<Avp> expectedAvpsIterator;
+	    
+	    private final int AVP_CODE = new Random().nextInt();
+	    
+	    {
+		expected.getApplicationId();
+		actual.getApplicationId();
+		expected.getCommandCode();
+		actual.getCommandCode();
+		expected.isError();
+		actual.isError();
+		expected.isProxiable();
+		actual.isProxiable();
+		expected.isRequest();
+		actual.isRequest();
+		expected.isReTransmitted();
+		actual.isReTransmitted();
+		
+		actual.getAvps();
+		returns(actualAvps);
+		expected.getAvps();
+		returns(expectedAvps);
+		
+		expectedAvps.iterator();
+		returns(expectedAvpsIterator);
+		expectedAvpsIterator.hasNext();
+		returns(true);
+		expectedAvpsIterator.next();
+		returns(expectedAvp);
+		
+		expectedAvp.getCode();
+		returns(AVP_CODE);
+		actualAvps.getAvp(AVP_CODE);
+		returns(null);
+	    }
+	};
+	
+	testObj.evaluateMessage(expected, actual);
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void testEvaluateMessage_DifferentApplicationId() throws Exception {
+	new Expectations(){
+	    final long APPLICATION_ID = 0;
+	    final long DIFFERENT_APPLICATION_ID = APPLICATION_ID + 1;
+	    {
+		expected.getApplicationId();
+		returns(APPLICATION_ID);
+		actual.getApplicationId();
+		returns(DIFFERENT_APPLICATION_ID);
+	    }
+	};
+	
+	testObj.evaluateMessage(expected, actual);
     }
 }
