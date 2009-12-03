@@ -62,9 +62,7 @@ public class DiameterMessageEncoder {
     public Message encodeMessage(String template, String[] params) {
 	builder.session = session;
 	builder.setLastRequest(lastRequest);
-	int e2eid = globals.getDefaultEndToEndId();
 	int appId = globals.getDefaultApplicationId();
-	int hbhid = globals.getDefaultHopByHopId();
 
 	return builder.encode(transformer.build(template, params, appId));
     }
@@ -89,111 +87,6 @@ public class DiameterMessageEncoder {
 	AvpSet allAvps = actual.getAvps();
 	logger.info("Actual message: " + allAvps);
 	evaluate(expected.getAvps(), allAvps);
-    }
-
-    /**
-     * Asserts avp sets
-     * 
-     * @param expected
-     * @param actual
-     * @throws AvpDataException
-     */
-    private void evaluate(AvpSet expected, AvpSet actual)
-	    throws AvpDataException {
-
-	for (Avp avp : expected) {
-	    evaluate(avp, findInActual(avp, actual));
-	}
-    }
-
-    /**
-     * Asserts two avp
-     * 
-     * @param expected
-     * @param actual
-     * @throws AvpDataException
-     */
-    private void evaluate(Avp expected, Avp actual) throws AvpDataException {
-	if (actual == null) {
-	    assertEquals(expected, actual);
-	}
-	assertEquals(expected.getCode(), actual.getCode());
-	assertEquals(expected.getVendorId(), actual.getVendorId());
-
-	evaluateValue(expected, actual);
-    }
-
-    /**
-     * Checks avp values
-     * 
-     * @param expected
-     * @param actual
-     * @throws AvpDataException
-     */
-    private void evaluateValue(Avp expected, Avp actual)
-	    throws AvpDataException {
-	DataType type = getType(expected.getCode());
-	switch (type) {
-	case INT_32:
-	    assertEquals(expected.getInteger32(), actual.getInteger32());
-	    break;
-	case INT_64:
-	    assertEquals(expected.getInteger64(), actual.getInteger64());
-	    break;
-	case FLOAT_32:
-	    assertEquals(expected.getFloat32(), actual.getFloat32());
-	    break;
-	case FLOAT_64:
-	    assertEquals(expected.getFloat64(), actual.getFloat64());
-	    break;
-	case OCTET_STRING:
-	    assertEquals(expected.getOctetString(), actual.getOctetString());
-	    break;
-	case ADDRESS:
-	    assertEquals(expected.getAddress(), actual.getAddress());
-	    break;
-	case GROUPED:
-	    evaluate(expected.getGrouped(), actual.getGrouped());
-	    break;
-	case TIME:
-	    assertEquals(expected.getTime(), actual.getTime());
-	    break;
-	case UTF8_STRING:
-	    assertEquals(expected.getUTF8String(), actual.getUTF8String());
-	    break;
-	case UNSIGNED_32:
-	    assertEquals(expected.getUnsigned32(), actual.getUnsigned32());
-	    break;
-	case UNSIGNED_64:
-	    assertEquals(expected.getUnsigned64(), actual.getUnsigned64());
-	    break;
-	default:
-	    throw new AvpDataException("Not handled data type");
-	}
-    }
-
-    private DataType getType(int code) {
-	return avptypeResolver.getType(code);
-    }
-
-    private Avp findInActual(Avp avp, AvpSet ac) {
-	return ac.getAvp(avp.getCode());
-    }
-
-    /**
-     * Asserts simple type values
-     * 
-     * @param expected
-     * @param actual
-     */
-    private void assertEquals(Object expected, Object actual) {
-	if (expected == actual) {
-	    return;
-	}
-	if ((expected != null && !expected.equals(actual))) {
-	    throw new RuntimeException("expected different that actual : "
-		    + "expected: " + expected + ", actual: " + actual);
-	}
     }
 
     /**
@@ -255,6 +148,102 @@ public class DiameterMessageEncoder {
 
     public void setSession(Session session) {
 	this.session = session;
+    }
+
+    /**
+     * Asserts avp sets
+     * 
+     * @param expected
+     * @param actual
+     * @throws AvpDataException
+     */
+    private void evaluate(AvpSet expected, AvpSet actual)
+	    throws AvpDataException {
+	for (Avp avp : expected) {
+	    evaluate(avp, actual.getAvp(avp.getCode()));
+	}
+    }
+
+    /**
+     * Asserts two avp
+     * 
+     * @param expected
+     * @param actual
+     * @throws AvpDataException
+     */
+    private void evaluate(Avp expected, Avp actual) throws AvpDataException {
+	if (actual == null) {
+	    assertEquals(expected, actual);
+	}
+	assertEquals(expected.getCode(), actual.getCode());
+	assertEquals(expected.getVendorId(), actual.getVendorId());
+
+	evaluateValue(expected, actual);
+    }
+
+    /**
+     * Checks avp values
+     * 
+     * @param expected
+     * @param actual
+     * @throws AvpDataException
+     */
+    private void evaluateValue(Avp expected, Avp actual)
+	    throws AvpDataException {
+	DataType type = avptypeResolver.getType(expected.getCode());
+	switch (type) {
+	case INT_32:
+	    assertEquals(expected.getInteger32(), actual.getInteger32());
+	    break;
+	case INT_64:
+	    assertEquals(expected.getInteger64(), actual.getInteger64());
+	    break;
+	case FLOAT_32:
+	    assertEquals(expected.getFloat32(), actual.getFloat32());
+	    break;
+	case FLOAT_64:
+	    assertEquals(expected.getFloat64(), actual.getFloat64());
+	    break;
+	case OCTET_STRING:
+	    assertEquals(expected.getOctetString(), actual.getOctetString());
+	    break;
+	case ADDRESS:
+	    assertEquals(expected.getAddress(), actual.getAddress());
+	    break;
+	case GROUPED:
+	    evaluate(expected.getGrouped(), actual.getGrouped());
+	    break;
+	case TIME:
+	    assertEquals(expected.getTime(), actual.getTime());
+	    break;
+	case UTF8_STRING:
+	    assertEquals(expected.getUTF8String(), actual.getUTF8String());
+	    break;
+	case UNSIGNED_32:
+	    assertEquals(expected.getUnsigned32(), actual.getUnsigned32());
+	    break;
+	case UNSIGNED_64:
+	    assertEquals(expected.getUnsigned64(), actual.getUnsigned64());
+	    break;
+	default:
+	    throw new AvpDataException("Not handled data type");
+	}
+    }
+
+    /**
+     * Asserts simple type values
+     * 
+     * @param expected
+     * @param actual
+     */
+    private void assertEquals(Object expected, Object actual) {
+	if (expected == actual) {
+	    return;
+	}
+	if ((expected != null && !expected.equals(actual))) {
+	    throw new RuntimeException("expected different that actual : "
+		    + "expected: " + expected + ", actual: " + actual);
+	}
     }
 
 }

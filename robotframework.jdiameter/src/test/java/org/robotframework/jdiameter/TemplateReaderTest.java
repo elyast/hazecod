@@ -56,4 +56,9 @@ public class TemplateReaderTest {
 	assertEquals("CREDIT_CONTROL_REQUEST", doc.getRootElement()
 		.getLocalName());
     }
+    
+    @Test(expected=RuntimeException.class)
+    public void testRead_null() throws Exception {
+	testObj.read(null);
+    }
 }

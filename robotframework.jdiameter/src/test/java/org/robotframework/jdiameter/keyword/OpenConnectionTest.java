@@ -4,6 +4,7 @@ import mockit.Expectations;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,5 +70,16 @@ public class OpenConnectionTest {
 	};
 
 	testObj.execute(arguments);
+    }
+    
+    @Test
+    public void testGetArguments() {
+	String[] expectedArgNames = new String[] {
+		OpenConnection.Argument.CONFIGURATION.name(),
+		OpenConnection.Argument.TIMEOUT.name() };
+
+	String[] actualArgNames = testObj.getArgumentNames();
+
+	Assert.assertArrayEquals(expectedArgNames, actualArgNames);
     }
 }

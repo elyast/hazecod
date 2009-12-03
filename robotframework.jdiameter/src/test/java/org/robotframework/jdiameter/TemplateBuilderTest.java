@@ -102,4 +102,19 @@ public class TemplateBuilderTest {
 	assertNotNull(tmp.xmlIn);
 	assertNotNull(tmp.propIn);
     }
+    
+    @Test(expected=RuntimeException.class)
+    public void testGetPath_parameterNameError() throws Exception {
+	testObj.getPath("name=value");
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void testGetPath_syntaxError() throws Exception {
+	testObj.getPath("name=value1=value2");
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void testGetPath_notExistingFileName() throws Exception {
+	testObj.getPath("Custom=newFile.xml");
+    }
 }

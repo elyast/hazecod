@@ -13,7 +13,7 @@ public class OpenConnection implements EnhancedDocumentedKeyword {
 
     private static final String DOCUMENTATION = "Open connection with server.";
 
-    private enum Argument {
+    enum Argument {
 	CONFIGURATION, TIMEOUT;
 
 	public static String[] getArgumentNames() {
