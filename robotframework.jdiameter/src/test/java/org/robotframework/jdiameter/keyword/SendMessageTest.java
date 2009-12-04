@@ -22,34 +22,40 @@ public class SendMessageTest {
     private static final String TEMPLATE_FILE_PATH = "templateFilePath";
     private SendMessage testObj;
 
-    @Mocked TemplateProcessor templateProcessor;
-    @Mocked ProtocolCodec protocolCodec;
-    @Mocked Client client;
-    
+    @Mocked
+    TemplateProcessor templateProcessor;
+    @Mocked
+    ProtocolCodec protocolCodec;
+    @Mocked
+    Client client;
+
     @Before
     public void setUp() throws Exception {
-	
+
 	testObj = new SendMessage();
-	testObj.templateProcessor = templateProcessor;
-	testObj.protocolCodec = protocolCodec;
-	testObj.client = client;
+	testObj.setTemplateProcessor(templateProcessor);
+	testObj.setProtocolCodec(protocolCodec);
+	testObj.setClient(client);
     }
 
     @Test
     public void testExecute_correct() {
-	Object[] arguments = new Object[] { TEMPLATE_FILE_PATH, AVP_AND_VALUE1, AVP_AND_VALUE2 };
+	Object[] arguments = new Object[] { TEMPLATE_FILE_PATH, AVP_AND_VALUE1,
+		AVP_AND_VALUE2 };
 
 	new Expectations() {
-	    @Mocked Document xmlDocument;
+	    @Mocked
+	    Document xmlDocument;
 	    {
 		Object message = new Object();
-		
-		templateProcessor.processTemplate(withEqual(TEMPLATE_FILE_PATH), withEqual(AVPs));
+
+		templateProcessor.processTemplate(
+			withEqual(TEMPLATE_FILE_PATH), withEqual(AVPs));
 		returns(xmlDocument);
 
 		protocolCodec.encode(xmlDocument);
 		returns(message);
-		
+
 		client.sendMessage(message);
 	    }
 	};
@@ -63,16 +69,18 @@ public class SendMessageTest {
 	final String[] avps = new String[0];
 
 	new Expectations() {
-	    @Mocked Document xmlDocument;
+	    @Mocked
+	    Document xmlDocument;
 	    {
 		Object message = new Object();
-		
-		templateProcessor.processTemplate(withEqual(TEMPLATE_FILE_PATH), withEqual(avps));
+
+		templateProcessor.processTemplate(
+			withEqual(TEMPLATE_FILE_PATH), withEqual(avps));
 		returns(xmlDocument);
 
 		protocolCodec.encode(xmlDocument);
 		returns(message);
-		
+
 		client.sendMessage(message);
 	    }
 	};

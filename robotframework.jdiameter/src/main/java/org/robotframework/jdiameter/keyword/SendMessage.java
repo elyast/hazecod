@@ -71,6 +71,14 @@ public class SendMessage implements EnhancedDocumentedKeyword {
 	this.client = client;
     }
 
+    public void setTemplateProcessor(TemplateProcessor templateProcessor) {
+	this.templateProcessor = templateProcessor;
+    }
+
+    public void setProtocolCodec(ProtocolCodec protocolCodec) {
+	this.protocolCodec = protocolCodec;
+    }
+
     @Override
     public Object execute(Object[] arguments) {
 	if (arguments.length == 0) {
@@ -80,8 +88,8 @@ public class SendMessage implements EnhancedDocumentedKeyword {
 	String[] avps = Arrays.copyOfRange(arguments,
 		Argument.AVPS_WITH_VALUES_TO_BE_OVERWRITTEN.ordinal(),
 		arguments.length, String[].class);
-	Document xmlDocument = templateProcessor.processTemplate(template,
-		avps);
+	Document xmlDocument = templateProcessor
+		.processTemplate(template, avps);
 	Object message = protocolCodec.encode(xmlDocument);
 	client.sendMessage(message);
 	return null;
