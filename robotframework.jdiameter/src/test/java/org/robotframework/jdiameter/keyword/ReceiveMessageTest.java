@@ -3,10 +3,15 @@ package org.robotframework.jdiameter.keyword;
 import mockit.Expectations;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
+import nu.xom.Document;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robotframework.jdiameter.Client;
+import org.robotframework.jdiameter.MessageComparator;
+import org.robotframework.jdiameter.ProtocolCodec;
+import org.robotframework.jdiameter.TemplateProcessor;
 
 @RunWith(JMockit.class)
 public class ReceiveMessageTest {
@@ -16,13 +21,24 @@ public class ReceiveMessageTest {
     private static final String TEMPLATE_FILE_PATH = "templateFilePath";
     private ReceiveMessage testObj;
 
+    @Mocked
+    TemplateProcessor templateProcessor;
+    @Mocked
+    ProtocolCodec protocolCodec;
+    @Mocked
+    Client client;
+    @Mocked
+    MessageComparator msgComparator;
+
     @Before
     public void setUp() throws Exception {
-	testObj = new ReceiveMessage();
-    }
 
-    @Mocked
-    JDiameterClient client;
+	testObj = new ReceiveMessage();
+	testObj.setTemplateProcessor(templateProcessor);
+	testObj.setProtocolCodec(protocolCodec);
+	testObj.setClient(client);
+	testObj.setMessageComparator(msgComparator);
+    }
 
     @Test
     public void testExecute_correct() {
@@ -32,10 +48,23 @@ public class ReceiveMessageTest {
 		AVP_AND_VALUE2 };
 
 	new Expectations() {
+	    @Mocked
+	    Document xmlDocument;
 	    {
-		JDiameterClient.getInstance();
-		returns(client);
-		client.receiveMessage(TEMPLATE_FILE_PATH, withEqual(expectedAVPs));
+		Object expectedMessage = new Object();
+		Object receivedMessage = new Object();
+
+		templateProcessor.processTemplate(
+			withEqual(TEMPLATE_FILE_PATH), withEqual(expectedAVPs));
+		returns(xmlDocument);
+
+		protocolCodec.encode(xmlDocument);
+		returns(expectedMessage);
+
+		client.receiveMessage();
+		returns(receivedMessage);
+
+		msgComparator.evaluateMessage(expectedMessage, receivedMessage);
 	    }
 	};
 
@@ -48,10 +77,23 @@ public class ReceiveMessageTest {
 	final String[] avps = new String[0];
 
 	new Expectations() {
+	    @Mocked
+	    Document xmlDocument;
 	    {
-		JDiameterClient.getInstance();
-		returns(client);
-		client.receiveMessage(TEMPLATE_FILE_PATH, withEqual(avps));
+		Object expectedMessage = new Object();
+		Object receivedMessage = new Object();
+
+		templateProcessor.processTemplate(
+			withEqual(TEMPLATE_FILE_PATH), withEqual(avps));
+		returns(xmlDocument);
+
+		protocolCodec.encode(xmlDocument);
+		returns(expectedMessage);
+
+		client.receiveMessage();
+		returns(receivedMessage);
+
+		msgComparator.evaluateMessage(expectedMessage, receivedMessage);
 	    }
 	};
 

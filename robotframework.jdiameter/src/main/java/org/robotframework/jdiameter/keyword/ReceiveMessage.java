@@ -2,6 +2,12 @@ package org.robotframework.jdiameter.keyword;
 
 import java.util.Arrays;
 
+import nu.xom.Document;
+
+import org.robotframework.jdiameter.Client;
+import org.robotframework.jdiameter.MessageComparator;
+import org.robotframework.jdiameter.ProtocolCodec;
+import org.robotframework.jdiameter.TemplateProcessor;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
 /**
@@ -37,7 +43,11 @@ public class ReceiveMessage implements EnhancedDocumentedKeyword {
 	}
     }
 
-    private String name;
+    String name;
+    Client client;
+    TemplateProcessor templateProcessor;
+    ProtocolCodec protocolCodec;
+    MessageComparator msgComparator;
 
     @Override
     public String getName() {
@@ -65,6 +75,27 @@ public class ReceiveMessage implements EnhancedDocumentedKeyword {
 	String[] avps = Arrays.copyOfRange(arguments,
 		Argument.AVPS_WITH_EXPECTED_VALUES.ordinal(), arguments.length,
 		String[].class);
-	return JDiameterClient.getInstance().receiveMessage(template, avps);
+	Document xmlDocument = templateProcessor
+		.processTemplate(template, avps);
+	Object expectedMsg = protocolCodec.encode(xmlDocument);
+	Object receivedMsg = client.receiveMessage();
+	msgComparator.evaluateMessage(expectedMsg, receivedMsg);
+	return null;
+    }
+
+    public void setClient(Client client) {
+	this.client = client;
+    }
+
+    public void setTemplateProcessor(TemplateProcessor templateProcessor) {
+	this.templateProcessor = templateProcessor;
+    }
+
+    public void setProtocolCodec(ProtocolCodec protocolCodec) {
+	this.protocolCodec = protocolCodec;
+    }
+
+    public void setMessageComparator(MessageComparator msgComparator) {
+	this.msgComparator = msgComparator;
     }
 }
