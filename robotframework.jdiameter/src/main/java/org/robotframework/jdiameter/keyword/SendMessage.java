@@ -2,6 +2,11 @@ package org.robotframework.jdiameter.keyword;
 
 import java.util.Arrays;
 
+import nu.xom.Document;
+
+import org.robotframework.jdiameter.Client;
+import org.robotframework.jdiameter.ProtocolCodec;
+import org.robotframework.jdiameter.TemplateProcessor;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
 /**
@@ -9,12 +14,12 @@ import org.robotframework.springdoc.EnhancedDocumentedKeyword;
  */
 public class SendMessage implements EnhancedDocumentedKeyword {
 
-    private static final String DOCUMENTATION = "Send message with given arguments.\n"
+    static final String DOCUMENTATION = "Send message with given arguments.\n"
 	    + "Arguments are in format: avp_name=value, where putting AVP value will overwrite existing from template (if defined)\n"
 	    + "AVP names are describes in xml templates.\n"
 	    + "templateName is without *.xml extension";
 
-    private enum Argument {
+    enum Argument {
 	TEMPLATE_NAME("templateName"), AVPS_WITH_VALUES_TO_BE_OVERWRITTEN(
 		"*avps_with_values_to_be_overwritten");
 
@@ -37,7 +42,10 @@ public class SendMessage implements EnhancedDocumentedKeyword {
 	}
     }
 
-    private String name;
+    String name;
+    Client client;
+    TemplateProcessor templateProcessor;
+    ProtocolCodec protocolCodec;
 
     @Override
     public String getName() {
@@ -59,6 +67,10 @@ public class SendMessage implements EnhancedDocumentedKeyword {
 	return DOCUMENTATION;
     }
 
+    public void setClient(Client client) {
+	this.client = client;
+    }
+
     @Override
     public Object execute(Object[] arguments) {
 	if (arguments.length == 0) {
@@ -68,6 +80,10 @@ public class SendMessage implements EnhancedDocumentedKeyword {
 	String[] avps = Arrays.copyOfRange(arguments,
 		Argument.AVPS_WITH_VALUES_TO_BE_OVERWRITTEN.ordinal(),
 		arguments.length, String[].class);
-	return JDiameterClient.getInstance().sendMessage(template, avps);
+	Document xmlDocument = templateProcessor.processTemplate(template,
+		avps);
+	Object message = protocolCodec.encode(xmlDocument);
+	client.sendMessage(message);
+	return null;
     }
 }
