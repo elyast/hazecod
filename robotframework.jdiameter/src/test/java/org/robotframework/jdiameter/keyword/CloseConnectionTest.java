@@ -7,6 +7,7 @@ import mockit.integration.junit4.JMockit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robotframework.jdiameter.Client;
 
 @RunWith(JMockit.class)
 public class CloseConnectionTest {
@@ -16,10 +17,11 @@ public class CloseConnectionTest {
     @Before
     public void setUp() throws Exception {
 	testObj = new CloseConnection();
+	testObj.setClient(client);
     }
 
     @Mocked
-    JDiameterClient client;
+    Client client;
 
     @Test
     public void testExecute() {
@@ -27,8 +29,6 @@ public class CloseConnectionTest {
 
 	new Expectations() {
 	    {
-		JDiameterClient.getInstance();
-		returns(client);
 		client.closeConnection();
 	    }
 	};

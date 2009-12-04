@@ -1,5 +1,6 @@
 package org.robotframework.jdiameter.keyword;
 
+import org.robotframework.jdiameter.Client;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
 /**
@@ -9,7 +10,8 @@ public class CloseConnection implements EnhancedDocumentedKeyword {
 
     private static final String DOCUMENTATION = "Close currently opened connection.";
 
-    private String name;
+    String name;
+    Client client;
 
     @Override
     public String getName() {
@@ -19,6 +21,10 @@ public class CloseConnection implements EnhancedDocumentedKeyword {
     @Override
     public void setName(String name) {
 	this.name = name;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     @Override
@@ -33,6 +39,7 @@ public class CloseConnection implements EnhancedDocumentedKeyword {
 
     @Override
     public Object execute(Object[] arguments) {
-	return JDiameterClient.getInstance().closeConnection();
+	client.closeConnection();
+	return null;
     }
 }
