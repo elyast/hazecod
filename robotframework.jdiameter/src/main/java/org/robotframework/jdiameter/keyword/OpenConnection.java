@@ -1,5 +1,6 @@
 package org.robotframework.jdiameter.keyword;
 
+import org.robotframework.jdiameter.Client;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
 /**
@@ -7,25 +8,14 @@ import org.robotframework.springdoc.EnhancedDocumentedKeyword;
  */
 public class OpenConnection implements EnhancedDocumentedKeyword {
 
-    static final int DEFAULT_TIMEOUT = -1;
+    static final String DEFAULT_CONFIGURATION = null;
 
-    static final String DEFAULT_CONFIGURATION = "";
+    static final String DOCUMENTATION = "Open connection with server.";
 
-    private static final String DOCUMENTATION = "Open connection with server.";
+    static final String[] ARGUMENT_NAMES = new String[]{"CONFIGURATION"};
 
-    enum Argument {
-	CONFIGURATION, TIMEOUT;
-
-	public static String[] getArgumentNames() {
-	    String[] argumentNames = new String[Argument.values().length];
-	    for (int i = 0; i < Argument.values().length; i++) {
-		argumentNames[i] = Argument.values()[i].name();
-	    }
-	    return argumentNames;
-	}
-    }
-
-    private String name;
+    String name;
+    Client client;
 
     @Override
     public String getName() {
@@ -43,39 +33,27 @@ public class OpenConnection implements EnhancedDocumentedKeyword {
 
     @Override
     public String[] getArgumentNames() {
-	return Argument.getArgumentNames();
+	return ARGUMENT_NAMES;
     }
 
     @Override
     public Object execute(Object[] arguments) {
 	String configuration = getConfiguration(arguments);
-	long timeout = getTimeout(arguments);
-	return JDiameterClient.getInstance().openConnection(configuration,
-		timeout);
+	client.openConnection(configuration);
+	return null;
+    }
+    
+    public void setClient(Client client) {
+	this.client = client;
     }
 
-    /**
-     * retrieves timeout value from arguments table
-     * 
-     * @param arguments
-     * @return
-     */
-    public long getTimeout(Object[] arguments) {
-	int timeoutIndex = Argument.TIMEOUT.ordinal();
-	if (arguments.length < timeoutIndex + 1) {
-	    // TODO how it should get default timeout
-	    return DEFAULT_TIMEOUT;
-	}
-	return Long.parseLong(String.valueOf(arguments[timeoutIndex]));
-    }
-
-    public String getConfiguration(Object[] arguments) {
-	int configurationIndex = Argument.CONFIGURATION.ordinal();
-	if (arguments.length < Argument.CONFIGURATION.ordinal() + 1) {
-	    // TODO how it should get default configuration ??
+    String getConfiguration(Object[] arguments) {
+	int configurationIndex = 0;
+	if (arguments.length < 1) {
 	    return DEFAULT_CONFIGURATION;
 	}
 	return (String) arguments[configurationIndex];
     }
 
+    
 }

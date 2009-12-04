@@ -2,6 +2,8 @@ package org.robotframework.jdiameter;
 
 import java.io.InputStream;
 
+import nu.xom.Document;
+
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpDataException;
 import org.jdiameter.api.AvpSet;
@@ -20,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * @author Eliot
  * 
  */
-public class DiameterMessageEncoder {
+public class DiameterMessageEncoder implements TemplateProcessor {
 
     private static final String CONFIGURATION_XML = "configuration.xml";
 
@@ -244,6 +246,13 @@ public class DiameterMessageEncoder {
 	    throw new RuntimeException("expected different that actual : "
 		    + "expected: " + expected + ", actual: " + actual);
 	}
+    }
+
+    @Override
+    public Document processTemplate(String template, String[] parameters) {
+	int defaultApplicationId = globals.getDefaultApplicationId();
+	transformer.build(template, parameters, defaultApplicationId);
+	return null;
     }
 
 }

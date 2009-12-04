@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author Eliot
  * 
  */
-public class DiameterMessageBuilder {
+public class DiameterMessageBuilder implements ProtocolCodec{
 
     private static final String APPLICATION_ID = "applicationId";
     private static final String TIMEZONE_ID_UTC = "UTC";

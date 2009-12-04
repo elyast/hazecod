@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robotframework.jdiameter.Client;
 
 @RunWith(JMockit.class)
 public class OpenConnectionTest {
@@ -17,13 +18,14 @@ public class OpenConnectionTest {
 
     private OpenConnection testObj;
 
+    @Mocked
+    Client client;
+
     @Before
     public void setUp() throws Exception {
 	testObj = new OpenConnection();
+	testObj.setClient(client);
     }
-
-    @Mocked
-    JDiameterClient client;
 
     @Test
     public void testExecute_correct() {
@@ -31,9 +33,7 @@ public class OpenConnectionTest {
 
 	new Expectations() {
 	    {
-		JDiameterClient.getInstance();
-		returns(client);
-		client.openConnection(CONFIGURATION, TIMEOUT);
+		client.openConnection(CONFIGURATION);
 	    }
 	};
 
@@ -46,10 +46,7 @@ public class OpenConnectionTest {
 
 	new Expectations() {
 	    {
-		JDiameterClient.getInstance();
-		returns(client);
-		client.openConnection(CONFIGURATION,
-			OpenConnection.DEFAULT_TIMEOUT);
+		client.openConnection(CONFIGURATION);
 	    }
 	};
 
@@ -62,22 +59,16 @@ public class OpenConnectionTest {
 
 	new Expectations() {
 	    {
-		JDiameterClient.getInstance();
-		returns(client);
-		client.openConnection(OpenConnection.DEFAULT_CONFIGURATION,
-			OpenConnection.DEFAULT_TIMEOUT);
+		client.openConnection(OpenConnection.DEFAULT_CONFIGURATION);
 	    }
 	};
 
 	testObj.execute(arguments);
     }
-    
+
     @Test
     public void testGetArguments() {
-	String[] expectedArgNames = new String[] {
-		OpenConnection.Argument.CONFIGURATION.name(),
-		OpenConnection.Argument.TIMEOUT.name() };
-
+	String[] expectedArgNames = OpenConnection.ARGUMENT_NAMES;
 	String[] actualArgNames = testObj.getArgumentNames();
 
 	Assert.assertArrayEquals(expectedArgNames, actualArgNames);
