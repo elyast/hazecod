@@ -1,4 +1,4 @@
-package org.robotframework.jdiameter;
+package org.robotframework.jdiameter.mapper;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,7 +17,7 @@ public class GlobalDefaultsTest {
 
     @Test
     public void testGetDefaultApplicationId() {
-	assertEquals(4, testObj.getDefaultApplicationId());
+	assertEquals(19302, testObj.getDefaultApplicationId());
     }
 
 }

@@ -4,10 +4,10 @@ import java.util.Arrays;
 
 import nu.xom.Document;
 
-import org.robotframework.jdiameter.Client;
-import org.robotframework.jdiameter.MessageComparator;
-import org.robotframework.jdiameter.ProtocolCodec;
-import org.robotframework.jdiameter.TemplateProcessor;
+import org.robotframework.protocol.Client;
+import org.robotframework.protocol.MessageComparator;
+import org.robotframework.protocol.ProtocolCodec;
+import org.robotframework.protocol.TemplateProcessor;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
 /**
@@ -77,6 +77,7 @@ public class ReceiveMessage implements EnhancedDocumentedKeyword {
 		String[].class);
 	Document xmlDocument = templateProcessor
 		.processTemplate(template, avps);
+	protocolCodec.setLastRequest(client.getLastRequest());
 	Object expectedMsg = protocolCodec.encode(xmlDocument);
 	Object receivedMsg = client.receiveMessage();
 	msgComparator.evaluateMessage(expectedMsg, receivedMsg);

@@ -3,20 +3,14 @@
 	<LocalPeer>
 		<URI value="aaa://localhost:1812" />
 		<IPAddress value="127.0.0.1" />
-		<Realm value="home" />
+		<Realm value="diacl" />
 		<VendorID value="193" />
 		<ProductName value="jDiameter" />
 		<FirmwareRevision value="1" />
 		<Applications>
 			<ApplicationID>
 				<VendorId value="193" />
-				<AuthApplId value="0" />
 				<AcctApplId value="19302" />
-			</ApplicationID>
-			<ApplicationID>
-				<VendorId value="193" />
-				<AuthApplId value="19301" />
-				<AcctApplId value="0" />
 			</ApplicationID>
 		</Applications>
 	</LocalPeer>
@@ -32,10 +26,11 @@
 	</Parameters>
 	<Network>
 		<Peers>
-			<Peer name="aaa://localhost:1813" rating="1" />
+			<Peer name="aaa://localhost:3868" rating="1"  />
 		</Peers>
 		<Realms>
-			<Realm name="home" peers="localhost" />
+			<Realm name="diacl" peers="localhost" />
+			<Realm name="eliot.org" peers="localhost" />
 		</Realms>
 	</Network>
 	<Extensions />

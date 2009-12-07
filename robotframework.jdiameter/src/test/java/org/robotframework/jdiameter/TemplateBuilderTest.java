@@ -79,8 +79,8 @@ public class TemplateBuilderTest {
 		applier.apply(parsed, doc);
 	    }
 	};
-	Document doc = testObj.build("MMS-IEC-CCR",
-		new String[] { "SessId=123" }, 4);
+	Document doc = testObj.processTemplate("MMS-IEC-CCR",
+		new String[] { "SessId=123" });
 	assertEquals(0, doc.getRootElement().getChildCount());
 	assertEquals("CREDIT_CONTROL_REQUEST", doc.getRootElement()
 		.getLocalName());

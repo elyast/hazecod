@@ -10,15 +10,16 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 
-import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Message;
 import org.jdiameter.api.Request;
+import org.jdiameter.api.ResultCode;
 import org.jdiameter.api.Session;
 import org.robotframework.jdiameter.mapper.AvpCodeResolver;
 import org.robotframework.jdiameter.mapper.AvpEnumResolver;
 import org.robotframework.jdiameter.mapper.GlobalDefaults;
+import org.robotframework.protocol.ProtocolCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +29,10 @@ import org.slf4j.LoggerFactory;
  * @author Eliot
  * 
  */
-public class DiameterMessageBuilder implements ProtocolCodec{
+public class DiameterCodec implements ProtocolCodec {
 
+    private static final String SERVER_HOST = "localhost";
+    private static final int OWN_VENDOR = 193;
     private static final String APPLICATION_ID = "applicationId";
     private static final String TIMEZONE_ID_UTC = "UTC";
     private static final String HEX_PREFIX = "0x";
@@ -48,7 +51,7 @@ public class DiameterMessageBuilder implements ProtocolCodec{
     private static final String ENUM = "enum";
     private static final Object TIME = "time";
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static Logger logger = LoggerFactory.getLogger(DiameterCodec.class);
 
     /**
      * global defaults
@@ -101,14 +104,24 @@ public class DiameterMessageBuilder implements ProtocolCodec{
 		.getAttributeValue(APPLICATION_ID));
 	Message msg = null;
 	if (root.getLocalName().endsWith(REQUEST_SUFFIX)) {
-	    msg = session.createRequest(commandCode, ApplicationId
-		    .createByAccAppId(applicationId), REALM);
+	    //TODO should be read from configuration
+	    msg = session.createRequest(commandCode,
+		    org.jdiameter.api.ApplicationId.createByAccAppId(
+			    OWN_VENDOR, applicationId), REALM, SERVER_HOST);
 	} else {
-	    msg = lastRequest.createAnswer(0);
+	    msg = lastRequest.createAnswer(ResultCode.SUCCESS);
+	    AvpSet set = msg.getAvps();
+	    removeAllAVPs(set);
 	}
 
 	processElements(root.getChildElements(), msg.getAvps());
 	return msg;
+    }
+
+    void removeAllAVPs(AvpSet set) {
+	for (int i = 0; i < set.size();) {
+	    set.removeAvpByIndex(0);
+	}
     }
 
     void processElements(Elements children, AvpSet avps) {
@@ -164,7 +177,7 @@ public class DiameterMessageBuilder implements ProtocolCodec{
 
     void handleGroupedAvp(Element element, AvpSet avps, String name,
 	    Integer vendor) {
-	logger.info("Grouped avp: " + name);
+	logger.debug("Grouped avp: " + name);
 	AvpSet avpset = avps.addGroupedAvp(codes.getCode(name), vendor, true,
 		false);
 	processElements(element.getChildElements(), vendor, avpset);
@@ -172,7 +185,7 @@ public class DiameterMessageBuilder implements ProtocolCodec{
 
     void handleSimpleAvp(ElementProperties elementProperties, Integer vendor,
 	    AvpSet avps) {
-	logger.info("Leaf avp: " + elementProperties.getName() + " value: "
+	logger.debug("Leaf avp: " + elementProperties.getName() + " value: "
 		+ elementProperties.getValueText());
 
 	int code = codes.getCode(elementProperties.getName());
@@ -223,7 +236,8 @@ public class DiameterMessageBuilder implements ProtocolCodec{
     void handleAvpsAddedByDiameterApi(AvpSet avps, int code) {
 	Avp addedByDiameterApi = avps.getAvp(code);
 	if (addedByDiameterApi != null) {
-	    avps.removeAvp(code);
+	    logger.warn("Already exists avp: " + code);
+	    // avps.removeAvp(code);
 	}
     }
 
@@ -294,11 +308,13 @@ public class DiameterMessageBuilder implements ProtocolCodec{
 
     }
 
-    public void setSession(Session session) {
-	this.session = session;
+    @Override
+    public void setSesssion(Object session) {
+	this.session = (Session) session;
     }
 
-    public void setLastRequest(Request lastRequest) {
-	this.lastRequest = lastRequest;
+    @Override
+    public void setLastRequest(Object lastRequest) {
+	this.lastRequest = ((Request) lastRequest);
     }
 }

@@ -13,12 +13,13 @@ import java.util.Map.Entry;
 import nu.xom.Document;
 
 import org.robotframework.jdiameter.mapper.MappingReader;
+import org.robotframework.protocol.TemplateProcessor;
 
 /**
  * Applies user parameters to xml template
  * 
  */
-public class TemplateBuilder {
+public class TemplateBuilder implements TemplateProcessor {
 
     private static final String CUSTOM_TEMPLATE = "Custom";
 
@@ -50,15 +51,12 @@ public class TemplateBuilder {
     /**
      * Builds from user parameter two xml document that represents diameter
      * message
-     * 
+     *
+     * @param template
      * @param params
-     * @param defaultApplicationId
-     * @param defaultEndToEndId
-     * @param defaultHopByHopId
      * @return
      */
-    public Document build(String template, String[] params,
-	    int defaultApplicationId) {
+    public Document processTemplate(String template, String[] params) {
 
 	Template path = getPath(template);
 	Document doc = templateReader.read(path.xmlIn);
@@ -152,4 +150,5 @@ public class TemplateBuilder {
 	}
 
     }
+
 }

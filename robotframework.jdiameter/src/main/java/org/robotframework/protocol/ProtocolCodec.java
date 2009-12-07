@@ -1,4 +1,4 @@
-package org.robotframework.jdiameter;
+package org.robotframework.protocol;
 
 import nu.xom.Document;
 
@@ -12,5 +12,9 @@ public interface ProtocolCodec {
      * @return
      */
     Object encode(Document xmlDocument);
+
+    void setSesssion(Object session);
+
+    void setLastRequest(Object lastRequest);
 
 }

@@ -1,6 +1,6 @@
 package org.robotframework.jdiameter.keyword;
 
-import org.robotframework.jdiameter.Client;
+import org.robotframework.protocol.Client;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
 /**
@@ -12,7 +12,7 @@ public class OpenConnection implements EnhancedDocumentedKeyword {
 
     static final String DOCUMENTATION = "Open connection with server.";
 
-    static final String[] ARGUMENT_NAMES = new String[]{"CONFIGURATION"};
+    static final String[] ARGUMENT_NAMES = new String[]{};
 
     String name;
     Client client;

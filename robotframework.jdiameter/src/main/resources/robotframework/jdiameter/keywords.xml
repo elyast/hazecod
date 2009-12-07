@@ -5,37 +5,53 @@
 
  <bean id="sendAVPs" class="org.robotframework.jdiameter.keyword.SendMessage">
   	<property name="name" value="Send AVPs"></property>
+  	<property name="client" ref="client"></property>
+  	<property name="templateProcessor" ref="templateProcessor"></property>
+  	<property name="protocolCodec" ref="protocolCodec"></property>
  </bean>
+ 
+ <bean id="server" class="org.robotframework.jdiameter.keyword.Server">
+ 	<property name="name" value="Server"></property>
+ 	<property name="server" ref="jdiameterServer"></property>
+ </bean>
+ 
+ <bean id="jdiameterServer" class="org.robotframework.jdiameter.keyword.JDiameterServer"></bean>
  
  <bean id="receiveAVPs" class="org.robotframework.jdiameter.keyword.ReceiveMessage">
    	<property name="name" value="Receive AVPs"></property>
+  	<property name="client" ref="client"></property>
+  	<property name="templateProcessor" ref="templateProcessor"></property>
+  	<property name="protocolCodec" ref="protocolCodec"></property>
+  	<property name="messageComparator" ref="messageComparator"></property>
+ </bean>
+ 
+ <bean id="protocolCodec" class="org.robotframework.jdiameter.DiameterCodec">
+ 	<property name="avpCodesResolver" ref="avpCodeResolver"></property>
+ 	<property name="avpEnumsResolver" ref="enumResolver"></property>
+ 	<property name="globalDefaults" ref="defaults"></property>
  </bean>
  
  <bean id="connect" class="org.robotframework.jdiameter.keyword.OpenConnection">
   	<property name="name" value="Connect"></property>
+  	<property name="client" ref="client"></property>
  </bean>
  
  <bean id="disconnect" class="org.robotframework.jdiameter.keyword.CloseConnection">
   	<property name="name" value="Disconnect"></property>
+  	<property name="client" ref="client"></property>
  </bean>
  
- <bean id="robotCodec" class="org.robotframework.jdiameter.DiameterMessageEncoder">
- 	<property name="builder" ref="encoder"></property>
- 	<property name="globals" ref="defaults"></property>
- 	<property name="transformer" ref="builder"></property>
+ <bean id="messageComparator" class="org.robotframework.jdiameter.DiameterMessageComparator">
  	<property name="avptypeResolver" ref="avpTypeResolver"></property>
  </bean>
+ 
  <bean id="avpTypeResolver" class="org.robotframework.jdiameter.mapper.AvpTypeResolver"></bean>
  
- <bean id="encoder" class="org.robotframework.jdiameter.DiameterMessageBuilder">
- 	<property name="globalDefaults" ref="defaults"></property>
- 	<property name="avpCodesResolver" ref="avpCodeResolver"></property>
- 	<property name="avpEnumsResolver" ref="enumResolver"></property>
- </bean>
+ <bean id="client" class="org.robotframework.jdiameter.JDiameterClient"></bean>
  
  <bean id="defaults" class="org.robotframework.jdiameter.mapper.GlobalDefaults"></bean>
  
- <bean id="builder" class="org.robotframework.jdiameter.TemplateBuilder">
+ <bean id="templateProcessor" class="org.robotframework.jdiameter.TemplateBuilder">
  	<property name="templateApplier" ref="templateApplier"></property>
  	<property name="templateReader" ref="templateReader"></property>
  	<property name="userParamParser" ref="userParamParser"></property>
