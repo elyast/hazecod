@@ -1,4 +1,4 @@
-package org.robotframework.jdiameter;
+package org.robotframework.jdiameter.mapper;
 
 import static org.junit.Assert.assertEquals;
 

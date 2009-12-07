@@ -1,4 +1,4 @@
-package org.robotframework.jdiameter;
+package org.robotframework.protocol;
 
 /**
  * Protocol client 
@@ -30,5 +30,9 @@ public interface Client {
      * Close connection
      */
     void closeConnection();
+
+    Object getSession();
+
+    Object getLastRequest();
 
 }

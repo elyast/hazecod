@@ -4,9 +4,9 @@ import java.util.Arrays;
 
 import nu.xom.Document;
 
-import org.robotframework.jdiameter.Client;
-import org.robotframework.jdiameter.ProtocolCodec;
-import org.robotframework.jdiameter.TemplateProcessor;
+import org.robotframework.protocol.Client;
+import org.robotframework.protocol.ProtocolCodec;
+import org.robotframework.protocol.TemplateProcessor;
 import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
 /**
@@ -90,6 +90,7 @@ public class SendMessage implements EnhancedDocumentedKeyword {
 		arguments.length, String[].class);
 	Document xmlDocument = templateProcessor
 		.processTemplate(template, avps);
+	protocolCodec.setSesssion(client.getSession());
 	Object message = protocolCodec.encode(xmlDocument);
 	client.sendMessage(message);
 	return null;

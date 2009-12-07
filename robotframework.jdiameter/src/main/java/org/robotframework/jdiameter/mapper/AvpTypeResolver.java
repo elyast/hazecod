@@ -27,7 +27,7 @@ public class AvpTypeResolver extends CodeResolver {
      */
     public DataType getType(int code) {
 	String name = String.valueOf(code);
-	logger.info("Codec:" + code);
+	logger.debug("Codec:" + code);
 	return DataType.valueOf(props.getProperty(name).trim());
     }
 

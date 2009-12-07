@@ -5,12 +5,13 @@ import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nu.xom.Document;
 
+import org.jdiameter.api.Session;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robotframework.jdiameter.Client;
-import org.robotframework.jdiameter.ProtocolCodec;
-import org.robotframework.jdiameter.TemplateProcessor;
+import org.robotframework.protocol.Client;
+import org.robotframework.protocol.ProtocolCodec;
+import org.robotframework.protocol.TemplateProcessor;
 
 @RunWith(JMockit.class)
 public class SendMessageTest {
@@ -28,6 +29,8 @@ public class SendMessageTest {
     ProtocolCodec protocolCodec;
     @Mocked
     Client client;
+    @Mocked
+    Session session;
 
     @Before
     public void setUp() throws Exception {
@@ -52,6 +55,11 @@ public class SendMessageTest {
 		templateProcessor.processTemplate(
 			withEqual(TEMPLATE_FILE_PATH), withEqual(AVPs));
 		returns(xmlDocument);
+		
+		client.getSession();
+		returns(session);
+		
+		protocolCodec.setSesssion(session);
 
 		protocolCodec.encode(xmlDocument);
 		returns(message);
@@ -77,7 +85,11 @@ public class SendMessageTest {
 		templateProcessor.processTemplate(
 			withEqual(TEMPLATE_FILE_PATH), withEqual(avps));
 		returns(xmlDocument);
-
+		client.getSession();
+		returns(session);
+		
+		protocolCodec.setSesssion(session);
+		
 		protocolCodec.encode(xmlDocument);
 		returns(message);
 

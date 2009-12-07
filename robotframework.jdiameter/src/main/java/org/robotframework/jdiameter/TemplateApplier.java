@@ -45,10 +45,10 @@ public class TemplateApplier {
 	assert (qualifiedUserParameters != null);
 
 	List<Entry<Element, String>> delayedTaskList = new LinkedList<Entry<Element, String>>();
-	logger.info("Document: " + doc.toXML());
+	logger.debug("Document: " + doc.toXML());
 	for (Entry<String, String> userParameter : qualifiedUserParameters) {
 	    Element currentElement = doc.getRootElement();
-	    logger.info("Current element: " + currentElement);
+	    logger.debug("Current element: " + currentElement);
 	    currentElement = getReferenceToFinalElementInTree(userParameter,
 		    currentElement);
 
@@ -67,12 +67,12 @@ public class TemplateApplier {
 
 	    if (nodeName.lastIndexOf("[") != -1) {
 		// indexed node
-		logger.info("Indexed Node name: " + nodeName);
+		logger.debug("Indexed Node name: " + nodeName);
 		currentElement = getElementFromIndexedNode(currentElement,
 			nodeName);
 	    } else {
 		// non-indexed node
-		logger.info("Non Indexed Node name: " + nodeName);
+		logger.debug("Non Indexed Node name: " + nodeName);
 		currentElement = currentElement.getFirstChildElement(nodeName);
 	    }
 
