@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Random;
 
-import junit.framework.AssertionFailedError;
-
 import mockit.Expectations;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
@@ -100,7 +98,7 @@ public class DiameterMessageComparatorTest {
 	try {
 	    testObj.evaluateMessage(exp.createAnswer(2002), exp.createAnswer(2001));
 	    fail();
-	} catch (AssertionFailedError e) {
+	} catch (RuntimeException e) {
 	    assertTrue(e.getMessage().contains("2002")
 		    && e.getMessage().contains("2001"));
 	}
@@ -109,7 +107,7 @@ public class DiameterMessageComparatorTest {
     @Mocked Message actual;
     @Mocked Message expected;
     
-    @Test(expected=AssertionFailedError.class)
+    @Test(expected=RuntimeException.class)
     public void testEvaluateMessage_NullActualAvp() throws Exception {
 	new Expectations(){
 	    
@@ -157,7 +155,7 @@ public class DiameterMessageComparatorTest {
 	testObj.evaluateMessage(expected, actual);
     }
     
-    @Test(expected=AssertionFailedError.class)
+    @Test(expected=RuntimeException.class)
     public void testEvaluateMessage_DifferentApplicationId() throws Exception {
 	new Expectations(){
 	    final long APPLICATION_ID = 0;

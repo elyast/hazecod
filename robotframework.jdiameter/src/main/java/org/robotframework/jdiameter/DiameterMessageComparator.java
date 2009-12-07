@@ -1,7 +1,5 @@
 package org.robotframework.jdiameter;
 
-import junit.framework.AssertionFailedError;
-
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpDataException;
 import org.jdiameter.api.AvpSet;
@@ -135,7 +133,7 @@ public class DiameterMessageComparator implements MessageComparator {
 	    return;
 	}
 	if ((expected != null && !expected.equals(actual))) {
-	    throw new AssertionFailedError("expected different that actual : "
+	    throw new RuntimeException("expected different that actual : "
 		    + "expected: " + expected + ", actual: " + actual);
 	}
     }
