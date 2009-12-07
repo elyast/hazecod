@@ -1,14 +1,9 @@
 package org.robotframework.jdiameter.keyword;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.robotframework.jdiameter.keyword.CloseConnection;
-import org.robotframework.jdiameter.keyword.JDiameterLibrary;
-import org.robotframework.jdiameter.keyword.OpenConnection;
-import org.robotframework.jdiameter.keyword.ReceiveMessage;
-import org.robotframework.jdiameter.keyword.SendMessage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -32,31 +27,37 @@ public class JDiameterLibraryTest {
 	assertTrue(applicationContext.containsBean("disconnect"));
     }
 
-//    @Test
-//    public void testLibrary() throws Exception {
-//	JDiameterLibrary diameterLibrary = new JDiameterLibrary();
-//	String[] keywordNames = diameterLibrary.getKeywordNames();
-//	assertArrayEquals(new String[] { "Send AVPs", "Server", "Receive AVPs",
-//		"Connect", "Disconnect" }, keywordNames);
-//	
-//	JDiameterServer server = new JDiameterServer();
-//	server.start();
-//	
-//	OpenConnection open = (OpenConnection)applicationContext.getBean("connect");
-//	open.execute(new Object[] {});
-//	
-//	SendMessage sendMsg = (SendMessage)applicationContext.getBean("sendAVPs");
-//	
-//	sendMsg.execute(new Object[] {"MMS-IEC-CCR", "From=486018020793", "From-Location=262200", 
-//		"To_0=486018020793", "To_0-Location=262200", "CurrentTime=2009-08-06 10:38:00",	
-//		"MMS-Size=150", "MMS-SendTime=2009-08-06 10:38:00"});
-//	
-//	ReceiveMessage rcvMsg = (ReceiveMessage)applicationContext.getBean("receiveAVPs");
-//	
-//	rcvMsg.execute(new Object[] {"MMS-IEC-CCA", "Result=SUCCESS"});
-//	
-//	CloseConnection close = (CloseConnection)applicationContext.getBean("disconnect");
-//	close.execute(new Object[] {});
-//	server.stop();
-//    }
+    // @Test
+    // public void testLibrary() throws Exception {
+    // JDiameterLibrary diameterLibrary = new JDiameterLibrary();
+    // String[] keywordNames = diameterLibrary.getKeywordNames();
+    // assertArrayEquals(new String[] { "Send AVPs", "Server", "Receive AVPs",
+    // "Connect", "Disconnect" }, keywordNames);
+    //	
+    // JDiameterServer server = new JDiameterServer();
+    // server.start();
+    //	
+    // OpenConnection open =
+    // (OpenConnection)applicationContext.getBean("connect");
+    // open.execute(new Object[] {});
+    //	
+    // SendMessage sendMsg =
+    // (SendMessage)applicationContext.getBean("sendAVPs");
+    //	
+    // sendMsg.execute(new Object[] {"MMS-IEC-CCR", "From=486018020793",
+    // "From-Location=262200",
+    // "To_0=486018020793", "To_0-Location=262200",
+    // "CurrentTime=2009-08-06 10:38:00",
+    // "MMS-Size=150", "MMS-SendTime=2009-08-06 10:38:00"});
+    //	
+    // ReceiveMessage rcvMsg =
+    // (ReceiveMessage)applicationContext.getBean("receiveAVPs");
+    //	
+    // rcvMsg.execute(new Object[] {"MMS-IEC-CCA", "Result=SUCCESS"});
+    //	
+    // CloseConnection close =
+    // (CloseConnection)applicationContext.getBean("disconnect");
+    // close.execute(new Object[] {});
+    // server.stop();
+    // }
 }
