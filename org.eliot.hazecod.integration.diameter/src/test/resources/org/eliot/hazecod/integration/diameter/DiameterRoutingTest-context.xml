@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+		<route>
+			<from ref="myMinaEndpoint" />
+			<bean ref="serviceHandlerCodec" method="transformMessageToServiceRequest"/>	
+			<bean ref="mockHandler" method="handle"/>		
+			<bean ref="serviceHandlerCodec" method="transformServiceResponseToMessage"/>
+			<to uri="mock:result"/>
+		</route>
+	</camelContext>
+
+	<bean id="mockHandler" class="com.nsn.hydra.integration.protocol.ip.internal.MockHandler"/>
+
+	<!--
+		Creating mina endpoints is a bit complex so we reuse MinaComponnet as
+		a factory bean to create our endpoint, this is the easiest to do
+	-->
+	<bean id="myMinaFactory" class="org.apache.camel.component.mina.MinaComponent">
+		<!-- we must provide a camel context so we refer to it by its id -->
+		<constructor-arg index="0" ref="camel" />
+	</bean>
+	<!--
+		This is our mina endpoint configured with spring, we will use the
+		factory above to create it for us. The goal is to invoke the
+		createEndpoint method with the mina configuration parameter we defined
+		using the constructor-arg option
+	-->
+	<bean id="myMinaEndpoint" factory-bean="myMinaFactory"
+		factory-method="createEndpoint">
+		<!-- and here we can pass it our configuration -->
+		<constructor-arg index="0" ref="myMinaConfig" />
+	</bean>
+	<!-- this is our mina configuration with plain properties -->
+	<bean id="myMinaConfig" class="org.apache.camel.component.mina.MinaConfiguration">
+		<property name="protocol" value="tcp" />
+		<property name="host" value="localhost" />
+		<property name="port" value="3868" />
+		<property name="sync" value="true" />
+		<property name="codec" ref="diameterCodec"></property>
+		<property name="minaLogger" value="true"></property>
+	</bean>
+
+	<bean id="diameterCodec" class="com.nsn.advantage.platform.ph.diameter.codec.DiameterCodecFactory"></bean>	
+	<bean id="serviceHandlerCodec" class="com.nsn.hydra.integration.protocol.ip.internal.DiameterMessageTransformerImpl">
+		<property name="avpFactory" ref="avpFactory"></property>
+		<property name="diameterMessageFactory" ref="diameterMsgFactory"></property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="avpFactory" class="com.nsn.advantage.platform.ph.diameter.avp.AvpFactoryImpl"></bean>
+	<bean id="diameterMsgFactory" class="com.nsn.advantage.platform.ph.diameter.message.DiameterMessageFactoryImpl"></bean>
+	<bean id="sessionFactory" class="com.nsn.hydra.integration.protocol.ip.internal.SessionFactoryImpl"/>
+</beans>

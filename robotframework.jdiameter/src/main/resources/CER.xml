@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CAPABILITIES_EXCHANGE_REQUEST applicationId="4" endToEndId="19" hopByHopId="37">
+	<ORIGIN_HOST type="string" value="diacl" />
+	<ORIGIN_REALM type="string" value="bln1.siemens.de" />
+	<HOST_IP_ADDRESS type="string" value="10.154.39.92"/>
+	<VENDOR_ID type="int" value="10415"/>
+	<PRODUCT_NAME type="string" value="@vantage"/>		
+</CAPABILITIES_EXCHANGE_REQUEST>

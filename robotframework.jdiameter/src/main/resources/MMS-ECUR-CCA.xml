@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CREDIT_CONTROL_ANSWER applicationId="4" endToEndId="19" hopByHopId="37">
+	<CC_REQUEST_TYPE type="enum" value="INITIAL_REQUEST"/>
+	<CC_REQUEST_NUMBER type="long" asUnsignedInt32="true" value="0"/>
+	<SESSION_ID type="string" value="12345"/>
+	<CHECK_BALANCE_RESULT type="int" value="1"/>
+	<RESULT_CODE type="enum" value="SUCCESS"/>
+	<MULTIPLE_SERVICES_CREDIT_CONTROL>
+		<GRANTED_SERVICE_UNIT>
+			<CC_SERVICE_SPECIFIC_UNITS type="long" asUnsignedInt32="true" value="0"/>
+		</GRANTED_SERVICE_UNIT>
+	</MULTIPLE_SERVICES_CREDIT_CONTROL>
+</CREDIT_CONTROL_ANSWER>

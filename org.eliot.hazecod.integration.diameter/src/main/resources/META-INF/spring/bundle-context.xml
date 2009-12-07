@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:camelosgi="http://camel.apache.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+  	   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://camel.apache.org/schema/osgi http://camel.apache.org/schema/osgi/camel-osgi.xsd">
+
+	<!--
+		regular spring configuration file defining the beans for this bundle.
+		We've kept the osgi definitions in a separate configuration file so
+		that this file can easily be used for integration testing outside of
+		an OSGi environment
+	-->
+
+	<camelosgi:camelContext id="camel">
+
+		<camel:route id="diameter">
+			<camel:from ref="diameterEndpoint" />
+			<camel:bean ref="serviceBroker" method="handle" />
+		</camel:route>
+	</camelosgi:camelContext>
+
+	<bean id="jdiameterFactory" class="org.eliot.hazecod.camel.jdiameter.JDiameterComponent">
+		<constructor-arg index="0" ref="camel" />
+		<property name="configuration" ref="diameterConfig"></property>
+	</bean>
+
+	<bean id="diameterEndpoint" factory-bean="jdiameterFactory"
+		factory-method="createEndpoint">		
+	</bean>
+	
+	<bean id="diameterConfig" class="org.eliot.hazecod.camel.jdiameter.JDiameterConfiguration">
+	</bean>
+	
+	<bean id="serviceBroker" class="org.eliot.hazecod.integration.diameter.internal.DiameterServiceBroker"></bean>
+
+</beans>
