@@ -19,7 +19,7 @@
     <wrapped.version>1.5.3.1_351</wrapped.version>
   </properties>
   
-  <dependencies>
+  <dependencies>    
   	<dependency>
       <groupId>org.jdiameter</groupId>
       <artifactId>${wrapped.artifactId}</artifactId>
