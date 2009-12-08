@@ -4,11 +4,11 @@ import java.util.Arrays;
 
 import nu.xom.Document;
 
+import org.robotframework.javalib.keyword.EnhancedDocumentedKeyword;
 import org.robotframework.protocol.Client;
 import org.robotframework.protocol.MessageComparator;
 import org.robotframework.protocol.ProtocolCodec;
 import org.robotframework.protocol.TemplateProcessor;
-import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
 /**
  * RobotFramework keyword used to receive messages from System Under Test

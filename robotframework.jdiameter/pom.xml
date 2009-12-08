@@ -40,11 +40,6 @@
 			<version>1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>robotframework</groupId>
-			<artifactId>robotframework.springdoc</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>mockit</groupId>
 			<artifactId>jmockit</artifactId>
 		</dependency>
@@ -52,6 +47,12 @@
 			<groupId>picocontainer</groupId>
 			<artifactId>picocontainer</artifactId>
 			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robotframework</groupId>
+			<artifactId>javalib-springdoc</artifactId>
+			<version>0.8.1</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
