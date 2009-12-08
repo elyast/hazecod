@@ -1,7 +1,7 @@
 package org.robotframework.jdiameter.keyword;
 
+import org.robotframework.javalib.keyword.EnhancedDocumentedKeyword;
 import org.robotframework.protocol.Client;
-import org.robotframework.springdoc.EnhancedDocumentedKeyword;
 
 /**
  * RobotFramework keyword used to open connection to System Under Test

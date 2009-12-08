@@ -1,9 +1,6 @@
 package org.robotframework.jdiameter.keyword;
 
-import org.jdiameter.api.ApplicationAlreadyUseException;
-import org.jdiameter.api.IllegalDiameterStateException;
-import org.jdiameter.api.InternalException;
-import org.robotframework.springdoc.EnhancedDocumentedKeyword;
+import org.robotframework.javalib.keyword.EnhancedDocumentedKeyword;
 
 public class Server implements EnhancedDocumentedKeyword  {
 
