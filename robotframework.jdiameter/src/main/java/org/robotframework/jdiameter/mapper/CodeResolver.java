@@ -6,9 +6,12 @@ package org.robotframework.jdiameter.mapper;
  */
 public abstract class CodeResolver extends PropertiesReader {
 
+    boolean initialized;
+    String fileName;
+
     public CodeResolver(String name) {
-	super();
-	loadPropertiesFile(ClassLoader.getSystemResourceAsStream(name));
+	super();	
+	this.fileName = name;
     }
 
     /**
@@ -19,6 +22,14 @@ public abstract class CodeResolver extends PropertiesReader {
      * @return int value of property
      */
     public int getCode(String name) {
+	initialize();
 	return Integer.parseInt(props.getProperty(name).trim());
+    }
+
+    void initialize() {
+	if (!initialized) {
+	    loadPropertiesFile(ClassLoader.getSystemResourceAsStream(fileName));
+	    initialized = true;
+	}
     }
 }

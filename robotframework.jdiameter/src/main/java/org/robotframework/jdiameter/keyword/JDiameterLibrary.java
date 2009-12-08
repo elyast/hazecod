@@ -1,6 +1,6 @@
 package org.robotframework.jdiameter.keyword;
 
-import org.robotframework.springdoc.SpringDocumentedLibrary;
+import org.robotframework.javalib.library.SpringDocumentedLibrary;
 
 public class JDiameterLibrary extends SpringDocumentedLibrary {
 

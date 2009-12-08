@@ -210,15 +210,15 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>libdoc4j-maven-plugin</artifactId>
-					<version>0.0.1-SNAPSHOT</version>
+					<version>1.0</version>
 					<executions>
 						<execution>
-							<phase>process-classes</phase>
+							<phase>compile</phase>
 							<goals>
 								<goal>generate-doc</goal>
 							</goals>
 						</execution>
-					</executions>
+					</executions>					
 					<configuration>
 						<libraryClass>${libraryClass}</libraryClass>
 					</configuration>
@@ -306,11 +306,11 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.5</version>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changelog-plugin</artifactId>
-				<version>2.1</version>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-changelog-plugin</artifactId>-->
+<!--				<version>2.1</version>-->
+<!--			</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
