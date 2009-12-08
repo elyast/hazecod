@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>org.jdiameter</groupId>
 			<artifactId>server-impl</artifactId>
-			<version>1.5.3.1_350</version>
+			<version>1.5.3.1_351</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jdiameter</groupId>

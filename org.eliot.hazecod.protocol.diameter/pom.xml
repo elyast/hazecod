@@ -16,7 +16,7 @@
     <bundle.symbolicName>org.eliot.hazecod.protocol.diameter</bundle.symbolicName>
     <wrapped.groupId>org.jdiameter</wrapped.groupId>
     <wrapped.artifactId>server-impl</wrapped.artifactId>
-    <wrapped.version>1.5.3.1_350</wrapped.version>
+    <wrapped.version>1.5.3.1_351</wrapped.version>
   </properties>
   
   <dependencies>
