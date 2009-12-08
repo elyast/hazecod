@@ -130,7 +130,7 @@
 				<groupId>org.robotframework</groupId>
 				<artifactId>swinglibrary</artifactId>
 				<version>1.0</version>
-			</dependency>			
+			</dependency>
 			<!--  GWT dependencies (from central repo) -->
 			<dependency>
 				<groupId>com.google.gwt</groupId>
@@ -144,6 +144,16 @@
 				<version>${gwt.version}</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -153,16 +163,6 @@
 			<artifactId>junit</artifactId>
 			<version>4.7</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -218,7 +218,7 @@
 								<goal>generate-doc</goal>
 							</goals>
 						</execution>
-					</executions>					
+					</executions>
 					<configuration>
 						<libraryClass>${libraryClass}</libraryClass>
 					</configuration>
@@ -306,11 +306,11 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.5</version>
 			</plugin>
-<!--			<plugin>-->
-<!--				<groupId>org.apache.maven.plugins</groupId>-->
-<!--				<artifactId>maven-changelog-plugin</artifactId>-->
-<!--				<version>2.1</version>-->
-<!--			</plugin>-->
+			<!--			<plugin>-->
+			<!--				<groupId>org.apache.maven.plugins</groupId>-->
+			<!--				<artifactId>maven-changelog-plugin</artifactId>-->
+			<!--				<version>2.1</version>-->
+			<!--			</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>

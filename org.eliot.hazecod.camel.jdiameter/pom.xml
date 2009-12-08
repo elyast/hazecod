@@ -12,6 +12,12 @@
 	<packaging>bundle</packaging>
 	<name>Eliot.org JDiameter Camel</name>
 	<description>Camel component for JDiameter</description>
+	
+	<properties>
+		<bundle.symbolicName>org.eliot.hazecod.camel.jdiameter</bundle.symbolicName>
+		<bundle.namespace>org.eliot.hazecod.camel.jdiameter</bundle.namespace>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.camel</groupId>
@@ -20,13 +26,8 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.jdiameter</groupId>
-			<artifactId>server-impl</artifactId>
-			<version>1.5.3.1_351</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jdiameter</groupId>
-			<artifactId>server-api</artifactId>
+			<groupId>org.eliot</groupId>
+			<artifactId>org.eliot.hazecod.protocol.diameter</artifactId>
 			<version>1.5.3</version>
 		</dependency>
 	</dependencies>

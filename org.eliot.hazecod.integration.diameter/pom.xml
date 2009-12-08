@@ -10,7 +10,14 @@
 	<artifactId>org.eliot.hazecod.integration.diameter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Eliot.org Diameter Integration</name>
-
+	<packaging>bundle</packaging>
+	<description>Diameter protocol integration with Service Broker - workflow manager</description>
+	
+	<properties>
+		<bundle.symbolicName>org.eliot.hazecod.integration.diameter</bundle.symbolicName>
+		<bundle.namespace>org.eliot.hazecod.integration.diameter</bundle.namespace>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.eliot.hazecod</groupId>
