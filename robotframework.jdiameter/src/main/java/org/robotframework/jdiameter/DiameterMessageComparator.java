@@ -17,6 +17,12 @@ public class DiameterMessageComparator implements MessageComparator {
      */
     AvpTypeResolver avptypeResolver;
 
+    /**
+     * Asserts expected in comparison with actual message
+     * 
+     * @param exp Expected message
+     * @param act Actual message
+     */
     @Override
     public void evaluateMessage(Object exp, Object act) {
 	Message expected = (Message) exp;
@@ -34,7 +40,7 @@ public class DiameterMessageComparator implements MessageComparator {
     /**
      * Sets data type resolver
      * 
-     * @param avptypeResolver
+     * @param avptypeResolver AVP data type resolver
      */
     public void setAvptypeResolver(AvpTypeResolver avptypeResolver) {
 	this.avptypeResolver = avptypeResolver;
@@ -94,7 +100,8 @@ public class DiameterMessageComparator implements MessageComparator {
 	        assertEquals(expected.getFloat64(), actual.getFloat64());
 	        break;
 	    case OCTET_STRING:
-	        assertEquals(expected.getOctetString(), actual.getOctetString());
+	        assertEquals(expected.getOctetString(), 
+	        	actual.getOctetString());
 	        break;
 	    case ADDRESS:
 	        assertEquals(expected.getAddress(), actual.getAddress());

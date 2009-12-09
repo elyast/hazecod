@@ -3,7 +3,15 @@ package org.robotframework.jdiameter;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
-public class ElementFactory {
+/**
+ * @author Eliot
+ *
+ */
+public final class ElementFactory {
+    
+    private ElementFactory() {
+	
+    }
 
     public static Element createEnumElement(String string, String... vendor) {
 	Element e = new Element(string);

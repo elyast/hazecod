@@ -18,8 +18,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * @author Eliot
+ *
+ */
 @RunWith(JMockit.class)
 public class JDiameterClientTest {
+
+    static final int DEF_APP_ID = 4;
+
+    static final int VENDOR_ID = 2;
+
+    static final int CCR_CCA = 272;
 
     private JDiameterClient testObj;
 
@@ -90,8 +100,8 @@ public class JDiameterClientTest {
     public void testPrettyPrint() throws Exception {
 	testObj.openConnection(null);
 	Session session = (Session) testObj.getSession();
-	Request request = session.createRequest(272, org.jdiameter.api.ApplicationId
-		.createByAccAppId(2, 4), "realm");
-	testObj.prettyPrint(request);
+	Request request2 = session.createRequest(CCR_CCA, org.jdiameter.api.ApplicationId
+		.createByAccAppId(VENDOR_ID, DEF_APP_ID), "realm");
+	testObj.prettyPrint(request2);
     }
 }

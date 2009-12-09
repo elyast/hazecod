@@ -16,13 +16,25 @@ import org.jdiameter.api.Stack;
 import org.jdiameter.server.impl.StackImpl;
 import org.jdiameter.server.impl.helpers.XMLConfiguration;
 
+/**
+ * 
+ * JDiameter server
+ * @author Eliot
+ *
+ */
 public class JDiameterServer {
 
+    private static final int TEN = 10;
+    private static final int ACCT_APP_ID = 19302;
+    private static final int VENDOR_ID = 193;
     private static final String CONFIGURATION_XML = "server-configuration.xml";
     Stack stack;
     Configuration configuration;
     Network newtwork;
 
+    /**
+     * @throws Exception when server fails
+     */
     public void start() throws Exception {
 	stack = new StackImpl();
 	ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -36,25 +48,34 @@ public class JDiameterServer {
 		.unwrap(Network.class);
 	newtwork.addNetworkReqListener(new NetworkListener(),
 		org.jdiameter.api.ApplicationId
-			.createByAccAppId(193, 19302) );
+			.createByAccAppId(VENDOR_ID, ACCT_APP_ID));
 
     }
 
+    /**
+     * Stops server
+     * @throws IllegalDiameterStateException server fails
+     * @throws InternalException server fails
+     */
     public void stop() throws IllegalDiameterStateException, InternalException {
 	if (stack == null) {
 	    return;
 	}
-	stack.stop(10, TimeUnit.SECONDS);
+	stack.stop(TEN, TimeUnit.SECONDS);
 	stack.destroy();
     }
 
-    public static class NetworkListener implements NetworkReqListener {
+    static class NetworkListener implements NetworkReqListener {
+
+	static final int EVENT_REQUEST = 4;
+	private static final int CC_REQUEST_NO = 415;
+	static final int CC_REQUEST_TYPE = 416;
 
 	@Override
 	public Answer processRequest(Request request) {
 	    Answer createAnswer = request.createAnswer(ResultCode.SUCCESS);
-	    createAnswer.getAvps().addAvp(416, 4);
-	    createAnswer.getAvps().addAvp(415, 0L, 0L, true, false,
+	    createAnswer.getAvps().addAvp(CC_REQUEST_TYPE, EVENT_REQUEST);
+	    createAnswer.getAvps().addAvp(CC_REQUEST_NO, 0L, 0L, true, false,
 		    true);
 	    return createAnswer;
 	}

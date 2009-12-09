@@ -9,11 +9,11 @@ public interface MessageComparator {
     /**
      * evaluates if expected Message is equal to received one
      * 
-     * @param exp
+     * @param expected
      *            expected Message
-     * @param act
+     * @param actual
      *            received Message
      * 
      */
-    public void evaluateMessage(Object expected, Object actual);
+    void evaluateMessage(Object expected, Object actual);
 }

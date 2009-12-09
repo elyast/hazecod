@@ -10,6 +10,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robotframework.protocol.Client;
 
+/**
+ * @author Eliot
+ *
+ */
 @RunWith(JMockit.class)
 public class OpenConnectionTest {
 
@@ -29,7 +33,7 @@ public class OpenConnectionTest {
 
     @Test
     public void testExecute_correct() {
-	Object[] arguments = new Object[] { CONFIGURATION, TIMEOUT };
+	Object[] arguments = new Object[] {CONFIGURATION, TIMEOUT };
 
 	new Expectations() {
 	    {

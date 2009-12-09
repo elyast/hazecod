@@ -26,7 +26,7 @@ public class JDiameterComponent extends DefaultComponent {
     }
     
     /**
-     * @param context
+     * @param context Camel Context
      */
     public JDiameterComponent(CamelContext context) {
 	super(context);
@@ -48,10 +48,16 @@ public class JDiameterComponent extends DefaultComponent {
 	return endpoint;
     }
 
+    /**
+     * @param configuration Configuration 
+     */
     public void setConfiguration(JDiameterConfiguration configuration) {
 	this.configuration = configuration;
     }
     
+    /**
+     * @return Configuration
+     */
     public JDiameterConfiguration getConfiguration() {
 	return configuration;
     }

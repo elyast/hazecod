@@ -1,5 +1,6 @@
 package org.eliot.hazecod.camel.jdiameter;
 
+import static org.eliot.hazecod.camel.jdiameter.JDiameterConfiguration.*;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.camel.Endpoint;
@@ -18,6 +19,10 @@ import org.jdiameter.api.Request;
 import org.jdiameter.api.Stack;
 import org.jdiameter.server.impl.StackImpl;
 
+/**
+ * @author Eliot
+ *
+ */
 public class JDiameterConsumer extends DefaultConsumer {
 
     private final class NetworkListener implements NetworkReqListener {
@@ -35,7 +40,7 @@ public class JDiameterConsumer extends DefaultConsumer {
             } else {
                 body = exchange.getIn().getBody();
             }
-            return (Answer)body;
+            return (Answer) body;
 	}
     }
 
@@ -44,6 +49,11 @@ public class JDiameterConsumer extends DefaultConsumer {
     Network newtwork;
     Endpoint endpoint;
 
+    /**
+     * @param endpoint Endpoint
+     * @param processor processor
+     * @param configuration Jdiameter configuration
+     */
     public JDiameterConsumer(Endpoint endpoint, Processor processor,
 	    JDiameterConfiguration configuration) {
 	super(endpoint, processor);
@@ -56,20 +66,20 @@ public class JDiameterConsumer extends DefaultConsumer {
 	stack = new StackImpl();
 	stack.init(configuration);
 
-	stack.start(Mode.ANY_PEER, 10, TimeUnit.SECONDS);
+	stack.start(Mode.ANY_PEER, TEN, TimeUnit.SECONDS);
 
 	newtwork = ((PeerTable) stack.unwrap(PeerTable.class))
 		.unwrap(Network.class);
 	newtwork.addNetworkReqListener(new NetworkListener(),
-		new ApplicationId[] { org.jdiameter.api.ApplicationId
-			.createByAccAppId(193, 19302) });
+		new ApplicationId[] {org.jdiameter.api.ApplicationId
+			.createByAccAppId(VENDOR_ID, ACC_APP_ID) });
     }
 
     protected void doStop() throws Exception {
 	super.doStop();
-	stack.stop(10, TimeUnit.SECONDS);
+	stack.stop(TEN, TimeUnit.SECONDS);
 	newtwork.removeNetworkReqListener(org.jdiameter.api.ApplicationId
-		.createByAccAppId(193, 19302));
+		.createByAccAppId(VENDOR_ID, ACC_APP_ID));
     }
 
 }

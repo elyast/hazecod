@@ -26,7 +26,8 @@ public class UserParameterParser {
 	    return new ArrayList<Entry<String, String>>(0);
 	}
 
-	List<Entry<String, String>> result = new ArrayList<Entry<String, String>>(
+	List<Entry<String, String>> result = 
+	    new ArrayList<Entry<String, String>>(
 		parameters.size());
 	for (Object object : parameters) {
 	    String avp = String.valueOf(object);

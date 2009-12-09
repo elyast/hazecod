@@ -1,5 +1,7 @@
 package org.eliot.hazecod.camel.jdiameter;
 
+import static org.eliot.hazecod.camel.jdiameter.JDiameterConfiguration.*;
+
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -30,16 +32,23 @@ public class JDiameterProducer extends DefaultProducer {
     Configuration configuration;
     Session session;
     
+    /**
+     * @param endpoint Endpoint
+     * @param configuration Jdiameter configuration
+     */
     public JDiameterProducer(Endpoint endpoint, Configuration configuration) {
 	super(endpoint);
 	this.endpoint = endpoint;
 	this.configuration = configuration;
     }
 
+    /**
+     * @param exchange Exchange
+     * @throws Exception JDiameter exception
+     */
     public void process(Exchange exchange) throws Exception {
-	// TODO Auto-generated method stub
-	Session session = openConnection();
-	Request body = (Request)exchange.getIn().getBody();
+	session = openConnection();
+	Request body = (Request) exchange.getIn().getBody();
 	Future<Message> future = session.send(body);
 	Answer response = (Answer) future.get(); 
 	if (ExchangeHelper.isOutCapable(exchange)) {
@@ -55,9 +64,8 @@ public class JDiameterProducer extends DefaultProducer {
 	    InternalException {
 	stack = new StackImpl();
 	SessionFactory factory = stack.init(configuration);
-	stack.start(Mode.ANY_PEER, 10, TimeUnit.SECONDS);
-	session = factory.getNewSession();
-	return session;
+	stack.start(Mode.ANY_PEER, TEN, TimeUnit.SECONDS);
+	return factory.getNewSession();
     }
     
     @Override
@@ -70,13 +78,17 @@ public class JDiameterProducer extends DefaultProducer {
     protected void doStop() throws Exception {
 
 	session.release();
-	stack.stop(10, TimeUnit.SECONDS);
+	stack.stop(TEN, TimeUnit.SECONDS);
         super.doStop();
     }
     
+    /**
+     * @return false
+     */
     @Override
     public boolean isSingleton() {
-        // the producer should not be singleton otherwise cannot use concurrent producers and safely
+        // the producer should not be singleton otherwise 
+	// cannot use concurrent producers and safely
         // use request/reply with correct correlation
         return false;
     }

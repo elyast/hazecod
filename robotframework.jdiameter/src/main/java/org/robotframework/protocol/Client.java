@@ -31,8 +31,14 @@ public interface Client {
      */
     void closeConnection();
 
+    /**
+     * @return Diameter request factory
+     */
     Object getSession();
 
+    /**
+     * @return Diameter answer factory
+     */
     Object getLastRequest();
 
 }

@@ -14,6 +14,10 @@ import org.robotframework.protocol.MessageComparator;
 import org.robotframework.protocol.ProtocolCodec;
 import org.robotframework.protocol.TemplateProcessor;
 
+/**
+ * @author Eliot
+ *
+ */
 @RunWith(JMockit.class)
 public class ReceiveMessageTest {
 

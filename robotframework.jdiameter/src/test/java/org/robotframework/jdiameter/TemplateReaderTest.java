@@ -11,6 +11,10 @@ import nu.xom.Document;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author Eliot
+ *
+ */
 public class TemplateReaderTest {
 
     private TemplateReader testObj;

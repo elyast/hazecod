@@ -27,24 +27,27 @@ public class TemplateApplier {
     /**
      * Do the applying
      * 
-     * @param qualifiedUserParameters
+     * @param qualifiedUserParameters user parameters after mapping
      * @param doc
      *            xml template
      */
     public void apply(List<Entry<String, String>> qualifiedUserParameters,
 	    Document doc) {
-	List<Entry<Element, String>> taskList = createFinalTreeStructureAndGenerateTaskList(
+	List<Entry<Element, String>> taskList = 
+	    createFinalTreeStructureAndGenerateTaskList(
 		doc, qualifiedUserParameters);
 	processTaskList(doc, taskList);
 	removeEmptyNodes(doc);
     }
 
-    private List<Entry<Element, String>> createFinalTreeStructureAndGenerateTaskList(
+    private List<Entry<Element, String>> 
+    	createFinalTreeStructureAndGenerateTaskList(
 	    Document doc, List<Entry<String, String>> qualifiedUserParameters) {
 	assert (doc != null);
 	assert (qualifiedUserParameters != null);
 
-	List<Entry<Element, String>> delayedTaskList = new LinkedList<Entry<Element, String>>();
+	List<Entry<Element, String>> delayedTaskList = 
+	    new LinkedList<Entry<Element, String>>();
 	logger.debug("Document: " + doc.toXML());
 	for (Entry<String, String> userParameter : qualifiedUserParameters) {
 	    Element currentElement = doc.getRootElement();

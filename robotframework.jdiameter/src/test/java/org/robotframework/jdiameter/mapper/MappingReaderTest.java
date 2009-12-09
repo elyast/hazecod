@@ -8,8 +8,11 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.robotframework.jdiameter.mapper.MappingReader;
 
+/**
+ * @author Eliot
+ *
+ */
 public class MappingReaderTest {
 
     private static final String MAPPING_PROPERTIES_FILE_NAME = "mapping.properties";

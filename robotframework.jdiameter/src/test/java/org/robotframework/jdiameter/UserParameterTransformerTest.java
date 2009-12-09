@@ -12,8 +12,15 @@ import java.util.Map.Entry;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author Eliot
+ *
+ */
 public class UserParameterTransformerTest {
 
+    static final int FIVE = 5;
+    static final int FOUR = 4;
+    static final int THREE = 3;
     private UserParameterTransformer testObj;
 
     @Before
@@ -64,14 +71,14 @@ public class UserParameterTransformerTest {
 	assertEquals("A.G", qualified.get(2).getKey());
 	assertEquals("13", qualified.get(2).getValue());
 
-	assertEquals("B.C", qualified.get(3).getKey());
-	assertEquals("13", qualified.get(3).getValue());
+	assertEquals("B.C", qualified.get(THREE).getKey());
+	assertEquals("13", qualified.get(THREE).getValue());
 
-	assertEquals("A", qualified.get(4).getKey());
-	assertEquals("14", qualified.get(4).getValue());
+	assertEquals("A", qualified.get(FOUR).getKey());
+	assertEquals("14", qualified.get(FOUR).getValue());
 
-	assertEquals("A.B.C", qualified.get(5).getKey());
-	assertEquals("15", qualified.get(5).getValue());
+	assertEquals("A.B.C", qualified.get(FIVE).getKey());
+	assertEquals("15", qualified.get(FIVE).getValue());
     }
 
     @Test

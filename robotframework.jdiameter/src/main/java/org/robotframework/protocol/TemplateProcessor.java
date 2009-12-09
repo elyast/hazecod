@@ -10,9 +10,9 @@ public interface TemplateProcessor {
     /**
      * Create xml document from template name and user parameters
      * 
-     * @param template
-     * @param parameters
-     * @return
+     * @param template xml template
+     * @param parameters user parameters
+     * @return XML Document
      */
     Document processTemplate(String template, String[] parameters);
 }

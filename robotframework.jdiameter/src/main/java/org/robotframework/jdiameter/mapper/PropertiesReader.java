@@ -11,6 +11,9 @@ public abstract class PropertiesReader {
 
     Properties props;
 
+    /**
+     * 
+     */
     public PropertiesReader() {
 	props = new Properties();
     }

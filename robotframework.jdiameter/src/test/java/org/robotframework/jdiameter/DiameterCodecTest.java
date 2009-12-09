@@ -12,8 +12,6 @@ import nu.xom.Element;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpSet;
-import org.jdiameter.api.IllegalDiameterStateException;
-import org.jdiameter.api.InternalException;
 import org.jdiameter.api.Message;
 import org.jdiameter.api.Session;
 import org.jdiameter.api.SessionFactory;
@@ -25,13 +23,27 @@ import org.robotframework.jdiameter.mapper.AvpCodeResolver;
 import org.robotframework.jdiameter.mapper.AvpEnumResolver;
 import org.robotframework.jdiameter.mapper.GlobalDefaults;
 
+/**
+ * @author Eliot
+ *
+ */
 public class DiameterCodecTest {
 
+    static final int DEF_APP_ID = 4;
+    static final int SOME_ID = 123;
+    static final int SERVICE_IDENTIFIER = 439;
+    static final long SOME_REQUEST_NO = 321L;
+    static final int CC_REQUEST_NO = 415;
+    static final int SERVICE_INFORMATION = 873;
+    static final int SESSION_ID = 263;
+    static final int ADDRESS_DATA = 897;
+    static final int MMS_INFORMATION = 877;
+    public static final int CCR_CCA = 272;
+    public static final int GPP = 10415;
     private DiameterCodec testObj;
 
     @Before
-    public void setup() throws IllegalDiameterStateException,
-	    InternalException, Exception {
+    public void setup() throws Exception {
 	testObj = new DiameterCodec();
 	testObj.setGlobalDefaults(new GlobalDefaults());
 	testObj.setAvpCodesResolver(new AvpCodeResolver());
@@ -42,8 +54,8 @@ public class DiameterCodecTest {
 	SessionFactory init = stackImpl.init(new XMLConfiguration(istream));
 	Session session = init.getNewSession();
 	testObj.session = session;
-	testObj.lastRequest = session.createRequest(272, ApplicationId
-		.createByAccAppId(4), "eliot.org");
+	testObj.lastRequest = session.createRequest(CCR_CCA, ApplicationId
+		.createByAccAppId(DEF_APP_ID), "eliot.org");
     }
 
     @Test
@@ -54,7 +66,7 @@ public class DiameterCodecTest {
 	root.addAttribute(new Attribute("hopByHopId", "37"));
 	Document doc = new Document(root);
 	Message msg = testObj.encode(doc);
-	assertEquals(272, msg.getCommandCode());
+	assertEquals(CCR_CCA, msg.getCommandCode());
 	// assertEquals(0, msg.getAvps().size());
     }
 
@@ -75,30 +87,30 @@ public class DiameterCodecTest {
 		"3GPP"));// 897
 
 	Message msg = testObj.encode(doc);
-	assertEquals(272, msg.getCommandCode());
+	assertEquals(CCR_CCA, msg.getCommandCode());
 	AvpSet avps = msg.getAvps();
 	// assertEquals(5, avps.size());
-	Avp avp = avps.getAvp(263);
+	Avp avp = avps.getAvp(SESSION_ID);
 	assertNotNull(avp);
 	assertNotNull(avp.getUTF8String());
 
-	avp = avps.getAvp(268);
+	avp = avps.getAvp(Avp.RESULT_CODE);
 	assertNotNull(avp);
 	assertEquals(1, avp.getInteger32());
 
-	avp = avps.getAvp(415);
+	avp = avps.getAvp(CC_REQUEST_NO);
 	assertNotNull(avp);
 	long unsigned32 = avp.getUnsigned32();
-	assertEquals(321L, unsigned32);
+	assertEquals(SOME_REQUEST_NO, unsigned32);
 
-	avp = avps.getAvp(439);
+	avp = avps.getAvp(SERVICE_IDENTIFIER);
 	assertNotNull(avp);
-	assertEquals(123, avp.getInteger32());
+	assertEquals(SOME_ID, avp.getInteger32());
 
-	avp = avps.getAvp(897);
+	avp = avps.getAvp(ADDRESS_DATA);
 	assertNotNull(avp);
 	assertEquals("stringull", avp.getUTF8String());
-	assertEquals(10415, avp.getVendorId());
+	assertEquals(GPP, avp.getVendorId());
 
     }
 
@@ -117,26 +129,26 @@ public class DiameterCodecTest {
 	root.appendChild(ElementFactory.createStringElement("SESSION_ID"));// 263
 
 	Message msg = testObj.encode(doc);
-	assertEquals(272, msg.getCommandCode());
+	assertEquals(CCR_CCA, msg.getCommandCode());
 	AvpSet avps = msg.getAvps();
 
 	// assertEquals(3, avps.size());
-	Avp avp = avps.getAvp(263);
+	Avp avp = avps.getAvp(SESSION_ID);
 	assertNotNull(avp);
 	assertNotNull(avp.getUTF8String());
 
-	avp = avps.getAvp(873);
+	avp = avps.getAvp(SERVICE_INFORMATION);
 	assertNotNull(avp);
 	AvpSet group = avp.getGrouped();
 	assertEquals(1, group.size());
-	assertEquals(897, group.getAvpByIndex(0).getCode());
+	assertEquals(ADDRESS_DATA, group.getAvpByIndex(0).getCode());
 	assertEquals("stringull", group.getAvpByIndex(0).getUTF8String());
 
-	avp = avps.getAvp(877);
+	avp = avps.getAvp(MMS_INFORMATION);
 	assertNotNull(avp);
 	group = avp.getGrouped();
 	assertEquals(1, group.size());
-	assertEquals(897, group.getAvpByIndex(0).getCode());
+	assertEquals(ADDRESS_DATA, group.getAvpByIndex(0).getCode());
 	assertEquals("stringull", group.getAvpByIndex(0).getUTF8String());
     }
 
@@ -154,18 +166,18 @@ public class DiameterCodecTest {
 	mms.addAttribute(new Attribute("vendor", "3GPP"));
 
 	Message msg = testObj.encode(doc);
-	assertEquals(272, msg.getCommandCode());
+	assertEquals(CCR_CCA, msg.getCommandCode());
 	AvpSet avps = msg.getAvps();
 
 	// assertEquals(1, avps.size());
 
-	Avp avp = avps.getAvp(877);
-	assertEquals(10415, avp.getVendorId());
+	Avp avp = avps.getAvp(MMS_INFORMATION);
+	assertEquals(GPP, avp.getVendorId());
 	assertNotNull(avp);
 	AvpSet group = avp.getGrouped();
 	assertEquals(1, group.size());
-	assertEquals(897, group.getAvpByIndex(0).getCode());
-	assertEquals(10415, group.getAvpByIndex(0).getVendorId());
+	assertEquals(ADDRESS_DATA, group.getAvpByIndex(0).getCode());
+	assertEquals(GPP, group.getAvpByIndex(0).getVendorId());
 	assertEquals("stringull", group.getAvpByIndex(0).getUTF8String());
     }
 

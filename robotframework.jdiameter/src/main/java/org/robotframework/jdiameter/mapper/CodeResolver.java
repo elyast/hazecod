@@ -9,6 +9,9 @@ public abstract class CodeResolver extends PropertiesReader {
     boolean initialized;
     String fileName;
 
+    /**
+     * @param name properties path
+     */
     public CodeResolver(String name) {
 	super();	
 	this.fileName = name;
