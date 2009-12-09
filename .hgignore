@@ -17,3 +17,5 @@ syntax: glob
 reports
 syntax: glob
 .pmd
+syntax: glob
+.checkstyle
