@@ -15,7 +15,8 @@ import org.robotframework.protocol.TemplateProcessor;
 public class SendMessage implements EnhancedDocumentedKeyword {
 
     static final String DOCUMENTATION = "Send message with given arguments.\n"
-	    + "Arguments are in format: avp_name=value, where putting AVP value will overwrite existing from template (if defined)\n"
+	    + "Arguments are in format: avp_name=value, where putting AVP "
+	    + "value will overwrite existing from template (if defined)\n"
 	    + "AVP names are describes in xml templates.\n"
 	    + "templateName is without *.xml extension";
 
@@ -47,38 +48,63 @@ public class SendMessage implements EnhancedDocumentedKeyword {
     TemplateProcessor templateProcessor;
     ProtocolCodec protocolCodec;
 
+    /**
+     * @return Keyword name
+     */
     @Override
     public String getName() {
 	return name;
     }
 
+    /**
+     * @param name Keyword name
+     */
     @Override
     public void setName(String name) {
 	this.name = name;
     }
 
+    /**
+     * @return Arguments
+     */
     @Override
     public String[] getArgumentNames() {
 	return Argument.getArgumentNames();
     }
 
+    /**
+     * @return Description
+     */
     @Override
     public String getDocumentation() {
 	return DOCUMENTATION;
     }
 
+    /**
+     * @param client Protocol client
+     */
     public void setClient(Client client) {
 	this.client = client;
     }
 
+    /**
+     * @param templateProcessor Template processor
+     */
     public void setTemplateProcessor(TemplateProcessor templateProcessor) {
 	this.templateProcessor = templateProcessor;
     }
 
+    /**
+     * @param protocolCodec Message codec
+     */
     public void setProtocolCodec(ProtocolCodec protocolCodec) {
 	this.protocolCodec = protocolCodec;
     }
 
+    /**
+     * @param arguments test param
+     * @return null
+     */
     @Override
     public Object execute(Object[] arguments) {
 	if (arguments.length == 0) {

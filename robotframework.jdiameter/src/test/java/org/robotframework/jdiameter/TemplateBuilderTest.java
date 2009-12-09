@@ -23,8 +23,14 @@ import org.junit.runner.RunWith;
 import org.robotframework.jdiameter.TemplateBuilder.Template;
 import org.robotframework.jdiameter.mapper.MappingReader;
 
+/**
+ * @author Eliot
+ *
+ */
 @RunWith(JMockit.class)
 public class TemplateBuilderTest {
+
+    private static final int FOUR = 4;
 
     private TemplateBuilder testObj;
 
@@ -91,7 +97,7 @@ public class TemplateBuilderTest {
 	String file = ClassLoader.getSystemResource("MMS-IEC-CCR.xml")
 		.getFile();
 	Template tmp = testObj.getPath("Custom="
-		+ file.substring(0, file.length() - 4));
+		+ file.substring(0, file.length() - FOUR));
 	assertNotNull(tmp.xmlIn);
 	assertNotNull(tmp.propIn);
     }

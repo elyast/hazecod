@@ -17,25 +17,41 @@ public class OpenConnection implements EnhancedDocumentedKeyword {
     String name;
     Client client;
 
+    /**
+     * @return Keyword name
+     */
     @Override
     public String getName() {
 	return name;
     }
 
+    /**
+     * @param name Keyword name
+     */
     @Override
     public void setName(String name) {
 	this.name = name;
     }
 
+    /**
+     * @return Description
+     */
     public String getDocumentation() {
 	return DOCUMENTATION;
     }
 
+    /**
+     * @return Arguments
+     */
     @Override
     public String[] getArgumentNames() {
 	return ARGUMENT_NAMES;
     }
 
+    /**
+     * @param arguments Test parameters
+     * @return null
+     */
     @Override
     public Object execute(Object[] arguments) {
 	String configuration = getConfiguration(arguments);
@@ -43,6 +59,9 @@ public class OpenConnection implements EnhancedDocumentedKeyword {
 	return null;
     }
     
+    /**
+     * @param client Protocol client
+     */
     public void setClient(Client client) {
 	this.client = client;
     }

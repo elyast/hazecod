@@ -9,6 +9,10 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author Eliot
+ *
+ */
 public class UserParameterParserTest {
 
     private UserParameterParser testObj;

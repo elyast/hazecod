@@ -14,6 +14,9 @@ public class AvpTypeResolver extends CodeResolver {
     private static Logger logger = LoggerFactory
 	    .getLogger(AvpTypeResolver.class);
 
+    /**
+     * 
+     */
     public AvpTypeResolver() {
 	super(AVPTYPE_PROPERTIES);
     }

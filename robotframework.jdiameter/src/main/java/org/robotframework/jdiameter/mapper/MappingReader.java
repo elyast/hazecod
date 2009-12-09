@@ -11,7 +11,8 @@ import java.util.Map;
  */
 public class MappingReader extends PropertiesReader {
 
-    private Map<String, List<String>> mappings = new HashMap<String, List<String>>();
+    private Map<String, List<String>> mappings = 
+	new HashMap<String, List<String>>();
 
     private void transformProperties() {
 	for (String key : props.stringPropertyNames()) {
@@ -32,8 +33,8 @@ public class MappingReader extends PropertiesReader {
     /**
      * retrieves earlier prepared mapping for a given key
      * 
-     * @param key
-     * @return
+     * @param key Mapped name
+     * @return List of full qualified names in xml template
      */
     public List<String> getMapping(String key) {
 	List<String> result = mappings.get(key);
@@ -46,12 +47,15 @@ public class MappingReader extends PropertiesReader {
     /**
      * retrieves earlier prepared mappings loaded from InputStream
      * 
-     * @return
+     * @return Mappings between short and full qualified names
      */
     public Map<String, List<String>> getMappings() {
 	return mappings;
     }
 
+    /**
+     * @param input Properties file stream
+     */
     @Override
     public void loadPropertiesFile(InputStream input) {
 	super.loadPropertiesFile(input);

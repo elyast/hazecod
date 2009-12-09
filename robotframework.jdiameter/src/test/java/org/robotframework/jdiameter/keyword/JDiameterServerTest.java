@@ -3,6 +3,10 @@ package org.robotframework.jdiameter.keyword;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author Eliot
+ *
+ */
 public class JDiameterServerTest {
 
     private JDiameterServer testObj;

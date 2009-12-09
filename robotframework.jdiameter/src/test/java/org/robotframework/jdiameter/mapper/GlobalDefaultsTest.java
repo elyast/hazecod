@@ -4,10 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.robotframework.jdiameter.mapper.GlobalDefaults;
 
+/**
+ * @author Eliot
+ *
+ */
 public class GlobalDefaultsTest {
 
+    static final int SOME_APP_ID = 19302;
     private GlobalDefaults testObj;
 
     @Before
@@ -17,7 +21,7 @@ public class GlobalDefaultsTest {
 
     @Test
     public void testGetDefaultApplicationId() {
-	assertEquals(19302, testObj.getDefaultApplicationId());
+	assertEquals(SOME_APP_ID, testObj.getDefaultApplicationId());
     }
 
 }

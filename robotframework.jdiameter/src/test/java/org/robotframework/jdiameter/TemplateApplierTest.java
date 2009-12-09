@@ -15,7 +15,12 @@ import nu.xom.Elements;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author Eliot
+ *
+ */
 public class TemplateApplierTest {
+    static final int THREE = 3;
     private Document doc;
     private TemplateApplier templateApplier = new TemplateApplier();
     private List<Entry<String, String>> userParameters;
@@ -128,7 +133,7 @@ public class TemplateApplierTest {
 
 	Element c = children.get(1);
 	assertTrue(c.getLocalName().equals("c"));
-	assertTrue(c.getAttributeCount() == 3);
+	assertTrue(c.getAttributeCount() == THREE);
 	assertTrue(c.getAttributeValue("type").equals("string"));
 	assertTrue(c.getAttributeValue("value").equals("xx"));
 	assertTrue(c.getAttributeValue("cardinality").equals("0..n"));
@@ -145,7 +150,7 @@ public class TemplateApplierTest {
 
 	Element root = doc.getRootElement();
 	Elements children = root.getChildElements();
-	assertTrue(children.size() == 3);
+	assertTrue(children.size() == THREE);
 
 	Element b = children.get(0);
 	assertTrue(b.getLocalName().equals("b"));
@@ -155,14 +160,14 @@ public class TemplateApplierTest {
 
 	Element c1 = children.get(1);
 	assertTrue(c1.getLocalName().equals("c"));
-	assertTrue(c1.getAttributeCount() == 3);
+	assertTrue(c1.getAttributeCount() == THREE);
 	assertTrue(c1.getAttributeValue("type").equals("string"));
 	assertTrue(c1.getAttributeValue("value").equals("xx"));
 	assertTrue(c1.getAttributeValue("cardinality").equals("0..n"));
 
 	Element c2 = children.get(2);
 	assertTrue(c2.getLocalName().equals("c"));
-	assertTrue(c2.getAttributeCount() == 3);
+	assertTrue(c2.getAttributeCount() == THREE);
 	assertTrue(c2.getAttributeValue("type").equals("string"));
 	assertTrue(c2.getAttributeValue("value").equals("yy"));
 	assertTrue(c2.getAttributeValue("cardinality").equals("0..n"));
@@ -212,7 +217,7 @@ public class TemplateApplierTest {
 
 	Element d = children.get(1);
 	assertTrue(d.getLocalName().equals("d"));
-	assertTrue(d.getAttributeCount() == 3);
+	assertTrue(d.getAttributeCount() == THREE);
 	assertTrue(d.getAttributeValue("type").equals("integer"));
 	assertTrue(d.getAttributeValue("value").equals("10"));
 	assertTrue(d.getAttributeValue("cardinality").equals("0..n"));
@@ -230,7 +235,7 @@ public class TemplateApplierTest {
 
 	Element root = doc.getRootElement();
 	Elements children = root.getChildElements();
-	assertTrue(children.size() == 3);
+	assertTrue(children.size() == THREE);
 
 	Element b = children.get(0);
 	assertTrue(b.getLocalName().equals("b"));
@@ -273,7 +278,7 @@ public class TemplateApplierTest {
 
 	Element root = doc.getRootElement();
 	Elements children = root.getChildElements();
-	assertTrue(children.size() == 3);
+	assertTrue(children.size() == THREE);
 
 	Element b = children.get(0);
 	assertTrue(b.getLocalName().equals("b"));
@@ -293,7 +298,7 @@ public class TemplateApplierTest {
 
 	Element d2 = children.get(2);
 	assertTrue(d2.getLocalName().equals("d"));
-	assertTrue(d2.getAttributeCount() == 3);
+	assertTrue(d2.getAttributeCount() == THREE);
 	assertTrue(d2.getAttributeValue("type").equals("integer"));
 	assertTrue(d2.getAttributeValue("value").equals("99"));
 	assertTrue(d2.getAttributeValue("cardinality").equals("0..n"));
@@ -311,14 +316,14 @@ public class TemplateApplierTest {
 
 	Element root = doc.getRootElement();
 	Elements children = root.getChildElements();
-	assertTrue(children.size() == 3);
+	assertTrue(children.size() == THREE);
 
 	Element b = children.get(0);
 	assertTrue(b.getLocalName().equals("b"));
 
 	Element d1 = children.get(1);
 	assertTrue(d1.getLocalName().equals("d"));
-	assertTrue(d1.getAttributeCount() == 3);
+	assertTrue(d1.getAttributeCount() == THREE);
 	assertTrue(d1.getAttributeValue("type").equals("integer"));
 	assertTrue(d1.getAttributeValue("value").equals("98"));
 	assertTrue(d1.getAttributeValue("cardinality").equals("0..n"));

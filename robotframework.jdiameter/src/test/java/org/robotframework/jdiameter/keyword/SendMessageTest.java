@@ -13,12 +13,16 @@ import org.robotframework.protocol.Client;
 import org.robotframework.protocol.ProtocolCodec;
 import org.robotframework.protocol.TemplateProcessor;
 
+/**
+ * @author Eliot
+ *
+ */
 @RunWith(JMockit.class)
 public class SendMessageTest {
 
     private static final String AVP_AND_VALUE1 = "avp1=value1";
     private static final String AVP_AND_VALUE2 = "avp2=value2";
-    private static final String[] AVPs = new String[] { AVP_AND_VALUE1,
+    private static final String[] AVPS = new String[] { AVP_AND_VALUE1,
 	    AVP_AND_VALUE2 };
     private static final String TEMPLATE_FILE_PATH = "templateFilePath";
     private SendMessage testObj;
@@ -53,7 +57,7 @@ public class SendMessageTest {
 		Object message = new Object();
 
 		templateProcessor.processTemplate(
-			withEqual(TEMPLATE_FILE_PATH), withEqual(AVPs));
+			withEqual(TEMPLATE_FILE_PATH), withEqual(AVPS));
 		returns(xmlDocument);
 		
 		client.getSession();

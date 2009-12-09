@@ -7,6 +7,10 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+/**
+ * @author Eliot
+ *
+ */
 public class JDiameterLibraryTest {
 
     private ApplicationContext applicationContext;

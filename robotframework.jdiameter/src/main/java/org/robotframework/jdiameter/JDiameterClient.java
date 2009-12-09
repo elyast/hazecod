@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JDiameterClient implements Client {
 
+    protected static final int TEN = 10;
     private static Logger logger = LoggerFactory
 	    .getLogger(JDiameterClient.class);
     private static final String CONFIGURATION_XML = "configuration.xml";
@@ -37,6 +38,11 @@ public class JDiameterClient implements Client {
     Future<Message> responder;
     Request lastRequest;
 
+    /**
+     * @param configuration
+     *            JDiameter configuration file (if null internal configuration
+     *            is taken)
+     */
     public void openConnection(String configuration) {
 	try {
 	    Configuration config = decodeConfiguration(configuration);
@@ -50,16 +56,22 @@ public class JDiameterClient implements Client {
 	}
     }
 
+    /**
+     * 
+     */
     public void closeConnection() {
 	try {
 	    session.release();
-	    stack.stop(10, TimeUnit.SECONDS);
+	    stack.stop(TEN, TimeUnit.SECONDS);
 	    stack.destroy();
 	} catch (Exception e) {
 	    throw new RuntimeException(e);
 	}
     }
 
+    /**
+     * @return Gets message from server
+     */
     @Override
     public Object receiveMessage() {
 	try {
@@ -71,6 +83,9 @@ public class JDiameterClient implements Client {
 	}
     }
 
+    /**
+     * @param msg Message to be sent
+     */
     @Override
     public void sendMessage(Object msg) {
 	this.lastRequest = (Request) msg;
@@ -85,9 +100,12 @@ public class JDiameterClient implements Client {
     /**
      * Loads JDiameter client configuration from file
      * 
-     * @param parameters
+     * @param configuration
+     *            if <code>null</code> internal configuration is taken otherwise
+     *            path to configuration
      * @return Configuration object
      * @throws Exception
+     *             Exception from configuration
      */
     public Configuration decodeConfiguration(String configuration)
 	    throws Exception {
@@ -99,11 +117,17 @@ public class JDiameterClient implements Client {
 	return new XMLConfiguration(configuration);
     }
 
+    /**
+     * @return Diameter message request factory
+     */
     @Override
     public Object getSession() {
 	return session;
     }
 
+    /**
+     * @return Diameter message answer factory
+     */
     @Override
     public Object getLastRequest() {
 	return lastRequest;
@@ -122,7 +146,7 @@ public class JDiameterClient implements Client {
 	printed.append(",sessionId=").append(actual.getSessionId());
 	printed.append("}\n");
 	prettyPrint(printed, actual.getApplicationIdAvps());
-	prettyPrint(printed,actual.getAvps());
+	prettyPrint(printed, actual.getAvps());
 	return printed.toString();
     }
 
@@ -139,8 +163,8 @@ public class JDiameterClient implements Client {
 	printed.append("]\n");
     }
 
-    void prettyPrint(StringBuffer printed, AvpSet avps)
-	    throws AvpDataException {
+    void prettyPrint(StringBuffer printed, AvpSet avps) 
+    	throws AvpDataException {
 	if (avps == null) {
 	    return;
 	}

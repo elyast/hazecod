@@ -16,6 +16,7 @@ import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Message;
 import org.jdiameter.api.Request;
+import org.jdiameter.api.ResultCode;
 import org.jdiameter.api.Session;
 import org.jdiameter.api.SessionFactory;
 import org.jdiameter.client.impl.StackImpl;
@@ -26,9 +27,20 @@ import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+/**
+ * @author Eliot
+ *
+ */
 @RunWith(JMockit.class)
 public class DiameterMessageComparatorTest {
 
+    static final int SERVICE_INFORMATION = 873;
+    static final int ADDRESS_DATA = 897;
+    static final int RECIPIENT_ADDRESS = 1201;
+    static final int MMS_INFORMATION = 877;
+    static final int CCR_CCA = 272;
+    public static final int DEFAULT_APP_ID = 4;
+    public static final int GPP = 10415;
     private DiameterMessageComparator testObj;
     private ApplicationContext context;
     private Session session;
@@ -50,41 +62,41 @@ public class DiameterMessageComparatorTest {
 
     @Test
     public void testEvaluateMessage_NoException() throws Exception {
-	Request exp = session.createRequest(272, ApplicationId
-		.createByAccAppId(4), "eliot.org");
+	Request exp = session.createRequest(CCR_CCA, ApplicationId
+		.createByAccAppId(DEFAULT_APP_ID), "eliot.org");
 
-	testObj.evaluateMessage(exp.createAnswer(2001), exp.createAnswer(2001));
+	testObj.evaluateMessage(exp.createAnswer(ResultCode.SUCCESS), exp.createAnswer(ResultCode.SUCCESS));
 	// expected no exception
     }
 
     @Test
     public void testEvaluateMessage_NoException_DeepSubtree() throws Exception {
-	Request exp = session.createRequest(272, ApplicationId
-		.createByAccAppId(4), "eliot.org");
+	Request exp = session.createRequest(CCR_CCA, ApplicationId
+		.createByAccAppId(DEFAULT_APP_ID), "eliot.org");
 
-	Request msg = session.createRequest(272, ApplicationId
-		.createByAccAppId(4), "eliot.org");
+	Request msg = session.createRequest(CCR_CCA, ApplicationId
+		.createByAccAppId(DEFAULT_APP_ID), "eliot.org");
 
 	
 	AvpSet rootAvp = exp.getAvps();
 	
 	removeAll(rootAvp);
-	AvpSet data = rootAvp.addGroupedAvp(873, 10415, true, true);
-	AvpSet mmsdata = data.addGroupedAvp(877, 10415, true, true);
-	AvpSet to1 = mmsdata.addGroupedAvp(1201, 10415, true, true);
-	to1.addAvp(897, "48602801829", 10415, true, false, true);
+	AvpSet data = rootAvp.addGroupedAvp(SERVICE_INFORMATION, GPP, true, true);
+	AvpSet mmsdata = data.addGroupedAvp(MMS_INFORMATION, GPP, true, true);
+	AvpSet to1 = mmsdata.addGroupedAvp(RECIPIENT_ADDRESS, GPP, true, true);
+	to1.addAvp(ADDRESS_DATA, "48602801829", GPP, true, false, true);
 	
-	AvpSet data2 = msg.getAvps().addGroupedAvp(873, 10415, true, true);
-	AvpSet mmsdata2 = data2.addGroupedAvp(877, 10415, true, true);
-	AvpSet to2 = mmsdata2.addGroupedAvp(1201, 10415, true, true);
-	to2.addAvp(897, "48602801829", 10415, true, false, true);
+	AvpSet data2 = msg.getAvps().addGroupedAvp(SERVICE_INFORMATION, GPP, true, true);
+	AvpSet mmsdata2 = data2.addGroupedAvp(MMS_INFORMATION, GPP, true, true);
+	AvpSet to2 = mmsdata2.addGroupedAvp(RECIPIENT_ADDRESS, GPP, true, true);
+	to2.addAvp(ADDRESS_DATA, "48602801829", GPP, true, false, true);
 	
 	testObj.evaluateMessage(exp, msg);
 	// expected no exception
     }
 
     private void removeAll(AvpSet rootAvp) {
-	for(int i=0; i < rootAvp.size(); ) {
+	for(int i=0; i < rootAvp.size();) {
 	    rootAvp.removeAvpByIndex(0);
 	}
     }
@@ -92,11 +104,12 @@ public class DiameterMessageComparatorTest {
 
     @Test
     public void testEvaluateMessage_Exception() throws Exception {
-	Request exp = session.createRequest(272, ApplicationId
-		.createByAccAppId(4), "eliot.org");
+	Request exp = session.createRequest(CCR_CCA, ApplicationId
+		.createByAccAppId(DEFAULT_APP_ID), "eliot.org");
 
 	try {
-	    testObj.evaluateMessage(exp.createAnswer(2002), exp.createAnswer(2001));
+	    testObj.evaluateMessage(exp.createAnswer(ResultCode.LIMITED_SUCCESS), 
+		    exp.createAnswer(ResultCode.SUCCESS));
 	    fail();
 	} catch (RuntimeException e) {
 	    assertTrue(e.getMessage().contains("2002")
@@ -117,7 +130,7 @@ public class DiameterMessageComparatorTest {
 	    @Mocked Avp expectedAvp;
 	    @Mocked Iterator<Avp> expectedAvpsIterator;
 	    
-	    private final int AVP_CODE = new Random().nextInt();
+	    final int avpCode = new Random().nextInt();
 	    
 	    {
 		expected.getApplicationId();
@@ -146,8 +159,8 @@ public class DiameterMessageComparatorTest {
 		returns(expectedAvp);
 		
 		expectedAvp.getCode();
-		returns(AVP_CODE);
-		actualAvps.getAvp(AVP_CODE);
+		returns(avpCode);
+		actualAvps.getAvp(avpCode);
 		returns(null);
 	    }
 	};
@@ -158,13 +171,13 @@ public class DiameterMessageComparatorTest {
     @Test(expected=RuntimeException.class)
     public void testEvaluateMessage_DifferentApplicationId() throws Exception {
 	new Expectations(){
-	    final long APPLICATION_ID = 0;
-	    final long DIFFERENT_APPLICATION_ID = APPLICATION_ID + 1;
+	    final long applicationId = 0;
+	    final long defaultApplicationId = applicationId + 1;
 	    {
 		expected.getApplicationId();
-		returns(APPLICATION_ID);
+		returns(applicationId);
 		actual.getApplicationId();
-		returns(DIFFERENT_APPLICATION_ID);
+		returns(defaultApplicationId);
 	    }
 	};
 	

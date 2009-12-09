@@ -2,9 +2,15 @@ package org.robotframework.jdiameter.keyword;
 
 import org.robotframework.javalib.keyword.EnhancedDocumentedKeyword;
 
+/**
+ * JDiameter server keyword
+ * @author Eliot
+ *
+ */
 public class Server implements EnhancedDocumentedKeyword  {
 
-    private static final String DOCUMENTATION = "Starts or stops internal jdiameter server";
+    private static final String DOCUMENTATION = 
+	"Starts or stops internal jdiameter server";
 
     private static final String OPERATION = "Operation";
 
@@ -13,27 +19,43 @@ public class Server implements EnhancedDocumentedKeyword  {
     private String name;
     JDiameterServer server;
 
+    /**
+     * @return Keyword name
+     */
     @Override
     public String getName() {
 	return name;
     }
 
+    /**
+     * @param name Keyword name
+     */
     @Override
     public void setName(String name) {
 	this.name = name;
     }
 
+    /**
+     * @return Description
+     */
     @Override
     public String getDocumentation() {
 	return DOCUMENTATION;
     }
 
+    /**
+     * @return Arguments
+     */
     @Override
     public String[] getArgumentNames() {
 	return new String[] {OPERATION};
     }
 
 
+    /**
+     * @param arguments test parameters
+     * @return null
+     */
     @Override
     public Object execute(Object[] arguments) {
 	if (arguments.length != 1) {
@@ -51,6 +73,9 @@ public class Server implements EnhancedDocumentedKeyword  {
 	return null;
     }
     
+    /**
+     * @param server Server
+     */
     public void setServer(JDiameterServer server) {
 	this.server = server;
     }

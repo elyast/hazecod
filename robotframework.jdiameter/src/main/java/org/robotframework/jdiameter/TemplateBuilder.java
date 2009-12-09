@@ -52,9 +52,9 @@ public class TemplateBuilder implements TemplateProcessor {
      * Builds from user parameter two xml document that represents diameter
      * message
      * 
-     * @param template
-     * @param params
-     * @return
+     * @param template Template name (or path without extension)
+     * @param params user parameters to override template defaults
+     * @return Xml Document after overriding template defaults
      */
     public Document processTemplate(String template, String[] params) {
 
@@ -68,12 +68,49 @@ public class TemplateBuilder implements TemplateProcessor {
 
 	List<Entry<String, String>> userParameters = userParamParser
 		.parse(parameters);
-	List<Entry<String, String>> qualifiedUserParameters = userParamTransformer
+	List<Entry<String, String>> qualifiedUserParameters = 
+	    userParamTransformer
 		.expandUserParametersWithAliases(mapping, userParameters);
 
 	templateApplier.apply(qualifiedUserParameters, doc);
 	return doc;
     }
+    
+    /**
+     * @param applier Apply user parameters on template
+     */
+    public void setTemplateApplier(TemplateApplier applier) {
+	this.templateApplier = applier;
+    }
+
+    /**
+     * @param userParamParser User parameters parser
+     */
+    public void setUserParamParser(UserParameterParser userParamParser) {
+	this.userParamParser = userParamParser;
+    }
+
+    /**
+     * @param userParamTransform Expand user parameters
+     */
+    public void setUserParamTransformer(
+	    UserParameterTransformer userParamTransform) {
+	this.userParamTransformer = userParamTransform;
+    }
+
+    /**
+     * @param xmlReader XML template reader
+     */
+    public void setTemplateReader(TemplateReader xmlReader) {
+	this.templateReader = xmlReader;
+    }
+
+    /**
+     * @param mappingReader Mapping reader file
+     */
+    public void setMappingReader(MappingReader mappingReader) {
+	this.mappingReader = mappingReader;
+    }    
 
     /**
      * Gets xml templated file (from predefined storage or custom one)
@@ -98,28 +135,8 @@ public class TemplateBuilder implements TemplateProcessor {
 		    .getResourceAsStream(splitted[0].trim() + PROPS));
 	}
 	throw new RuntimeException(
-		"Invalid sytanx of template file: [predefine template name] | [Custom=file without extension]");
-    }
-
-    public void setTemplateApplier(TemplateApplier applier) {
-	this.templateApplier = applier;
-    }
-
-    public void setUserParamParser(UserParameterParser userParamParser) {
-	this.userParamParser = userParamParser;
-    }
-
-    public void setUserParamTransformer(
-	    UserParameterTransformer userParamTransform) {
-	this.userParamTransformer = userParamTransform;
-    }
-
-    public void setTemplateReader(TemplateReader xmlReader) {
-	this.templateReader = xmlReader;
-    }
-
-    public void setMappingReader(MappingReader mappingReader) {
-	this.mappingReader = mappingReader;
+		"Invalid sytanx of template file: [predefine template name]"
+		+ " | [Custom=file without extension]");
     }
 
     /**

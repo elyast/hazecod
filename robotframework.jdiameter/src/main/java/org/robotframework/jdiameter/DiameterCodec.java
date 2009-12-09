@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DiameterCodec implements ProtocolCodec {
 
+    static final int SECOND = 1000;
     private static final String SERVER_HOST = "localhost";
     private static final int OWN_VENDOR = 193;
     private static final String APPLICATION_ID = "applicationId";
@@ -56,15 +57,15 @@ public class DiameterCodec implements ProtocolCodec {
     /**
      * global defaults
      */
-    GlobalDefaults global;
+    GlobalDefaults globalDefaults;
     /**
      * avp mnemonic name -> avp code
      */
-    AvpCodeResolver codes;
+    AvpCodeResolver avpCodesResolver;
     /**
      * avp enum mnemonic -> int
      */
-    AvpEnumResolver enums;
+    AvpEnumResolver avpEnumsResolver;
     /**
      * JDiameter client session, diameter message factory
      */
@@ -95,16 +96,17 @@ public class DiameterCodec implements ProtocolCodec {
      * for each element proper Avp is created and added to Message
      * 
      * @param doc
-     * @return
+     *            Applied template with user parameters
+     * @return Diameter message build from xml tree
      */
     public Message encode(Document doc) {
 	Element root = doc.getRootElement();
-	int commandCode = global.getCommandCode(root.getLocalName());
+	int commandCode = globalDefaults.getCommandCode(root.getLocalName());
 	int applicationId = Integer.parseInt(root
 		.getAttributeValue(APPLICATION_ID));
 	Message msg = null;
 	if (root.getLocalName().endsWith(REQUEST_SUFFIX)) {
-	    //TODO should be read from configuration
+	    // TODO should be read from configuration
 	    msg = session.createRequest(commandCode,
 		    org.jdiameter.api.ApplicationId.createByAccAppId(
 			    OWN_VENDOR, applicationId), REALM, SERVER_HOST);
@@ -116,6 +118,58 @@ public class DiameterCodec implements ProtocolCodec {
 
 	processElements(root.getChildElements(), msg.getAvps());
 	return msg;
+    }
+
+    /**
+     * Setter
+     * 
+     * @param codes
+     *            AVP Code resolver
+     */
+    public void setAvpCodesResolver(AvpCodeResolver codes) {
+	this.avpCodesResolver = codes;
+    }
+
+    /**
+     * Setter
+     * 
+     * @param global
+     *            Defaults resolver
+     */
+    public void setGlobalDefaults(GlobalDefaults global) {
+	this.globalDefaults = global;
+    }
+
+    /**
+     * Setter
+     * 
+     * @param enums
+     *            AVP enums resolver
+     */
+    public void setAvpEnumsResolver(AvpEnumResolver enums) {
+	this.avpEnumsResolver = enums;
+    }
+
+    /**
+     * Setter
+     * 
+     * @param requestFactory
+     *            Request factory
+     */
+    @Override
+    public void setSesssion(Object requestFactory) {
+	this.session = (Session) requestFactory;
+    }
+
+    /**
+     * Setter
+     * 
+     * @param lastRequest
+     *            Answer factory
+     */
+    @Override
+    public void setLastRequest(Object lastRequest) {
+	this.lastRequest = ((Request) lastRequest);
     }
 
     void removeAllAVPs(AvpSet set) {
@@ -161,14 +215,18 @@ public class DiameterCodec implements ProtocolCodec {
 	if (element.getChildElements().size() == 0) {
 	    handleSimpleAvp(elementProperties, vendor, avps);
 	} else {
-	    handleGroupedAvp(element, avps, elementProperties.getName(), vendor);
+	    handleGroupedAvp(element, avps, 
+		    elementProperties.getName(), vendor);
 	}
 
     }
 
     Integer calculateVendor(Integer vendorId, String vendorText) {
-	Integer vendor = (vendorText == null) ? vendorId : new Integer(global
-		.getVendorId(vendorText));
+
+	Integer vendor = vendorId;
+	if (vendorText != null) {
+	    vendor = new Integer(globalDefaults.getVendorId(vendorText));
+	}
 	if (vendor == null) {
 	    vendor = DEFAULT_VENDOR;
 	}
@@ -178,8 +236,8 @@ public class DiameterCodec implements ProtocolCodec {
     void handleGroupedAvp(Element element, AvpSet avps, String name,
 	    Integer vendor) {
 	logger.debug("Grouped avp: " + name);
-	AvpSet avpset = avps.addGroupedAvp(codes.getCode(name), vendor, true,
-		false);
+	AvpSet avpset = avps.addGroupedAvp(avpCodesResolver.getCode(name),
+		vendor, true, false);
 	processElements(element.getChildElements(), vendor, avpset);
     }
 
@@ -188,10 +246,18 @@ public class DiameterCodec implements ProtocolCodec {
 	logger.debug("Leaf avp: " + elementProperties.getName() + " value: "
 		+ elementProperties.getValueText());
 
-	int code = codes.getCode(elementProperties.getName());
+	int code = avpCodesResolver.getCode(elementProperties.getName());
 	handleAvpsAddedByDiameterApi(avps, code);
 
 	addAvpToSetAccordingToItsType(elementProperties, vendor, avps, code);
+    }
+
+    void handleAvpsAddedByDiameterApi(AvpSet avps, int code) {
+	Avp addedByDiameterApi = avps.getAvp(code);
+	if (addedByDiameterApi != null) {
+	    logger.warn("Already exists avp: " + code);
+	    // avps.removeAvp(code);
+	}
     }
 
     private void addAvpToSetAccordingToItsType(
@@ -203,7 +269,7 @@ public class DiameterCodec implements ProtocolCodec {
 	String valueText = elementProperties.getValueText();
 
 	if (ENUM.equals(type)) {
-	    value = enums.getCode(valueText);
+	    value = avpEnumsResolver.getCode(valueText);
 	    avps.addAvp(code, (Integer) value, vendor, true, false);
 	}
 
@@ -233,14 +299,6 @@ public class DiameterCodec implements ProtocolCodec {
 	}
     }
 
-    void handleAvpsAddedByDiameterApi(AvpSet avps, int code) {
-	Avp addedByDiameterApi = avps.getAvp(code);
-	if (addedByDiameterApi != null) {
-	    logger.warn("Already exists avp: " + code);
-	    // avps.removeAvp(code);
-	}
-    }
-
     /**
      * Converts time to Octet string
      * 
@@ -250,23 +308,11 @@ public class DiameterCodec implements ProtocolCodec {
     private String convertTime(String valueText) {
 	try {
 	    Date date = dateFormatter.parse(valueText);
-	    long time = (date.getTime() - startTime) / 1000;
+	    long time = (date.getTime() - startTime) / SECOND;
 	    return HEX_PREFIX + Long.toHexString(time);
 	} catch (ParseException e) {
 	    throw new RuntimeException(e);
 	}
-    }
-
-    public void setAvpCodesResolver(AvpCodeResolver codes) {
-	this.codes = codes;
-    }
-
-    public void setGlobalDefaults(GlobalDefaults global) {
-	this.global = global;
-    }
-
-    public void setAvpEnumsResolver(AvpEnumResolver enums) {
-	this.enums = enums;
     }
 
     private class ElementProperties {
@@ -306,15 +352,5 @@ public class DiameterCodec implements ProtocolCodec {
 	    return asUnsignedInt32;
 	}
 
-    }
-
-    @Override
-    public void setSesssion(Object session) {
-	this.session = (Session) session;
-    }
-
-    @Override
-    public void setLastRequest(Object lastRequest) {
-	this.lastRequest = ((Request) lastRequest);
     }
 }
