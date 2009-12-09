@@ -15,3 +15,5 @@ syntax: regexp
 
 syntax: glob
 reports
+syntax: glob
+.pmd
