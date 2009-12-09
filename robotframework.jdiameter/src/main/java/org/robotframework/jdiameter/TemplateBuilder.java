@@ -51,7 +51,7 @@ public class TemplateBuilder implements TemplateProcessor {
     /**
      * Builds from user parameter two xml document that represents diameter
      * message
-     *
+     * 
      * @param template
      * @param params
      * @return
@@ -92,10 +92,10 @@ public class TemplateBuilder implements TemplateProcessor {
 		    "Custom format: Custom=file without extension");
 	}
 	if (splitted.length == 1) {
-	    return new Template(ClassLoader
-		    .getSystemResourceAsStream(splitted[0].trim() + XML),
-		    ClassLoader.getSystemResourceAsStream(splitted[0].trim()
-			    + PROPS));
+	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+	    return new Template(cl
+		    .getResourceAsStream(splitted[0].trim() + XML), cl
+		    .getResourceAsStream(splitted[0].trim() + PROPS));
 	}
 	throw new RuntimeException(
 		"Invalid sytanx of template file: [predefine template name] | [Custom=file without extension]");

@@ -28,7 +28,8 @@ public abstract class CodeResolver extends PropertiesReader {
 
     void initialize() {
 	if (!initialized) {
-	    loadPropertiesFile(ClassLoader.getSystemResourceAsStream(fileName));
+	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+	    loadPropertiesFile(cl.getResourceAsStream(fileName));
 	    initialized = true;
 	}
     }
