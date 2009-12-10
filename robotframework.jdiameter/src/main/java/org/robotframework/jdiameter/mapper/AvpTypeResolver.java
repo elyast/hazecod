@@ -1,6 +1,5 @@
 package org.robotframework.jdiameter.mapper;
 
-import org.robotframework.jdiameter.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

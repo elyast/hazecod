@@ -9,6 +9,7 @@
 	<description>Hazecod project</description>
 
 	<modules>
+	    <module>build-tools</module>
 		<module>parent</module>		
 		<module>org.eliot.hazecod.protocol.diameter</module>		
 		<module>robotframework.jdiameter</module>

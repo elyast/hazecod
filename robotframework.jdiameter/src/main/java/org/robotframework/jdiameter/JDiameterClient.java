@@ -1,6 +1,7 @@
 package org.robotframework.jdiameter;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -173,7 +174,8 @@ public class JDiameterClient implements Client {
 	    printed.append("avp.code=").append(avp.getCode()).append(",");
 	    printed.append("avp.vendorId=").append(avp.getVendorId()).append(
 		    ",");
-	    printed.append("avp.raw=").append(avp.getRaw()).append("\n");
+	    printed.append("avp.raw=").append(
+		    Arrays.toString(avp.getRaw())).append("\n");
 	}
 	printed.append("]");
     }
