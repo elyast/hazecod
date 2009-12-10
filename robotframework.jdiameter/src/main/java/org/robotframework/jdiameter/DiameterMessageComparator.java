@@ -5,6 +5,7 @@ import org.jdiameter.api.AvpDataException;
 import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Message;
 import org.robotframework.jdiameter.mapper.AvpTypeResolver;
+import org.robotframework.jdiameter.mapper.DataType;
 import org.robotframework.protocol.MessageComparator;
 
 /**

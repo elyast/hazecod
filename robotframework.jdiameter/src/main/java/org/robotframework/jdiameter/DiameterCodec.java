@@ -225,7 +225,7 @@ public class DiameterCodec implements ProtocolCodec {
 
 	Integer vendor = vendorId;
 	if (vendorText != null) {
-	    vendor = new Integer(globalDefaults.getVendorId(vendorText));
+	    vendor = Integer.valueOf(globalDefaults.getVendorId(vendorText));
 	}
 	if (vendor == null) {
 	    vendor = DEFAULT_VENDOR;
@@ -315,7 +315,7 @@ public class DiameterCodec implements ProtocolCodec {
 	}
     }
 
-    private class ElementProperties {
+    static class ElementProperties {
 
 	String name;
 	String type;
