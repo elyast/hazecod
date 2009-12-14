@@ -1,7 +1,5 @@
 package org.eliot.hazecod.camel.jdiameter;
 
-import static org.eliot.hazecod.camel.jdiameter.JDiameterConfiguration.*;
-
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +12,6 @@ import org.jdiameter.api.Configuration;
 import org.jdiameter.api.IllegalDiameterStateException;
 import org.jdiameter.api.InternalException;
 import org.jdiameter.api.Message;
-import org.jdiameter.api.Mode;
 import org.jdiameter.api.Request;
 import org.jdiameter.api.Session;
 import org.jdiameter.api.SessionFactory;
@@ -31,10 +28,12 @@ public class JDiameterProducer extends DefaultProducer {
     Stack stack;
     Configuration configuration;
     Session session;
-    
+
     /**
-     * @param endpoint Endpoint
-     * @param configuration Jdiameter configuration
+     * @param endpoint
+     *            Endpoint
+     * @param configuration
+     *            Jdiameter configuration
      */
     public JDiameterProducer(Endpoint endpoint, Configuration configuration) {
 	super(endpoint);
@@ -43,20 +42,22 @@ public class JDiameterProducer extends DefaultProducer {
     }
 
     /**
-     * @param exchange Exchange
-     * @throws Exception JDiameter exception
+     * @param exchange
+     *            Exchange
+     * @throws Exception
+     *             JDiameter exception
      */
     public void process(Exchange exchange) throws Exception {
 	session = openConnection();
 	Request body = (Request) exchange.getIn().getBody();
 	Future<Message> future = session.send(body);
-	Answer response = (Answer) future.get(); 
+	Answer response = (Answer) future.get();
 	if (ExchangeHelper.isOutCapable(exchange)) {
 	    exchange.getOut().setHeaders(exchange.getIn().getHeaders());
-            exchange.getOut().setBody(response);
-        } else {
-            exchange.getIn().setBody(response);
-        }
+	    exchange.getOut().setBody(response);
+	} else {
+	    exchange.getIn().setBody(response);
+	}
 
     }
 
@@ -64,33 +65,33 @@ public class JDiameterProducer extends DefaultProducer {
 	    InternalException {
 	stack = new StackImpl();
 	SessionFactory factory = stack.init(configuration);
-	stack.start(Mode.ANY_PEER, TEN, TimeUnit.SECONDS);
+	stack.start();
 	return factory.getNewSession();
     }
-    
+
     @Override
     protected void doStart() throws Exception {
-        super.doStart();
-        openConnection();
+	super.doStart();
+	openConnection();
     }
 
     @Override
     protected void doStop() throws Exception {
-
 	session.release();
-	stack.stop(TEN, TimeUnit.SECONDS);
-        super.doStop();
+	stack.stop(1, TimeUnit.SECONDS);
+	stack.destroy();
+	super.doStop();
     }
-    
+
     /**
      * @return false
      */
     @Override
     public boolean isSingleton() {
-        // the producer should not be singleton otherwise 
+	// the producer should not be singleton otherwise
 	// cannot use concurrent producers and safely
-        // use request/reply with correct correlation
-        return false;
+	// use request/reply with correct correlation
+	return false;
     }
 
 }

@@ -1,10 +1,14 @@
 package org.eliot.hazecod.camel.jdiameter;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+
 import org.apache.camel.Consumer;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
-import org.apache.camel.util.ObjectHelper;
+import org.jdiameter.api.Configuration;
+import org.jdiameter.server.impl.helpers.XMLConfiguration;
 
 /**
  * @author Eliot
@@ -12,7 +16,9 @@ import org.apache.camel.util.ObjectHelper;
  */
 public class JDiameterEndpoint extends DefaultEndpoint {
 
-    JDiameterConfiguration configuration;
+    static final String SERVER_XML = "server-configuration.xml";
+    static final String CLIENT_XML = "configuration.xml";
+    String configurationPath;
     
     /**
      * @param processor Processor
@@ -20,8 +26,19 @@ public class JDiameterEndpoint extends DefaultEndpoint {
      * @throws Exception Exception from JDiameter
      */
     public Consumer createConsumer(Processor processor) throws Exception {
-	ObjectHelper.notNull(configuration, "configuration"); 
+	Configuration configuration = new XMLConfiguration(
+	    createConfiguration(configurationPath, SERVER_XML));
 	return new JDiameterConsumer(this, processor, configuration);
+    }
+
+    InputStream createConfiguration(String path, 
+	    String defaultPath) throws Exception {
+	if (path == null) {
+	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+	    InputStream istream = cl.getResourceAsStream(defaultPath);
+	    return istream;
+	} 
+	return new FileInputStream(path);
     }
 
     /**
@@ -29,7 +46,9 @@ public class JDiameterEndpoint extends DefaultEndpoint {
      * @throws Exception Exception from JDiameter
      */
     public Producer createProducer() throws Exception {
-	ObjectHelper.notNull(configuration, "configuration"); 
+	Configuration configuration = 
+	    new org.jdiameter.client.impl.helpers.XMLConfiguration(
+		createConfiguration(configurationPath, CLIENT_XML));
 	return new JDiameterProducer(this, configuration);
     }
 
@@ -43,15 +62,8 @@ public class JDiameterEndpoint extends DefaultEndpoint {
     /**
      * @param configuration Configuration
      */
-    public void setConfiguration(JDiameterConfiguration configuration) {
-	this.configuration = configuration;
-    }
-    
-    /**
-     * @return Configuration
-     */
-    public JDiameterConfiguration getConfiguration() {
-	return configuration;
+    public void setConfigurationPath(String configuration) {
+	this.configurationPath = configuration;
     }
     
     
