@@ -3,7 +3,7 @@
 	<LocalPeer>
 		<URI value="aaa://localhost:1812" />
 		<IPAddress value="127.0.0.1" />
-		<Realm value="diacl" />
+		<Realm value="diacl.cca" />
 		<VendorID value="193" />
 		<ProductName value="jDiameter" />
 		<FirmwareRevision value="1" />
@@ -12,6 +12,10 @@
 				<VendorId value="193" />
 				<AcctApplId value="19302" />
 			</ApplicationID>
+			<ApplicationID>
+				<VendorId value="193" />
+				<AuthApplId value="4" />
+			</ApplicationID>			
 		</Applications>
 	</LocalPeer>
 	<Parameters>
@@ -30,7 +34,9 @@
 		</Peers>
 		<Realms>
 			<Realm name="diacl" peers="localhost" />
+			<Realm name="diacl.cca" peers="localhost" />
 			<Realm name="eliot.org" peers="localhost" />
+			<Realm name="eliot.cca.org" peers="localhost" />
 		</Realms>
 	</Network>
 	<Extensions />

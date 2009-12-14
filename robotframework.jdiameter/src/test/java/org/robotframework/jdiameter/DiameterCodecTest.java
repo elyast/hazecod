@@ -61,9 +61,8 @@ public class DiameterCodecTest {
     @Test
     public void testEncode_NoChildren() throws Exception {
 	Element root = new Element("CREDIT_CONTROL_REQUEST");
-	root.addAttribute(new Attribute("applicationId", "4"));
-	root.addAttribute(new Attribute("endToEndId", "19"));
-	root.addAttribute(new Attribute("hopByHopId", "37"));
+	root.addAttribute(new Attribute("vendorId", "4"));
+	root.addAttribute(new Attribute("authApplicationId", "4"));
 	Document doc = new Document(root);
 	Message msg = testObj.encode(doc);
 	assertEquals(CCR_CCA, msg.getCommandCode());
@@ -73,9 +72,8 @@ public class DiameterCodecTest {
     @Test
     public void testEncode_Flat_DifferentTypes() throws Exception {
 	Element root = new Element("CREDIT_CONTROL_REQUEST");
-	root.addAttribute(new Attribute("applicationId", "4"));
-	root.addAttribute(new Attribute("endToEndId", "19"));
-	root.addAttribute(new Attribute("hopByHopId", "37"));
+	root.addAttribute(new Attribute("vendorId", "4"));
+	root.addAttribute(new Attribute("authApplicationId", "4"));
 	Document doc = new Document(root);
 
 	root.appendChild(ElementFactory.createIntElement("SERVICE_IDENTIFIER"));// 439
@@ -117,9 +115,8 @@ public class DiameterCodecTest {
     @Test
     public void testEncodeNested_elements() throws Exception {
 	Element root = new Element("CREDIT_CONTROL_REQUEST");
-	root.addAttribute(new Attribute("applicationId", "4"));
-	root.addAttribute(new Attribute("endToEndId", "19"));
-	root.addAttribute(new Attribute("hopByHopId", "37"));
+	root.addAttribute(new Attribute("vendorId", "4"));
+	root.addAttribute(new Attribute("authApplicationId", "4"));
 	Document doc = new Document(root);
 
 	root.appendChild(ElementFactory.createGroupElement(
@@ -155,9 +152,8 @@ public class DiameterCodecTest {
     @Test
     public void testEncode_VendorHierarchy() throws Exception {
 	Element root = new Element("CREDIT_CONTROL_REQUEST");
-	root.addAttribute(new Attribute("applicationId", "4"));
-	root.addAttribute(new Attribute("endToEndId", "19"));
-	root.addAttribute(new Attribute("hopByHopId", "37"));
+	root.addAttribute(new Attribute("vendorId", "4"));
+	root.addAttribute(new Attribute("authApplicationId", "4"));
 	Document doc = new Document(root);
 
 	Element mms = ElementFactory.createGroupElement("GPP_MMS_INFORMATION",
