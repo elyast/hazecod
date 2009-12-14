@@ -17,7 +17,7 @@ import org.apache.camel.impl.DefaultComponent;
 public class JDiameterComponent extends DefaultComponent {
 
     
-    JDiameterConfiguration configuration;
+    String configurationPath;
     
     /**
      * 
@@ -42,23 +42,26 @@ public class JDiameterComponent extends DefaultComponent {
     protected Endpoint createEndpoint(String uri, String remaining,
 	    Map parameters) throws Exception {
 	JDiameterEndpoint endpoint = new JDiameterEndpoint();
-	endpoint.setConfiguration(configuration);
-	setProperties(configuration, parameters);
+	endpoint.setConfigurationPath(configurationPath);
+	if (configurationPath != null) {
+	    setProperties(configurationPath, parameters);
+	}
 	endpoint.setExchangePattern(ExchangePattern.InOut);
 	return endpoint;
     }
 
     /**
-     * @param configuration Configuration 
+     * @param configurationPath Path to configuration
      */
-    public void setConfiguration(JDiameterConfiguration configuration) {
-	this.configuration = configuration;
+    public void setConfigurationPath(String configurationPath) {
+	this.configurationPath = configurationPath;
     }
     
     /**
-     * @return Configuration
+     * @return Configuration path
      */
-    public JDiameterConfiguration getConfiguration() {
-	return configuration;
+    public String getConfigurationPath() {
+	return configurationPath;
     }
+
 }
