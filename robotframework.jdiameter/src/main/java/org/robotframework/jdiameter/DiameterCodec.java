@@ -10,6 +10,7 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 
+import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Message;
@@ -32,15 +33,11 @@ import org.slf4j.LoggerFactory;
 public class DiameterCodec implements ProtocolCodec {
 
     static final int SECOND = 1000;
-    private static final String SERVER_HOST = "localhost";
-    private static final int OWN_VENDOR = 193;
-    private static final String APPLICATION_ID = "applicationId";
     private static final String TIMEZONE_ID_UTC = "UTC";
     private static final String HEX_PREFIX = "0x";
     private static final int DEFAULT_VENDOR = 0;
     private static final String DEFAULT_START_TIME = "1900-01-01 00:00:00";
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    private static final String REALM = "eliot.org";
     private static final String REQUEST_SUFFIX = "REQUEST";
     private static final String TYPE = "type";
     private static final String UNSIGNED_INT32 = "asUnsignedInt32";
@@ -51,6 +48,10 @@ public class DiameterCodec implements ProtocolCodec {
     private static final String LONG = "long";
     private static final String ENUM = "enum";
     private static final Object TIME = "time";
+    private static final String DESTINATION_REALM = "destinationRealm";
+    private static final String VENDOR_ID = "vendorId";
+    private static final String AUTH_APPLICATION_ID = "authApplicationId";
+    private static final String ACCT_APPLICATION_ID = "acctApplicationId";
 
     private static Logger logger = LoggerFactory.getLogger(DiameterCodec.class);
 
@@ -101,15 +102,13 @@ public class DiameterCodec implements ProtocolCodec {
      */
     public Message encode(Document doc) {
 	Element root = doc.getRootElement();
-	int commandCode = globalDefaults.getCommandCode(root.getLocalName());
-	int applicationId = Integer.parseInt(root
-		.getAttributeValue(APPLICATION_ID));
+	int commandCode = globalDefaults.getCommandCode(root.getLocalName());	
 	Message msg = null;
 	if (root.getLocalName().endsWith(REQUEST_SUFFIX)) {
-	    // TODO should be read from configuration
-	    msg = session.createRequest(commandCode,
-		    org.jdiameter.api.ApplicationId.createByAccAppId(
-			    OWN_VENDOR, applicationId), REALM, SERVER_HOST);
+
+	    ApplicationId appId = parseApplicationId(root);
+	    String destRealm = root.getAttributeValue(DESTINATION_REALM); 
+	    msg = session.createRequest(commandCode, appId, destRealm);
 	} else {
 	    msg = lastRequest.createAnswer(ResultCode.SUCCESS);
 	    AvpSet set = msg.getAvps();
@@ -118,6 +117,19 @@ public class DiameterCodec implements ProtocolCodec {
 
 	processElements(root.getChildElements(), msg.getAvps());
 	return msg;
+    }
+
+    ApplicationId parseApplicationId(Element root) {
+	String vendor = root.getAttributeValue(VENDOR_ID);
+	String authId = root.getAttributeValue(AUTH_APPLICATION_ID);
+	String acctId = root.getAttributeValue(ACCT_APPLICATION_ID);
+	if (authId == null) {
+	    return ApplicationId.createByAccAppId(
+		    Long.parseLong(vendor), Long.parseLong(acctId));
+	} else {
+	    return ApplicationId.createByAuthAppId(
+		    Long.parseLong(vendor), Long.parseLong(authId));
+	}
     }
 
     /**

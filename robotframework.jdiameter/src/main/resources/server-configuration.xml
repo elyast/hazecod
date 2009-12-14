@@ -17,6 +17,10 @@
 				<VendorId value="193" />
 				<AcctApplId value="19302" />
 			</ApplicationID>
+			<ApplicationID>
+				<VendorId value="193" />
+				<AuthApplId value="4" />
+			</ApplicationID>			
 		</Applications>
 		<OverloadMonitor>
 			<Entry index="1" lowThreshold="0.5" highThreshold="0.6">
@@ -25,6 +29,12 @@
 					<AcctApplId value="19302" />
 				</ApplicationID>
 			</Entry>
+			<Entry index="2" lowThreshold="0.5" highThreshold="0.6">
+				<ApplicationID>
+					<VendorId value="193" />
+					<AuthApplId value="4" />
+				</ApplicationID>
+			</Entry>			
 		</OverloadMonitor>
 	</LocalPeer>
 	<Parameters>
@@ -53,6 +63,13 @@
 					<AcctApplId value="19302" />
 				</ApplicationID>
 			</Realm>
+			<Realm name="eliot.cca.org" peers="localhost" local_action="LOCAL"
+				dynamic="false" exp_time="1">
+				<ApplicationID>
+					<VendorId value="193" />
+					<AuthApplId value="4" />
+				</ApplicationID>
+			</Realm>			
 			<Realm name="diacl" peers="localhost" local_action="LOCAL"
 				dynamic="false" exp_time="1">
 				 
@@ -61,6 +78,14 @@
 					<AcctApplId value="19302" />
 				</ApplicationID>
 			</Realm>
+			<Realm name="diacl.cca" peers="localhost" local_action="LOCAL"
+				dynamic="false" exp_time="1">
+				 
+				<ApplicationID>
+					<VendorId value="193" />
+					<AuthApplId value="4" />
+				</ApplicationID>
+			</Realm>			
 		</Realms>
 	</Network>
 </Configuration>

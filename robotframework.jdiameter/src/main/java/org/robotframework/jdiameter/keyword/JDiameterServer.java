@@ -28,6 +28,7 @@ public class JDiameterServer {
     private static final int ACCT_APP_ID = 19302;
     private static final int VENDOR_ID = 193;
     private static final String CONFIGURATION_XML = "server-configuration.xml";
+    private static final long AUTH_APP_ID = 4;
     Stack stack;
     Configuration configuration;
     Network newtwork;
@@ -48,7 +49,9 @@ public class JDiameterServer {
 		.unwrap(Network.class);
 	newtwork.addNetworkReqListener(new NetworkListener(),
 		org.jdiameter.api.ApplicationId
-			.createByAccAppId(VENDOR_ID, ACCT_APP_ID));
+			.createByAccAppId(VENDOR_ID, ACCT_APP_ID), 
+			org.jdiameter.api.ApplicationId
+			.createByAuthAppId(VENDOR_ID, AUTH_APP_ID));
 
     }
 

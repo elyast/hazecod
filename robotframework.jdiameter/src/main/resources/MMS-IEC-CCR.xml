@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CREDIT_CONTROL_REQUEST applicationId="19302" endToEndId="19" hopByHopId="37">
+<CREDIT_CONTROL_REQUEST vendorId="193" authApplicationId="4" destinationRealm="eliot.cca.org">
 	<!-- <SESSION_ID type="string" value="diacl;12345;0"/>
 	<ORIGIN_HOST type="string" value="localhost" /> 
 	<ORIGIN_REALM type="string" value="diacl" />
