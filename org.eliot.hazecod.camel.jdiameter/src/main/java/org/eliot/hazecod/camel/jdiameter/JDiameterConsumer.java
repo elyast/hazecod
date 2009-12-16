@@ -43,7 +43,7 @@ public class JDiameterConsumer extends DefaultConsumer {
 	}
     }
 
-    private static final long VENDOR_ID = 193;
+    static final long VENDOR_ID = 193;
 
     Stack stack;
     Configuration configuration;
