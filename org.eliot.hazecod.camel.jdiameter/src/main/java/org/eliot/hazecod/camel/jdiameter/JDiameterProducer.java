@@ -16,7 +16,7 @@ import org.jdiameter.api.Request;
 import org.jdiameter.api.Session;
 import org.jdiameter.api.SessionFactory;
 import org.jdiameter.api.Stack;
-import org.jdiameter.server.impl.StackImpl;
+import org.jdiameter.client.impl.StackImpl;
 
 /**
  *
@@ -48,7 +48,7 @@ public class JDiameterProducer extends DefaultProducer {
      *             JDiameter exception
      */
     public void process(Exchange exchange) throws Exception {
-	session = openConnection();
+	openConnection();
 	Request body = (Request) exchange.getIn().getBody();
 	Future<Message> future = session.send(body);
 	Answer response = (Answer) future.get();
@@ -61,12 +61,12 @@ public class JDiameterProducer extends DefaultProducer {
 
     }
 
-    private Session openConnection() throws IllegalDiameterStateException,
+    void openConnection() throws IllegalDiameterStateException,
 	    InternalException {
 	stack = new StackImpl();
 	SessionFactory factory = stack.init(configuration);
 	stack.start();
-	return factory.getNewSession();
+	session = factory.getNewSession();
     }
 
     @Override
