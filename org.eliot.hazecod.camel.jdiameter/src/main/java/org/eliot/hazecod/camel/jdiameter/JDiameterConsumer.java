@@ -24,7 +24,7 @@ import org.jdiameter.server.impl.helpers.Parameters;
  */
 public class JDiameterConsumer extends DefaultConsumer {
 
-    private final class NetworkListener implements NetworkReqListener {
+    class NetworkListener implements NetworkReqListener {
 	public Answer processRequest(Request request) {
 	    Exchange exchange = endpoint.createExchange();
 	    exchange.getIn().setBody(request);
@@ -50,6 +50,8 @@ public class JDiameterConsumer extends DefaultConsumer {
     Network network;
     Endpoint endpoint;
 
+    NetworkListener netListener;
+
     /**
      * @param endpoint
      *            Endpoint
@@ -74,8 +76,10 @@ public class JDiameterConsumer extends DefaultConsumer {
 
 	network = ((PeerTable) stack.unwrap(PeerTable.class))
 		.unwrap(Network.class);
-	network.addNetworkReqListener(new NetworkListener(),
-		getFromConfiguration(stack.getMetaData().getConfiguration()));
+	Configuration config = stack.getMetaData().getConfiguration();
+	ApplicationId[] appIds = getFromConfiguration(config);
+	netListener = new NetworkListener();
+	network.addNetworkReqListener(netListener, appIds);
     }
 
     ApplicationId[] getFromConfiguration(Configuration config) {

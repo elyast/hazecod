@@ -1,24 +1,21 @@
 package org.eliot.hazecod.camel.jdiameter;
 
-import static org.junit.Assert.*;
-
-import java.util.concurrent.TimeUnit;
-
+import static org.junit.Assert.assertEquals;
 import mockit.Expectations;
 import mockit.Mocked;
-import mockit.NonStrict;
 import mockit.integration.junit4.JMockit;
 
 import org.apache.camel.Endpoint;
+import org.apache.camel.Exchange;
+import org.apache.camel.ExchangePattern;
+import org.apache.camel.Message;
 import org.apache.camel.Processor;
+import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Configuration;
-import org.jdiameter.api.Stack;
+import org.jdiameter.api.Request;
 import org.jdiameter.client.api.StackState;
 import org.jdiameter.client.impl.StackImpl;
-import org.jdiameter.client.impl.helpers.AssemblerImpl;
-import org.jdiameter.client.impl.helpers.ExtensionPoint;
-import org.jdiameter.server.impl.helpers.Parameters;
 import org.jdiameter.server.impl.helpers.XMLConfiguration;
 import org.junit.After;
 import org.junit.Before;
@@ -37,7 +34,10 @@ public class JDiameterConsumerTest {
     private JDiameterConsumer testObj;
     @Mocked Endpoint endpoint;
     @Mocked Processor processor;
-    @Mocked Stack mockedStack;
+    @Mocked Request request;
+    @Mocked Exchange exchange;
+    @Mocked Message message;
+    @Mocked Answer answer;
     
     @Before
     public void setUp() throws Exception {
@@ -71,6 +71,28 @@ public class JDiameterConsumerTest {
 	assertEquals(ACCT_APP_ID, appIds[0].getAcctAppId());
 	assertEquals(JDiameterConsumer.VENDOR_ID, appIds[1].getVendorId());
 	assertEquals(AUTH_APP_ID, appIds[1].getAuthAppId());
+    }
+    
+    @Test
+    public void testProcessRequests() throws Exception {
+	new Expectations() {
+	    {
+		endpoint.createExchange();
+		returns(exchange);
+		exchange.getIn();
+		returns(message);
+		message.setBody(request);
+		processor.process(exchange);
+		exchange.getPattern();
+		returns(ExchangePattern.InOnly);
+		exchange.getIn();
+		returns(message);
+		message.getBody();
+		returns(answer);
+	    }
+	};
+	testObj.doStart();
+	testObj.netListener.processRequest(request);
     }
 
 }
