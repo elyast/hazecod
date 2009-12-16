@@ -12,12 +12,12 @@
 	<packaging>bundle</packaging>
 	<name>Eliot.org JDiameter Camel</name>
 	<description>Camel component for JDiameter</description>
-	
+
 	<properties>
 		<bundle.symbolicName>org.eliot.hazecod.camel.jdiameter</bundle.symbolicName>
 		<bundle.namespace>org.eliot.hazecod.camel.jdiameter</bundle.namespace>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.camel</groupId>
@@ -41,6 +41,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.picocontainer</groupId>
+			<artifactId>com.springsource.org.picocontainer</artifactId>
+			<version>1.2.0</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
