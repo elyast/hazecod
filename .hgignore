@@ -19,3 +19,4 @@ syntax: glob
 .pmd
 syntax: glob
 .checkstyle
+glob:org.eliot.hazecod.integration.diameter/dia.log

@@ -22,12 +22,22 @@
   <dependencies>    
   	<dependency>
       <groupId>org.jdiameter</groupId>
-      <artifactId>${wrapped.artifactId}</artifactId>
-      <version>${wrapped.version}</version>
+      <artifactId>server-impl</artifactId>
+      <version>1.5.3.1_351</version>
     </dependency>
   	<dependency>
-      <groupId>${wrapped.groupId}</groupId>
+      <groupId>org.jdiameter</groupId>
       <artifactId>server-api</artifactId>
+      <version>1.5.3</version>
+    </dependency>   
+    <dependency>
+      <groupId>org.jdiameter</groupId>
+      <artifactId>client-impl</artifactId>
+      <version>1.5.3.1_350</version>
+    </dependency>
+  	<dependency>
+      <groupId>org.jdiameter</groupId>
+      <artifactId>client-api</artifactId>
       <version>1.5.3</version>
     </dependency>      
     
