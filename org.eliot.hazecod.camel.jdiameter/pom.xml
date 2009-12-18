@@ -29,6 +29,7 @@
 			<groupId>org.eliot</groupId>
 			<artifactId>org.eliot.hazecod.protocol.diameter</artifactId>
 			<version>1.5.3</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>mockit</groupId>

@@ -41,11 +41,19 @@ public class JDiameterComponent extends DefaultComponent {
      */
     protected Endpoint createEndpoint(String uri, String remaining,
 	    Map parameters) throws Exception {
-	JDiameterEndpoint endpoint = new JDiameterEndpoint();
-	endpoint.setConfigurationPath(configurationPath);
+	JDiameterEndpoint endpoint = createEndpoint();
 	if (configurationPath != null) {
 	    setProperties(configurationPath, parameters);
 	}
+	return endpoint;
+    }
+    
+    /**
+     * @return JDiameterEndpoint
+     */
+    public JDiameterEndpoint createEndpoint() {
+	JDiameterEndpoint endpoint = new JDiameterEndpoint();
+	endpoint.setConfigurationPath(configurationPath);
 	endpoint.setExchangePattern(ExchangePattern.InOut);
 	return endpoint;
     }

@@ -33,9 +33,9 @@
 			<Peer name="aaa://localhost:3868" rating="1"  />
 		</Peers>
 		<Realms>
-			<Realm name="diacl" peers="localhost" />
-			<Realm name="diacl.cca" peers="localhost" />
-			<Realm name="eliot.org" peers="localhost" />
+<!--			<Realm name="diacl" peers="localhost" />-->
+<!--			<Realm name="diacl.cca" peers="localhost" />-->
+<!--			<Realm name="eliot.org" peers="localhost" />-->
 			<Realm name="eliot.cca.org" peers="localhost" />
 		</Realms>
 	</Network>

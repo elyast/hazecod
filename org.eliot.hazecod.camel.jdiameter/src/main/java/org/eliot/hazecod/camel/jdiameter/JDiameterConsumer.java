@@ -7,6 +7,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.impl.DefaultConsumer;
 import org.apache.camel.util.ExchangeHelper;
+import org.apache.camel.util.ObjectHelper;
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Configuration;
@@ -25,6 +26,8 @@ import org.jdiameter.server.impl.helpers.Parameters;
 public class JDiameterConsumer extends DefaultConsumer {
 
     class NetworkListener implements NetworkReqListener {
+	static final String ANSWER = "Answer";
+
 	public Answer processRequest(Request request) {
 	    Exchange exchange = endpoint.createExchange();
 	    exchange.getIn().setBody(request);
@@ -39,6 +42,7 @@ public class JDiameterConsumer extends DefaultConsumer {
 	    } else {
 		body = exchange.getIn().getBody();
 	    }
+	    ObjectHelper.notNull(body, ANSWER);
 	    return (Answer) body;
 	}
     }
