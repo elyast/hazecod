@@ -55,6 +55,7 @@ public class JDiameterConsumerTest {
     public void testDoStart() throws Exception {
 	testObj.doStart();
 	assertEquals(StackState.STARTED, ((StackImpl)testObj.stack).getState());
+	testObj.doStop();
     }
 
     @Test
@@ -93,6 +94,7 @@ public class JDiameterConsumerTest {
 	};
 	testObj.doStart();
 	testObj.netListener.processRequest(request);
+	testObj.doStop();
     }
 
 }

@@ -51,6 +51,7 @@ public class JDiameterClientTest {
 
     @Test
     public void testOpenConnection_Null() {
+	testObj.setTestingConnection(true);
 	testObj.openConnection(null);
 	assertNotNull(testObj.getSession());
 	assertNotNull(testObj.stack);
@@ -98,6 +99,7 @@ public class JDiameterClientTest {
 
     @Test
     public void testPrettyPrint() throws Exception {
+	testObj.setTestingConnection(true);
 	testObj.openConnection(null);
 	Session session = (Session) testObj.getSession();
 	Request request2 = session.createRequest(CCR_CCA, org.jdiameter.api.ApplicationId
