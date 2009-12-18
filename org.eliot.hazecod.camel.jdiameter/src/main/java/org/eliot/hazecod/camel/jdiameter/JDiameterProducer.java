@@ -12,6 +12,7 @@ import org.jdiameter.api.Configuration;
 import org.jdiameter.api.IllegalDiameterStateException;
 import org.jdiameter.api.InternalException;
 import org.jdiameter.api.Message;
+import org.jdiameter.api.Mode;
 import org.jdiameter.api.Request;
 import org.jdiameter.api.Session;
 import org.jdiameter.api.SessionFactory;
@@ -24,6 +25,7 @@ import org.jdiameter.client.impl.StackImpl;
  */
 public class JDiameterProducer extends DefaultProducer {
 
+    static final int TEN = 10;
     Endpoint endpoint;
     Stack stack;
     Configuration configuration;
@@ -48,9 +50,8 @@ public class JDiameterProducer extends DefaultProducer {
      *             JDiameter exception
      */
     public void process(Exchange exchange) throws Exception {
-	openConnection();
-	Request body = (Request) exchange.getIn().getBody();
-	Future<Message> future = session.send(body);
+	Request request = (Request) exchange.getIn().getBody();
+	Future<Message> future = session.send(request);
 	Answer response = (Answer) future.get();
 	if (ExchangeHelper.isOutCapable(exchange)) {
 	    exchange.getOut().setHeaders(exchange.getIn().getHeaders());
@@ -58,14 +59,20 @@ public class JDiameterProducer extends DefaultProducer {
 	} else {
 	    exchange.getIn().setBody(response);
 	}
-
     }
 
+    /**
+     * Opens connection 
+     * and waits for handshake at most 10 secnods.
+     * @throws IllegalDiameterStateException
+     * @throws InternalException
+     */
     void openConnection() throws IllegalDiameterStateException,
 	    InternalException {
 	stack = new StackImpl();
 	SessionFactory factory = stack.init(configuration);
-	stack.start();
+	//Waits for handshake at most 10 seconds
+	stack.start(Mode.ANY_PEER, TEN, TimeUnit.SECONDS);
 	session = factory.getNewSession();
     }
 

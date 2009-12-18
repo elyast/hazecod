@@ -24,22 +24,29 @@ public class JDiameterProducerTest {
     
     private JDiameterProducer testObj;
     @Mocked Endpoint endpoint;
+    private org.jdiameter.server.impl.helpers.XMLConfiguration configServer;
+    private JDiameterConsumer jDiameterConsumer;
 
     @Before
     public void setUp() throws Exception {
 	ClassLoader cl = Thread.currentThread().getContextClassLoader();
 	Configuration config = new XMLConfiguration(
 		cl.getResourceAsStream(JDiameterEndpoint.CLIENT_XML));
+	configServer = new org.jdiameter.server.impl.helpers.XMLConfiguration(
+		cl.getResourceAsStream(JDiameterEndpoint.SERVER_XML));
 	testObj = new JDiameterProducer(endpoint, config);
+	jDiameterConsumer = new JDiameterConsumer(endpoint, null, configServer);
+	jDiameterConsumer.doStart();
     }
 
     @After
     public void tearDown() throws Exception {
+	jDiameterConsumer.doStop();
     }
 
     @Test
     public void testDoStart() throws Exception {
-	testObj.doStart();
+	testObj.doStart();	
 	StackImpl stack = (StackImpl)testObj.stack;
 	assertEquals(StackState.STARTED, stack.getState());
     }
@@ -47,7 +54,7 @@ public class JDiameterProducerTest {
     @Test
     public void testDoStop() throws Exception {
 	testObj.doStart();
-	testObj.doStop();
+	testObj.doStop();	
 	StackImpl stack = (StackImpl)testObj.stack;
 	assertEquals(StackState.IDLE, stack.getState());
     }
