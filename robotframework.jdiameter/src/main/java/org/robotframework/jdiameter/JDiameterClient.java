@@ -12,6 +12,7 @@ import org.jdiameter.api.AvpDataException;
 import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Configuration;
 import org.jdiameter.api.Message;
+import org.jdiameter.api.Mode;
 import org.jdiameter.api.Request;
 import org.jdiameter.api.Session;
 import org.jdiameter.api.SessionFactory;
@@ -49,7 +50,7 @@ public class JDiameterClient implements Client {
 	    Configuration config = decodeConfiguration(configuration);
 	    stack = new org.jdiameter.client.impl.StackImpl();
 	    SessionFactory factory = stack.init(config);
-	    stack.start();
+	    stack.start(Mode.ANY_PEER, TEN, TimeUnit.SECONDS);
 	    session = factory.getNewSession();
 	} catch (Exception e) {
 	    logger.error(e.getMessage(), e);
