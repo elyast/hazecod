@@ -12,12 +12,12 @@
 	<name>Eliot.org Diameter Integration</name>
 	<packaging>bundle</packaging>
 	<description>Diameter protocol integration with Service Broker - workflow manager</description>
-	
+
 	<properties>
 		<bundle.symbolicName>org.eliot.hazecod.integration.diameter</bundle.symbolicName>
 		<bundle.namespace>org.eliot.hazecod.integration.diameter</bundle.namespace>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.eliot.hazecod</groupId>
@@ -57,13 +57,25 @@
 				<exclusion>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring-aop</artifactId>
-				</exclusion>		
+				</exclusion>
 				<exclusion>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring-context</artifactId>
-				</exclusion>						
+				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.picocontainer</groupId>
+			<artifactId>com.springsource.org.picocontainer</artifactId>
+			<version>1.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.apache.camel</groupId>-->
+<!--			<artifactId>camel-mina</artifactId>-->
+<!--			<version>2.0.0</version>-->
+<!--			<scope>provided</scope>-->
+<!--		</dependency>		-->
 	</dependencies>
 
 </project>
