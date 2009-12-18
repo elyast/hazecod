@@ -39,6 +39,7 @@ public class JDiameterClient implements Client {
     Stack stack;
     Future<Message> responder;
     Request lastRequest;
+    boolean testingConnection;
 
     /**
      * @param configuration
@@ -50,7 +51,11 @@ public class JDiameterClient implements Client {
 	    Configuration config = decodeConfiguration(configuration);
 	    stack = new org.jdiameter.client.impl.StackImpl();
 	    SessionFactory factory = stack.init(config);
-	    stack.start(Mode.ANY_PEER, TEN, TimeUnit.SECONDS);
+	    if (testingConnection) {
+		stack.start();
+	    } else {
+		stack.start(Mode.ANY_PEER, TEN, TimeUnit.SECONDS);
+	    }
 	    session = factory.getNewSession();
 	} catch (Exception e) {
 	    logger.error(e.getMessage(), e);
@@ -179,6 +184,13 @@ public class JDiameterClient implements Client {
 		    Arrays.toString(avp.getRaw())).append("\n");
 	}
 	printed.append("]");
+    }
+
+    /**
+     * @param b if testing connection is etablished
+     */
+    public void setTestingConnection(boolean b) {
+	testingConnection = b;
     }
 
 }

@@ -30,6 +30,7 @@ public class JDiameterProducer extends DefaultProducer {
     Stack stack;
     Configuration configuration;
     Session session;
+    boolean testingConnection;
 
     /**
      * @param endpoint
@@ -71,8 +72,12 @@ public class JDiameterProducer extends DefaultProducer {
 	    InternalException {
 	stack = new StackImpl();
 	SessionFactory factory = stack.init(configuration);
-	//Waits for handshake at most 10 seconds
-	stack.start(Mode.ANY_PEER, TEN, TimeUnit.SECONDS);
+	if (testingConnection) {
+	    stack.start();
+	} else {
+	    //Waits for handshake at most 10 seconds
+	    stack.start(Mode.ANY_PEER, TEN, TimeUnit.SECONDS);
+	}
 	session = factory.getNewSession();
     }
 
@@ -99,6 +104,13 @@ public class JDiameterProducer extends DefaultProducer {
 	// cannot use concurrent producers and safely
 	// use request/reply with correct correlation
 	return false;
+    }
+    
+    /**
+     * @param testingConnection If shouldn't wait for server
+     */
+    public void setTestingConnection(boolean testingConnection) {
+	this.testingConnection = testingConnection;
     }
 
 }
