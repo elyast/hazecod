@@ -1,6 +1,8 @@
 package org.eliot.hazecod.integration.diameter.internal;
 
 import org.eliot.hazecod.integration.diameter.ServiceBroker;
+import org.jdiameter.api.Request;
+import org.jdiameter.api.ResultCode;
 
 /**
  * @author Eliot
@@ -14,8 +16,8 @@ public class DiameterServiceBroker implements ServiceBroker {
      */
     @Override
     public Object handle(Object parameter) {
-	// TODO Auto-generated method stub
-	return null;
+	Request request = (Request) parameter;
+	return request.createAnswer(ResultCode.SUCCESS);
     }
 
 }
