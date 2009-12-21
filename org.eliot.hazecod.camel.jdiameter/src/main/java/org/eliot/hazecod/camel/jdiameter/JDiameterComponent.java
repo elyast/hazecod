@@ -39,6 +39,7 @@ public class JDiameterComponent extends DefaultComponent {
      * org.apache.camel.impl.DefaultComponent#createEndpoint(java.lang.String,
      * java.lang.String, java.util.Map)
      */
+    @SuppressWarnings("unchecked")
     protected Endpoint createEndpoint(String uri, String remaining,
 	    Map parameters) throws Exception {
 	JDiameterEndpoint endpoint = createEndpoint();
