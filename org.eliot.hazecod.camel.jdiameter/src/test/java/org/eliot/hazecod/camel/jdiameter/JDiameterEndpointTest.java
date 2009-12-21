@@ -45,21 +45,22 @@ public class JDiameterEndpointTest {
 
     @Test
     public void testCreateConfiguration_Server() throws Exception {
-	InputStream is = testObj.createConfiguration(null, testObj.SERVER_XML);
+	InputStream is = testObj.createConfiguration(null, JDiameterEndpoint.SERVER_XML);
 	assertNotNull(is);
     }
     
     @Test
     public void testCreateConfiguration_Client() throws Exception {
-	InputStream is = testObj.createConfiguration(null, testObj.CLIENT_XML);
+	InputStream is = testObj.createConfiguration(null, JDiameterEndpoint.CLIENT_XML);
 	assertNotNull(is);
     }
     
     @Test
     public void testCreateConfiguration_Custom() throws Exception {
 	ClassLoader cl = Thread.currentThread().getContextClassLoader();
-	URL url = cl.getResource(testObj.SERVER_XML);
-	InputStream is = testObj.createConfiguration(new File(url.toURI()).getAbsolutePath(), testObj.SERVER_XML);
+	URL url = cl.getResource(JDiameterEndpoint.SERVER_XML);
+	InputStream is = testObj.createConfiguration(
+		new File(url.toURI()).getAbsolutePath(), JDiameterEndpoint.SERVER_XML);
 	assertNotNull(is);
     }
     

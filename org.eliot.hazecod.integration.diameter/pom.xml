@@ -23,6 +23,7 @@
 			<groupId>org.eliot.hazecod</groupId>
 			<artifactId>org.eliot.hazecod.camel.jdiameter</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.camel</groupId>
@@ -36,6 +37,38 @@
 			<version>2.0.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<!--
+			Pax Exam API:
+		-->
+		<dependency>
+			<groupId>org.ops4j.pax.exam</groupId>
+			<artifactId>pax-exam</artifactId>
+			<version>1.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<!--
+			During runtime Pax Exam will discover the OSGi container to use by
+			searching metadata available into classpath. Pax Exam comes with a
+			default container that uses [Pax Runner] for implementing the
+			container requirements:
+		-->
+		<dependency>
+			<groupId>org.ops4j.pax.exam</groupId>
+			<artifactId>pax-exam-container-default</artifactId>
+			<version>1.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<!--
+			If your test code is based on JUnit you will have to have the Junit
+			support artifact:
+		-->
+		<dependency>
+			<groupId>org.ops4j.pax.exam</groupId>
+			<artifactId>pax-exam-junit</artifactId>
+			<version>1.2.0</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 </project>

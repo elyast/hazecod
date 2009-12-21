@@ -34,7 +34,7 @@ public class JDiameterEndpoint extends DefaultEndpoint {
     InputStream createConfiguration(String path, 
 	    String defaultPath) throws Exception {
 	if (path == null) {
-	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+	    ClassLoader cl = getClass().getClassLoader();
 	    InputStream istream = cl.getResourceAsStream(defaultPath);
 	    return istream;
 	} 
