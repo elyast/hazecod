@@ -44,10 +44,10 @@
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.picocontainer</groupId>
-			<artifactId>com.springsource.org.picocontainer</artifactId>
-			<version>1.2.0</version>
-			<scope>provided</scope>
+			<groupId>picocontainer</groupId>
+			<artifactId>picocontainer</artifactId>
+			<version>1.2</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
