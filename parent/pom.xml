@@ -291,12 +291,42 @@
 						</execution>
 					</executions>
 				</plugin>
+				<!--
+					Note: settings and dependencies for the final osgi runtime (TESTS)
+					are just used in TestCases that annotated with this: @RunWith(
+					MavenConfiguredJUnit4TestRunner.class ) All other testcases will
+					use their own settings/provisioning inside @Configure Methods.
+				-->
+				<plugin>
+					<groupId>org.ops4j.pax.exam</groupId>
+					<artifactId>maven-paxexam-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>generate-config</id>
+							<phase>process-test-classes</phase>
+							<goals>
+								<goal>generate-config</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<options>
+							<platform>felix</platform>
+							<profiles>spring.dm</profiles>
+						</options>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
 
 	<reporting>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.1</version>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
@@ -324,11 +354,6 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>taglist-maven-plugin</artifactId>
 				<version>2.4</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jxr-plugin</artifactId>
-				<version>2.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

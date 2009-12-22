@@ -9,12 +9,13 @@
 	<description>Hazecod project</description>
 
 	<modules>
-	    <module>build-tools</module>
-		<module>parent</module>		
-		<module>org.eliot.hazecod.protocol.diameter</module>		
+		<module>build-tools</module>
+		<module>parent</module>
+		<module>org.eliot.hazecod.protocol.diameter</module>
 		<module>robotframework.jdiameter</module>
 		<module>org.eliot.hazecod.camel.jdiameter</module>
 		<module>org.eliot.hazecod.integration.diameter</module>
+		<module>diameter-acceptance-tests</module>
 	</modules>
 
 </project>
