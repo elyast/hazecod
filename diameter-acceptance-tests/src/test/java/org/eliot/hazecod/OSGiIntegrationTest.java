@@ -3,7 +3,6 @@ package org.eliot.hazecod;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
-import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.*;
 import static org.jdiameter.client.impl.helpers.Parameters.*;
 
 import java.util.concurrent.Future;
@@ -64,14 +63,9 @@ public class OSGiIntegrationTest {
     @Configuration
     public static Option[] configuration() {
 	return options(
-		vmOption("-DlocalRepository"), 
-		rawPaxRunnerOption("http.prxyHost", "demuprx000.nsn-net.net"), 
-		rawPaxRunnerOption("http.proxyPort", "8080"),
-		profile("spring.dm", "1.2.0"),
-		mavenBundle(maven("org.apache.felix", "org.apache.felix.configadmin", "1.2.4")),
-		mavenConfiguration(), 
-		wrappedBundle(mavenBundle(maven("org.springframework", "spring-tx", "2.5.6"))),
-		wrappedBundle(mavenBundle(maven("picocontainer", "picocontainer", "1.2"))));
+		wrappedBundle(mavenBundle(maven("aopalliance", "aopalliance", "1.0"))).instructions("Export-Package=*;version=1.0"),
+		mavenConfiguration()		
+		);
     }
 
     @Test
@@ -109,7 +103,7 @@ public class OSGiIntegrationTest {
 	case 2:
 	    return "INSTALLED";
 	default:
-	    return "UNKNOWN";
+	    return "" + state;
 	}
     }
 }
