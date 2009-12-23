@@ -309,6 +309,13 @@
 							</goals>
 						</execution>
 					</executions>
+					<configuration>
+						<options>
+							<localRepository>true</localRepository>						
+							<autoWrap>true</autoWrap>
+							<clean>true</clean>
+						</options>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
