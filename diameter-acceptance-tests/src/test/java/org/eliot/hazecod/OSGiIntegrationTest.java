@@ -63,14 +63,15 @@ public class OSGiIntegrationTest {
 
     @Configuration
     public static Option[] configuration() {
-	return options(vmOption("-DlocalRepository"), rawPaxRunnerOption(
-		"http.prxyHost", "demuprx000.nsn-net.net"), rawPaxRunnerOption(
-		"http.proxyPort", "8080"), mavenBundle(maven(
-		"org.apache.felix", "org.apache.felix.configadmin", "1.2.4")),
-		mavenConfiguration(), wrappedBundle(mavenBundle(maven(
-			"org.springframework", "spring-tx", "2.5.6"))),
-		wrappedBundle(mavenBundle(maven("picocontainer",
-			"picocontainer", "1.2"))));
+	return options(
+		vmOption("-DlocalRepository"), 
+		rawPaxRunnerOption("http.prxyHost", "demuprx000.nsn-net.net"), 
+		rawPaxRunnerOption("http.proxyPort", "8080"),
+		profile("spring.dm", "1.2.0"),
+		mavenBundle(maven("org.apache.felix", "org.apache.felix.configadmin", "1.2.4")),
+		mavenConfiguration(), 
+		wrappedBundle(mavenBundle(maven("org.springframework", "spring-tx", "2.5.6"))),
+		wrappedBundle(mavenBundle(maven("picocontainer", "picocontainer", "1.2"))));
     }
 
     @Test

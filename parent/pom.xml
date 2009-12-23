@@ -309,12 +309,6 @@
 							</goals>
 						</execution>
 					</executions>
-					<configuration>
-						<options>
-							<platform>felix</platform>
-							<profiles>spring.dm</profiles>
-						</options>
-					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
