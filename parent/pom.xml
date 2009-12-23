@@ -303,7 +303,7 @@
 					<executions>
 						<execution>
 							<id>generate-config</id>
-							<phase>process-test-classes</phase>
+							<phase>compile</phase>
 							<goals>
 								<goal>generate-config</goal>
 							</goals>
