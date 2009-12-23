@@ -64,12 +64,14 @@ public class OSGiIntegrationTest {
     public static Option[] configuration() {
 	return options(
 		wrappedBundle(mavenBundle(maven("aopalliance", "aopalliance", "1.0"))).instructions("Export-Package=*;version=1.0"),
-		mavenConfiguration()		
+		mavenConfiguration(),
+		waitForFrameworkStartup()
 		);
     }
 
     @Test
     public void testCamelIntegration() throws Exception {
+	Thread.sleep(10000);
 	assertThat(bundleContext, is(notNullValue()));
 	for (Bundle b : bundleContext.getBundles()) {
 	    System.out.println("Bundle " + b.getBundleId() + ":"
