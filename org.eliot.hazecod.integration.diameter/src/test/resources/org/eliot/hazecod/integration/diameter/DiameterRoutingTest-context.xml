@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:camelosgi="http://camel.apache.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+  	   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://camel.apache.org/schema/osgi http://camel.apache.org/schema/osgi/camel-osgi.xsd">
 
-	<camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
-		<route>
-			<from ref="diameterEndpoint" />
-			<bean ref="serviceBroker" method="handle"/>	
-			<to uri="mock:result"/>
-		</route>
-	</camelContext>
+	<camelosgi:camelContext id="camel" >
+		<camel:route>
+			<camel:from ref="diameterEndpoint" />
+			<camel:bean ref="serviceBroker" method="handle"/>	
+			<camel:to uri="mock:result"/>
+		</camel:route>
+	</camelosgi:camelContext>
 	<bean id="jdiameterFactory" class="org.eliot.hazecod.camel.jdiameter.JDiameterComponent">
 		<constructor-arg index="0" ref="camel" />
 	</bean>
