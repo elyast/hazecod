@@ -2,6 +2,7 @@ package org.eliot.hazecod.camel.jdiameter;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.util.Map;
 
 import mockit.Expectations;
@@ -83,7 +84,7 @@ public class JDiameterComponentTest {
 
     @Test
     public void testCreateEndpointStringStringMap_NotNull() throws Exception {
-	testObj.setConfigurationPath("notNull");
+	testObj.setServerConfigurationPath(new File("notNull"));
 	Endpoint endpoint = testObj.createEndpoint("tcp://localhost:3868");
 	assertNotNull(endpoint);
     }

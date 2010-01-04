@@ -3,6 +3,7 @@
  */
 package org.eliot.hazecod.camel.jdiameter;
 
+import java.io.File;
 import java.util.Map;
 
 import org.apache.camel.CamelContext;
@@ -17,7 +18,8 @@ import org.apache.camel.impl.DefaultComponent;
 public class JDiameterComponent extends DefaultComponent {
 
     
-    String configurationPath;
+    File serverConfigurationPath;
+    File clientConfigurationPath;
     
     /**
      * 
@@ -43,9 +45,12 @@ public class JDiameterComponent extends DefaultComponent {
     protected Endpoint createEndpoint(String uri, String remaining,
 	    Map parameters) throws Exception {
 	JDiameterEndpoint endpoint = createEndpoint();
-	if (configurationPath != null) {
-	    setProperties(configurationPath, parameters);
+	if (serverConfigurationPath != null) {
+	    setProperties(serverConfigurationPath, parameters);
 	}
+	if (clientConfigurationPath != null) {
+	    setProperties(clientConfigurationPath, parameters);
+	}	
 	return endpoint;
     }
     
@@ -54,7 +59,16 @@ public class JDiameterComponent extends DefaultComponent {
      */
     public JDiameterEndpoint createEndpoint() {
 	JDiameterEndpoint endpoint = new JDiameterEndpoint();
-	endpoint.setConfigurationPath(configurationPath);
+	String serverPath = null;
+	if (serverConfigurationPath != null) {
+	    serverPath = serverConfigurationPath.getAbsolutePath();
+	}
+	endpoint.setServerConfigurationPath(serverPath);
+	String clientPath = null;
+	if (clientConfigurationPath != null) {
+	    clientPath = clientConfigurationPath.getAbsolutePath();
+	}
+	endpoint.setClientConfigurationPath(clientPath);
 	endpoint.setExchangePattern(ExchangePattern.InOut);
 	return endpoint;
     }
@@ -62,15 +76,28 @@ public class JDiameterComponent extends DefaultComponent {
     /**
      * @param configurationPath Path to configuration
      */
-    public void setConfigurationPath(String configurationPath) {
-	this.configurationPath = configurationPath;
+    public void setServerConfigurationPath(File configurationPath) {
+	this.serverConfigurationPath = configurationPath;
     }
     
     /**
      * @return Configuration path
      */
-    public String getConfigurationPath() {
-	return configurationPath;
+    public File getServerConfigurationPath() {
+	return serverConfigurationPath;
     }
 
+    /**
+     * @param clientConfigurationPath Client configuration path
+     */
+    public void setClientConfigurationPath(File clientConfigurationPath) {
+	this.clientConfigurationPath = clientConfigurationPath;
+    }
+    
+    /**
+     * @return Configuration path of client
+     */
+    public File getClientConfigurationPath() {
+	return clientConfigurationPath;
+    }
 }

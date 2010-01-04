@@ -3,22 +3,7 @@ package org.eliot.hazecod;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
-import static org.jdiameter.client.impl.helpers.Parameters.*;
 
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
-import org.jdiameter.api.Answer;
-import org.jdiameter.api.Avp;
-import org.jdiameter.api.Message;
-import org.jdiameter.api.Mode;
-import org.jdiameter.api.Request;
-import org.jdiameter.api.ResultCode;
-import org.jdiameter.api.Session;
-import org.jdiameter.api.SessionFactory;
-import org.jdiameter.api.Stack;
-import org.jdiameter.client.impl.StackImpl;
-import org.jdiameter.client.impl.helpers.EmptyConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Inject;
@@ -27,6 +12,9 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext;
 
 /**
  * @author Eliot
@@ -35,26 +23,6 @@ import org.osgi.framework.BundleContext;
 @RunWith(JUnit4TestRunner.class)
 public class OSGiIntegrationTest {
 
-    private final class ClientConfiguration extends EmptyConfiguration {
-	public ClientConfiguration() {
-	    super();
-	    add(Assembler, Assembler.defValue());
-	    add(OwnDiameterURI, "aaa://localhost:1812");
-	    add(OwnRealm, "diacl.cca");
-	    add(OwnVendorID, 193L);
-	    add(ApplicationId, getInstance().add(VendorId, 193L).add(
-		    AuthApplId, 4L).add(AcctApplId, 0L));
-	    add(PeerTable, getInstance().add(PeerRating, 1).add(PeerName,
-		    "aaa://localhost:3868"));
-	    add(RealmTable, getInstance().add(RealmEntry,
-		    "eliot.cca.org:" + "localhost"));
-	}
-    }
-
-    static final int CCAPP = 4;
-    static final int VENDOR = 193;
-    static final int CCR = 272;
-    static final int TEN = 10;
     static final int ACTIVE = 32;
     
     @Inject
@@ -65,36 +33,42 @@ public class OSGiIntegrationTest {
 	return options(
 		wrappedBundle(mavenBundle(maven("aopalliance", "aopalliance", "1.0"))).instructions("Export-Package=*;version=1.0"),
 		mavenConfiguration(),
-		waitForFrameworkStartup()
+		waitForFrameworkStartup()		
 		);
     }
 
     @Test
-    public void testCamelIntegration() throws Exception {
-	Thread.sleep(10000);
+    public void testCamelIntegration() throws Exception {	
 	assertThat(bundleContext, is(notNullValue()));
 	for (Bundle b : bundleContext.getBundles()) {
 	    System.out.println("Bundle " + b.getBundleId() + ":"
 		    + b.getSymbolicName() + " is " + getState(b));
 	    assertEquals(ACTIVE, b.getState());
+	}		
+	ServiceReference[] sr = waitForServices(
+		ConfigurableOsgiBundleApplicationContext.class.getName(), 10000);
+	assertNotNull(sr);
+	assertEquals(1, sr.length);
+	for (ServiceReference serviceReference : sr) {
+	    System.out.println(serviceReference.getBundle().getSymbolicName());
 	}
+    }
 
-	Stack stack = new StackImpl();
-	org.jdiameter.api.Configuration configuration = new ClientConfiguration();
-	SessionFactory factory = stack.init(configuration);
-	// Waits for handshake at most 10 seconds
-	stack.start(Mode.ANY_PEER, TEN, TimeUnit.SECONDS);
-	Session session = factory.getNewSession();
-	Request msg = session.createRequest(CCR,
-		org.jdiameter.api.ApplicationId
-			.createByAuthAppId(VENDOR, CCAPP), "eliot.cca.org");
-	Future<Message> lock = session.send(msg);
-	Answer answer = (Answer) lock.get();
-	assertEquals(ResultCode.SUCCESS, answer.getAvps().getAvp(
-		Avp.RESULT_CODE).getInteger32());
-	session.release();
-	stack.stop(TEN, TimeUnit.SECONDS);
-	stack.destroy();
+    private ServiceReference[] waitForServices(String name, long timeout)
+	    throws InvalidSyntaxException, InterruptedException {
+	if (timeout <= 0) {
+	    throw new RuntimeException("Timeout must be greater than 0");
+	}
+	long timea = System.currentTimeMillis();
+	System.out.println(timea);
+	long timer = timeout;
+	int increment = 10;
+	while (bundleContext.getAllServiceReferences(name, null) == null && timer > 0) {
+	    Thread.sleep(increment);
+	    timer -= increment;
+	}
+	System.out.println("TimeToWait" + (System.currentTimeMillis() - timea));
+	return bundleContext.getAllServiceReferences(name, null);
     }
 
     private String getState(Bundle b) {

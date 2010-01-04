@@ -15,8 +15,10 @@
 	</camelosgi:camelContext>
 	<bean id="jdiameterFactory" class="org.eliot.hazecod.camel.jdiameter.JDiameterComponent">
 		<constructor-arg index="0" ref="camel" />
+		<property name="serverConfigurationPath" value="classpath:server.config.xml"></property>
+		<property name="clientConfigurationPath" value="classpath:configuration.xml"></property>
 	</bean>
-
+	
 	<bean id="diameterEndpoint" factory-bean="jdiameterFactory"
 		factory-method="createEndpoint">		
 	</bean>

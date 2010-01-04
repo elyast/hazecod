@@ -2,14 +2,15 @@
 Documentation	MMS send using IEC so without reservation						
 Suite Setup	Server	START					
 Suite Teardown	Server	STOP					
-Test Setup	Connect					
+Test Setup	Connect	${CURDIR}${/}config.xml					
 Test Teardown	Disconnect						
 Default Tags	MMS IEC						
 Test Timeout	16 minutes 40 seconds	simple test last too long					
 Library	org.robotframework.jdiameter.keyword.JDiameterLibrary						
+Library	OperatingSystem						
 							
 *Test Case*	*Action*	*Argument*	*Argument*	*Argument*	*Argument*	*Argument*	*Argument*
-Send MMS IEC	Send AVPs	MMS-IEC-CCR	From=486018020793	From-Location=262200	To_0=486018020793	To_0-Location=262200
-	...	CurrentTime=2009-08-06 10:38:00	MMS-Size=150	MMS-SendTime=2009-08-06 10:38:00			
-	Receive AVPs	MMS-IEC-CCA	Result=SUCCESS		
+Send MMS IEC	Send AVPs	MMS-IEC-CCR	From=486018020793	From-Location=262200	To_0=486018020793	To_0-Location=262200	CurrentTime=2009-08-06 10:38:00
+	...	MMS-Size=150	MMS-SendTime=2009-08-06 10:38:00				
+	Receive AVPs	MMS-IEC-CCA	Result=SUCCESS				
 							

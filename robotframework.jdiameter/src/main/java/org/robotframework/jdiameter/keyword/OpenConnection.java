@@ -12,7 +12,7 @@ public class OpenConnection implements EnhancedDocumentedKeyword {
 
     static final String DOCUMENTATION = "Open connection with server.";
 
-    static final String[] ARGUMENT_NAMES = new String[]{};
+    static final String[] ARGUMENT_NAMES = new String[]{"CONFIG_FILE"};
 
     String name;
     Client client;
