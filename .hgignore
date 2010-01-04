@@ -20,3 +20,4 @@ syntax: glob
 syntax: glob
 .checkstyle
 glob:org.eliot.hazecod.integration.diameter/dia.log
+glob:diameter-acceptance-tests/*.log
