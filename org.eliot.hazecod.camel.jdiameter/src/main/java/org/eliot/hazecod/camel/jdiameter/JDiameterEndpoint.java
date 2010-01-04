@@ -1,5 +1,6 @@
 package org.eliot.hazecod.camel.jdiameter;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
@@ -9,6 +10,8 @@ import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
 import org.jdiameter.api.Configuration;
 import org.jdiameter.server.impl.helpers.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Eliot
@@ -16,9 +19,11 @@ import org.jdiameter.server.impl.helpers.XMLConfiguration;
  */
 public class JDiameterEndpoint extends DefaultEndpoint {
 
+    static Logger logger = LoggerFactory.getLogger(JDiameterEndpoint.class);
     static final String SERVER_XML = "server-configuration.xml";
     static final String CLIENT_XML = "configuration.xml";
-    String configurationPath;
+    String serverConfigurationPath;
+    String clientConfigurationPath;
     
     /**
      * @param processor Processor
@@ -27,7 +32,7 @@ public class JDiameterEndpoint extends DefaultEndpoint {
      */
     public Consumer createConsumer(Processor processor) throws Exception {
 	Configuration configuration = new XMLConfiguration(
-	    createConfiguration(configurationPath, SERVER_XML));
+	    createConfiguration(serverConfigurationPath, SERVER_XML));
 	return new JDiameterConsumer(this, processor, configuration);
     }
 
@@ -38,7 +43,9 @@ public class JDiameterEndpoint extends DefaultEndpoint {
 	    InputStream istream = cl.getResourceAsStream(defaultPath);
 	    return istream;
 	} 
-	return new FileInputStream(path);
+	File file = new File(path);
+	logger.info(file.getAbsolutePath());
+	return new FileInputStream(file);
     }
 
     /**
@@ -48,7 +55,7 @@ public class JDiameterEndpoint extends DefaultEndpoint {
     public Producer createProducer() throws Exception {
 	Configuration configuration = 
 	    new org.jdiameter.client.impl.helpers.XMLConfiguration(
-		createConfiguration(configurationPath, CLIENT_XML));
+		createConfiguration(clientConfigurationPath, CLIENT_XML));
 	return new JDiameterProducer(this, configuration);
     }
 
@@ -62,8 +69,15 @@ public class JDiameterEndpoint extends DefaultEndpoint {
     /**
      * @param configuration Configuration
      */
-    public void setConfigurationPath(String configuration) {
-	this.configurationPath = configuration;
+    public void setServerConfigurationPath(String configuration) {
+	this.serverConfigurationPath = configuration;
+    }
+
+    /**
+     * @param clientPath Client pathConfiguration
+     */
+    public void setClientConfigurationPath(String clientPath) {
+	this.clientConfigurationPath = clientPath;
     }
     
     
