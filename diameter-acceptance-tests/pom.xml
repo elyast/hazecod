@@ -54,6 +54,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.aopalliance</artifactId>
+			<version>1.0_3</version>
+			<scope>provided</scope>
+		</dependency>		
+		<dependency>
 			<groupId>org.eliot</groupId>
 			<artifactId>org.eliot.hazecod.protocol.diameter</artifactId>
 			<version>1.5.3</version>
@@ -123,27 +129,87 @@
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam</artifactId>
 			<version>1.2.0</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-container-default</artifactId>
 			<version>1.2.0</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-junit</artifactId>
 			<version>1.2.0</version>
-			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>robotframework</groupId>
+			<artifactId>robotframework.jdiameter</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<!--
+				Note: settings and dependencies for the final osgi runtime (TESTS)
+				are just used in TestCases that annotated with this: @RunWith(
+				MavenConfiguredJUnit4TestRunner.class ) All other testcases will use
+				their own settings/provisioning inside @Configure Methods.
+			-->
+
 			<plugin>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>maven-paxexam-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-config</id>
+						<goals>
+							<goal>generate-config</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<options>
+						<localRepository>true</localRepository>
+						<autoWrap>true</autoWrap>
+						<clean>true</clean>
+					</options>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.3</version>
+				<executions>
+					<execution>
+						<phase>integration-test</phase>
+						<configuration>
+							<tasks>
+								<property name="glassfish_domain1"
+									location="${glassfish_home}/glassfish/domains/domain1" />
+								<property name="glassfish_domain1_deploy"
+									location="${glassfish_domain1}/autodeploy/bundles" />
+
+								<echo message="Glassfish deploy path: ${glassfish_domain1_deploy}" />
+								<property name="camel_jdiameter"
+									value="${maven.dependency.org.eliot.hazecod.org.eliot.hazecod.camel.jdiameter.jar.path}" />
+								<property name="integration_diameter"
+									value="${maven.dependency.org.eliot.hazecod.org.eliot.hazecod.integration.diameter.jar.path}" />
+
+								<copy todir="${glassfish_domain1_deploy}" file="${camel_jdiameter}" />
+								<copy todir="${glassfish_domain1_deploy}" file="${integration_diameter}" />
+								<sleep seconds="10" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>robot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
