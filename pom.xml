@@ -16,6 +16,7 @@
 		<module>org.eliot.hazecod.camel.jdiameter</module>
 		<module>org.eliot.hazecod.integration.diameter</module>
 		<module>diameter-acceptance-tests</module>
+		<module>tests</module>
 	</modules>
 
 </project>
