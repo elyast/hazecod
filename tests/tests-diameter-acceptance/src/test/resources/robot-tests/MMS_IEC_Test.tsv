@@ -1,6 +1,6 @@
 *Setting*	*Value*	*Value*	*Value*	*Value*	*Value*	*Value*	*Value*
 Documentation	MMS send using IEC so without reservation								
-Test Setup	Connect	${CURDIR}${/}config.xml					
+Test Setup	Connect	${CURDIR}${/}configuration.xml					
 Test Teardown	Disconnect						
 Default Tags	MMS IEC						
 Test Timeout	16 minutes 40 seconds	simple test last too long					

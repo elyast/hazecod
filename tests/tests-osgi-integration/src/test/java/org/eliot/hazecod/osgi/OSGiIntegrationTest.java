@@ -1,15 +1,12 @@
-package org.eliot.hazecod;
+package org.eliot.hazecod.osgi;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static org.ops4j.pax.exam.CoreOptions.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Inject;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.MavenConfiguredJUnit4TestRunner;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -20,22 +17,11 @@ import org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext
  * @author Eliot
  * 
  */
-@RunWith(JUnit4TestRunner.class)
+@RunWith(MavenConfiguredJUnit4TestRunner.class)
 public class OSGiIntegrationTest {
 
-    static final int ACTIVE = 32;
-    
     @Inject
     private BundleContext bundleContext;
-
-    @Configuration
-    public static Option[] configuration() {
-	return options(
-		wrappedBundle(mavenBundle(maven("aopalliance", "aopalliance", "1.0"))).instructions("Export-Package=*;version=1.0"),
-		mavenConfiguration(),
-		waitForFrameworkStartup()		
-		);
-    }
 
     @Test
     public void testCamelIntegration() throws Exception {	
@@ -43,7 +29,7 @@ public class OSGiIntegrationTest {
 	for (Bundle b : bundleContext.getBundles()) {
 	    System.out.println("Bundle " + b.getBundleId() + ":"
 		    + b.getSymbolicName() + " is " + getState(b));
-	    assertEquals(ACTIVE, b.getState());
+	    assertEquals(Bundle.ACTIVE, b.getState());
 	}		
 	ServiceReference[] sr = waitForServices(
 		ConfigurableOsgiBundleApplicationContext.class.getName(), 10000);
@@ -74,10 +60,12 @@ public class OSGiIntegrationTest {
     private String getState(Bundle b) {
 	int state = b.getState();
 	switch (state) {
-	case ACTIVE:
+	case Bundle.ACTIVE:
 	    return "ACTIVE";
-	case 2:
+	case Bundle.INSTALLED:
 	    return "INSTALLED";
+	case Bundle.RESOLVED:
+	    return "RESOLVED";
 	default:
 	    return "" + state;
 	}

@@ -1,15 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
-		<artifactId>parent</artifactId>
-		<groupId>org.eliot</groupId>
+		<artifactId>tests</artifactId>
+		<groupId>org.eliot.hazecod</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.eliot</groupId>
-	<artifactId>diameter-acceptance-tests</artifactId>
+	<groupId>org.eliot.hazecod</groupId>
+	<artifactId>tests-osgi-integration</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Diameter Acceptance tests</name>
+	<name>OSGi bundles integration test - installation</name>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
@@ -58,7 +59,7 @@
 			<artifactId>org.apache.servicemix.bundles.aopalliance</artifactId>
 			<version>1.0_3</version>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.eliot</groupId>
 			<artifactId>org.eliot.hazecod.protocol.diameter</artifactId>
@@ -129,25 +130,21 @@
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam</artifactId>
 			<version>1.2.0</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-container-default</artifactId>
 			<version>1.2.0</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-junit</artifactId>
 			<version>1.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>robotframework</groupId>
-			<artifactId>robotframework.jdiameter</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<!--
@@ -175,41 +172,6 @@
 						<clean>true</clean>
 					</options>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.3</version>
-				<executions>
-					<execution>
-						<phase>integration-test</phase>
-						<configuration>
-							<tasks>
-								<property name="glassfish_domain1"
-									location="${glassfish_home}/glassfish/domains/domain1" />
-								<property name="glassfish_domain1_deploy"
-									location="${glassfish_domain1}/autodeploy/bundles" />
-
-								<echo message="Glassfish deploy path: ${glassfish_domain1_deploy}" />
-								<property name="camel_jdiameter"
-									value="${maven.dependency.org.eliot.hazecod.org.eliot.hazecod.camel.jdiameter.jar.path}" />
-								<property name="integration_diameter"
-									value="${maven.dependency.org.eliot.hazecod.org.eliot.hazecod.integration.diameter.jar.path}" />
-
-								<copy todir="${glassfish_domain1_deploy}" file="${camel_jdiameter}" />
-								<copy todir="${glassfish_domain1_deploy}" file="${integration_diameter}" />
-								<sleep seconds="10" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>robot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
