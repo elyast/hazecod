@@ -1,7 +1,6 @@
 package org.robotframework.jdiameter;
 
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +17,10 @@ import org.jdiameter.api.Session;
 import org.jdiameter.api.SessionFactory;
 import org.jdiameter.api.Stack;
 import org.jdiameter.client.impl.helpers.XMLConfiguration;
+import org.robotframework.jdiameter.mapper.AvpCodeResolver;
+import org.robotframework.jdiameter.mapper.AvpPrinter;
+import org.robotframework.jdiameter.mapper.AvpTypeResolver;
+import org.robotframework.jdiameter.mapper.DataType;
 import org.robotframework.protocol.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +43,7 @@ public class JDiameterClient implements Client {
     Future<Message> responder;
     Request lastRequest;
     boolean testingConnection;
+    AvpPrinter printer;
 
     /**
      * @param configuration
@@ -83,7 +87,7 @@ public class JDiameterClient implements Client {
     public Object receiveMessage() {
 	try {
 	    Message actual = responder.get();
-	    logger.info("Received message: " + prettyPrint(actual));
+	    logger.info("Received message: " + printer.prettyPrint(actual));
 	    return actual;
 	} catch (Exception e) {
 	    throw new RuntimeException(e);
@@ -91,13 +95,14 @@ public class JDiameterClient implements Client {
     }
 
     /**
-     * @param msg Message to be sent
+     * @param msg
+     *            Message to be sent
      */
     @Override
     public void sendMessage(Object msg) {
 	this.lastRequest = (Request) msg;
 	try {
-	    logger.info("Send message: " + prettyPrint(lastRequest));
+	    logger.info("Send message: " + printer.prettyPrint(lastRequest));
 	    responder = session.send((Request) lastRequest);
 	} catch (Exception e) {
 	    throw new RuntimeException(e);
@@ -140,57 +145,20 @@ public class JDiameterClient implements Client {
 	return lastRequest;
     }
 
-    String prettyPrint(Message actual) throws AvpDataException {
-	StringBuffer printed = new StringBuffer();
-	printed.append("Msg{appId=").append(actual.getApplicationId());
-	printed.append(",command=").append(actual.getCommandCode());
-	printed.append(",e2e=").append(actual.getEndToEndIdentifier());
-	printed.append(",hbh=").append(actual.getHopByHopIdentifier());
-	printed.append(",isError=").append(actual.isError());
-	printed.append(",isProxy=").append(actual.isProxiable());
-	printed.append(",isReTransmit=").append(actual.isReTransmitted());
-	printed.append(",isRequest=").append(actual.isRequest());
-	printed.append(",sessionId=").append(actual.getSessionId());
-	printed.append("}\n");
-	prettyPrint(printed, actual.getApplicationIdAvps());
-	prettyPrint(printed, actual.getAvps());
-	return printed.toString();
-    }
-
-    void prettyPrint(StringBuffer printed, Set<ApplicationId> appIds) {
-	printed.append("Application AVPs[");
-	for (ApplicationId applicationId : appIds) {
-	    printed.append("appId.vendorId=").append(
-		    applicationId.getVendorId()).append(",");
-	    printed.append("appId.acctId=")
-		    .append(applicationId.getAcctAppId()).append(",");
-	    printed.append("appId.authId=")
-		    .append(applicationId.getAuthAppId()).append("\n");
-	}
-	printed.append("]\n");
-    }
-
-    void prettyPrint(StringBuffer printed, AvpSet avps) 
-    	throws AvpDataException {
-	if (avps == null) {
-	    return;
-	}
-	printed.append("AVPs[");
-	for (Avp avp : avps) {
-	    printed.append("avp.code=").append(avp.getCode()).append(",");
-	    printed.append("avp.vendorId=").append(avp.getVendorId()).append(
-		    ",");
-	    printed.append("avp.raw=").append(
-		    Arrays.toString(avp.getRaw())).append("\n");
-	}
-	printed.append("]");
-    }
+ 
 
     /**
-     * @param b if testing connection is etablished
+     * @param b
+     *            if testing connection is etablished
      */
     public void setTestingConnection(boolean b) {
 	testingConnection = b;
     }
 
+    /**
+     * @param printer AVP Printer
+     */
+    public void setPrinter(AvpPrinter printer) {
+	this.printer = printer;
+    }
 }

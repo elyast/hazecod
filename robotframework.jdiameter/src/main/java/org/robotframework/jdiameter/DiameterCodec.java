@@ -1,5 +1,9 @@
 package org.robotframework.jdiameter;
 
+import java.net.InetAddress;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.net.UnknownServiceException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,6 +21,7 @@ import org.jdiameter.api.Message;
 import org.jdiameter.api.Request;
 import org.jdiameter.api.ResultCode;
 import org.jdiameter.api.Session;
+import org.jdiameter.api.URI;
 import org.robotframework.jdiameter.mapper.AvpCodeResolver;
 import org.robotframework.jdiameter.mapper.AvpEnumResolver;
 import org.robotframework.jdiameter.mapper.GlobalDefaults;
@@ -33,21 +38,23 @@ import org.slf4j.LoggerFactory;
 public class DiameterCodec implements ProtocolCodec {
 
     static final int SECOND = 1000;
-    private static final String TIMEZONE_ID_UTC = "UTC";
-    private static final String HEX_PREFIX = "0x";
     private static final int DEFAULT_VENDOR = 0;
-    private static final String DEFAULT_START_TIME = "1900-01-01 00:00:00";
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String REQUEST_SUFFIX = "REQUEST";
     private static final String TYPE = "type";
     private static final String UNSIGNED_INT32 = "asUnsignedInt32";
+    private static final String OCTET_STRING = "asOctetString";
     private static final String VALUE = "value";
     private static final String VENDOR = "vendor";
     private static final String INT = "int";
+    private static final String URI = "uri";
     private static final String STRING = "string";
     private static final String LONG = "long";
     private static final String ENUM = "enum";
-    private static final Object TIME = "time";
+    private static final String ADDRESS = "address";
+    private static final String TIME = "time";
+    private static final String DOUBLE = "double";
+    private static final String FLOAT = "float";
     private static final String DESTINATION_REALM = "destinationRealm";
     private static final String VENDOR_ID = "vendorId";
     private static final String AUTH_APPLICATION_ID = "authApplicationId";
@@ -79,17 +86,8 @@ public class DiameterCodec implements ProtocolCodec {
      * Allows user to input in following format yyyy-MM-dd HH:mm:ss
      */
     DateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
-    /**
-     * Start time according to diameter specification Used in time conversion
-     */
-    long startTime;
     {
-	dateFormatter.setTimeZone(TimeZone.getTimeZone(TIMEZONE_ID_UTC));
-	try {
-	    startTime = dateFormatter.parse(DEFAULT_START_TIME).getTime();
-	} catch (ParseException e) {
-	    throw new RuntimeException(e);
-	}
+	dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     /**
@@ -285,13 +283,44 @@ public class DiameterCodec implements ProtocolCodec {
 	    avps.addAvp(code, (Integer) value, vendor, true, false);
 	}
 
+	if (DOUBLE.equals(type)) {
+	    value = new Double(valueText);
+	    avps.addAvp(code, (Double) value, vendor, true, false);
+	}
+	
+	if (FLOAT.equals(type)) {
+	    value = new Float(valueText);
+	    avps.addAvp(code, (Float) value, vendor, true, false);
+	}
+	
+	if (ADDRESS.equals(type)) {
+	    try {
+		value = InetAddress.getByName(valueText);
+		avps.addAvp(code, (InetAddress) value, vendor, true, false);
+	    } catch (UnknownHostException e) {
+		throw new IllegalArgumentException(e);
+	    }
+	}
+	
+	if (URI.equals(type)) {
+	    try {
+		value = new URI(valueText);
+		avps.addAvp(code, (URI) value, vendor, true, false);
+	    } catch (UnknownServiceException e) {
+		throw new IllegalArgumentException(e);
+	    } catch (URISyntaxException e) {
+		throw new IllegalArgumentException(e);
+	    }
+	}
+	
 	if (INT.equals(type)) {
 	    value = new Integer(valueText);
 	    avps.addAvp(code, (Integer) value, vendor, true, false);
 	}
 	if (STRING.equals(type)) {
 	    value = valueText;
-	    avps.addAvp(code, (String) value, vendor, true, false, false);
+	    avps.addAvp(code, (String) value, vendor, true, false, 
+		    elementProperties.isAsOctetString());
 	}
 	if (LONG.equals(type)) {
 	    value = new Long(valueText);
@@ -300,30 +329,18 @@ public class DiameterCodec implements ProtocolCodec {
 		    elementProperties.isAsUnsignedInt32());
 	}
 	if (TIME.equals(type)) {
-	    value = convertTime(valueText);
-	    avps.addAvp(code, (String) value, vendor, true, false, true);
+	    try {
+		value = dateFormatter.parse(valueText);
+		avps.addAvp(code, (Date) value, vendor, true, false);
+	    } catch (ParseException e) {
+		throw new IllegalArgumentException(e);
+	    }
 	}
 	if (value == null) {
 	    throw new IllegalArgumentException("Avp: "
 		    + elementProperties.getName()
 		    + " has null or unrecognized type: " + type + " value: "
 		    + valueText);
-	}
-    }
-
-    /**
-     * Converts time to Octet string
-     * 
-     * @param valueText
-     * @return
-     */
-    private String convertTime(String valueText) {
-	try {
-	    Date date = dateFormatter.parse(valueText);
-	    long time = (date.getTime() - startTime) / SECOND;
-	    return HEX_PREFIX + Long.toHexString(time);
-	} catch (ParseException e) {
-	    throw new RuntimeException(e);
 	}
     }
 
@@ -334,6 +351,7 @@ public class DiameterCodec implements ProtocolCodec {
 	String valueText;
 	String vendorText;
 	boolean asUnsignedInt32;
+	boolean asOctetString;
 
 	public ElementProperties(Element element) {
 	    name = element.getLocalName();
@@ -341,7 +359,13 @@ public class DiameterCodec implements ProtocolCodec {
 	    valueText = element.getAttributeValue(VALUE);
 	    vendorText = element.getAttributeValue(VENDOR);
 	    String u32 = element.getAttributeValue(UNSIGNED_INT32);
+	    String octet = element.getAttributeValue(OCTET_STRING);
 	    asUnsignedInt32 = Boolean.valueOf(u32);
+	    asOctetString = Boolean.valueOf(octet);
+	}
+
+	public boolean isAsOctetString() {
+	    return asOctetString;
 	}
 
 	public String getName() {

@@ -29,6 +29,10 @@ public enum DataType {
     GROUPED,
 
     /**
+     * URI
+     */
+    URI,
+    /**
      * float type
      */
     FLOAT_32,

@@ -43,11 +43,19 @@
  
  <bean id="messageComparator" class="org.robotframework.jdiameter.DiameterMessageComparator">
  	<property name="avptypeResolver" ref="avpTypeResolver"></property>
+ 	<property name="printer" ref="avpPrinter"></property>
+ </bean>
+ 
+ <bean id="avpPrinter" class="org.robotframework.jdiameter.mapper.AvpPrinter">
+ 	<property name="typeResolver" ref="avpTypeResolver"></property>
+ 	<property name="codeResolver" ref="avpCodeResolver"></property>
  </bean>
  
  <bean id="avpTypeResolver" class="org.robotframework.jdiameter.mapper.AvpTypeResolver"></bean>
  
- <bean id="client" class="org.robotframework.jdiameter.JDiameterClient"></bean>
+ <bean id="client" class="org.robotframework.jdiameter.JDiameterClient">
+ 	<property name="printer" ref="avpPrinter"></property>
+ </bean>
  
  <bean id="defaults" class="org.robotframework.jdiameter.mapper.GlobalDefaults"></bean>
  

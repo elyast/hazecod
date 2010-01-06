@@ -17,6 +17,9 @@ import org.jdiameter.api.Stack;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robotframework.jdiameter.mapper.AvpCodeResolver;
+import org.robotframework.jdiameter.mapper.AvpPrinter;
+import org.robotframework.jdiameter.mapper.AvpTypeResolver;
 
 /**
  * @author Eliot
@@ -44,14 +47,20 @@ public class JDiameterClientTest {
     @Mocked
     Answer answer;
 
+    private AvpPrinter printer;
+
     @Before
     public void setup() {
 	testObj = new JDiameterClient();
+	printer = new AvpPrinter();
+	testObj.setPrinter(printer);
+	printer.setTypeResolver(new AvpTypeResolver());
+	printer.setCodeResolver(new AvpCodeResolver());
     }
 
     @Test
     public void testOpenConnection_Null() {
-	testObj.setTestingConnection(true);
+	testObj.setTestingConnection(true);	
 	testObj.openConnection(null);
 	assertNotNull(testObj.getSession());
 	assertNotNull(testObj.stack);
@@ -104,6 +113,6 @@ public class JDiameterClientTest {
 	Session session = (Session) testObj.getSession();
 	Request request2 = session.createRequest(CCR_CCA, org.jdiameter.api.ApplicationId
 		.createByAccAppId(VENDOR_ID, DEF_APP_ID), "realm");
-	testObj.prettyPrint(request2);
+	printer.prettyPrint(request2);
     }
 }
