@@ -4,6 +4,7 @@ import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpDataException;
 import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Message;
+import org.robotframework.jdiameter.mapper.AvpPrinter;
 import org.robotframework.jdiameter.mapper.AvpTypeResolver;
 import org.robotframework.jdiameter.mapper.DataType;
 import org.robotframework.protocol.MessageComparator;
@@ -18,35 +19,45 @@ public class DiameterMessageComparator implements MessageComparator {
      */
     AvpTypeResolver avptypeResolver;
 
+    AvpPrinter printer;
+
     /**
      * Asserts expected in comparison with actual message
      * 
-     * @param exp Expected message
-     * @param act Actual message
+     * @param exp
+     *            Expected message
+     * @param act
+     *            Actual message
      */
     @Override
     public void evaluateMessage(Object exp, Object act) {
-	Message expected = (Message) exp;
-	Message actual = (Message) act;
-	assertEquals(expected.getApplicationId(), actual.getApplicationId());
-	assertEquals(expected.getCommandCode(), actual.getCommandCode());
-	assertEquals(expected.isError(), actual.isError());
-	assertEquals(expected.isProxiable(), actual.isProxiable());
-	assertEquals(expected.isRequest(), actual.isRequest());
-	assertEquals(expected.isReTransmitted(), actual.isReTransmitted());
-	AvpSet allAvps = actual.getAvps();
-	evaluate(expected.getAvps(), allAvps);
+	try {
+	    Message expected = (Message) exp;
+	    Message actual = (Message) act;
+	    assertEquals(expected.getApplicationId(), 
+		    actual.getApplicationId());
+	    assertEquals(expected.getCommandCode(), actual.getCommandCode());
+	    assertEquals(expected.isError(), actual.isError());
+	    assertEquals(expected.isProxiable(), actual.isProxiable());
+	    assertEquals(expected.isRequest(), actual.isRequest());
+	    assertEquals(expected.isReTransmitted(), actual.isReTransmitted());
+	    AvpSet allAvps = actual.getAvps();
+	    evaluate(expected.getAvps(), allAvps);
+	} catch (AvpDataException e) {
+	    throw new IllegalArgumentException(e);
+	}
     }
-    
+
     /**
      * Sets data type resolver
      * 
-     * @param avptypeResolver AVP data type resolver
+     * @param avptypeResolver
+     *            AVP data type resolver
      */
     public void setAvptypeResolver(AvpTypeResolver avptypeResolver) {
 	this.avptypeResolver = avptypeResolver;
     }
-    
+
     /**
      * Asserts avp sets
      * 
@@ -54,7 +65,8 @@ public class DiameterMessageComparator implements MessageComparator {
      * @param actual
      * @throws AvpDataException
      */
-    private void evaluate(AvpSet expected, AvpSet actual) {
+    private void evaluate(AvpSet expected, AvpSet actual)
+	    throws AvpDataException {
 	for (Avp avp : expected) {
 	    evaluate(avp, actual.getAvp(avp.getCode()));
 	}
@@ -67,9 +79,10 @@ public class DiameterMessageComparator implements MessageComparator {
      * @param actual
      * @throws AvpDataException
      */
-    private void evaluate(Avp expected, Avp actual) {
-	if (actual == null) {
-	    assertEquals(expected, null);
+    private void evaluate(Avp expected, Avp actual) throws AvpDataException {
+	if (actual == null && expected != null) {
+	    throw new RuntimeException("expected different that actual : "
+		    + printer.prettyPrint(expected) + ", actual: " + actual);
 	}
 	assertEquals(expected.getCode(), actual.getCode());
 	assertEquals(expected.getVendorId(), actual.getVendorId());
@@ -85,48 +98,39 @@ public class DiameterMessageComparator implements MessageComparator {
      * @throws AvpDataException
      */
     private void evaluateValue(Avp expected, Avp actual) {
-	DataType type = avptypeResolver.getType(expected.getCode());
 	try {
-	    switch (type) {
-	    case INT_32:
-	        assertEquals(expected.getInteger32(), actual.getInteger32());
-	        break;
-	    case INT_64:
-	        assertEquals(expected.getInteger64(), actual.getInteger64());
-	        break;
-	    case FLOAT_32:
-	        assertEquals(expected.getFloat32(), actual.getFloat32());
-	        break;
-	    case FLOAT_64:
-	        assertEquals(expected.getFloat64(), actual.getFloat64());
-	        break;
-	    case OCTET_STRING:
-	        assertEquals(expected.getOctetString(), 
-	        	actual.getOctetString());
-	        break;
-	    case ADDRESS:
-	        assertEquals(expected.getAddress(), actual.getAddress());
-	        break;
-	    case GROUPED:
-	        evaluate(expected.getGrouped(), actual.getGrouped());
-	        break;
-	    case TIME:
-	        assertEquals(expected.getTime(), actual.getTime());
-	        break;
-	    case UTF8_STRING:
-	        assertEquals(expected.getUTF8String(), actual.getUTF8String());
-	        break;
-	    case UNSIGNED_32:
-	        assertEquals(expected.getUnsigned32(), actual.getUnsigned32());
-	        break;
-	    case UNSIGNED_64:
-	        assertEquals(expected.getUnsigned64(), actual.getUnsigned64());
-	        break;
-	    default:
-	        throw new IllegalArgumentException("Not handled data type");
+	    DataType type = avptypeResolver.getType(expected.getCode());
+	    if (!DataType.GROUPED.equals(type)) {
+		Object expectedValue = avptypeResolver.getValue(expected);
+		Object actualValue = avptypeResolver.getValue(actual);
+		assertEquals("Comparison of AVPs: expected["
+			+ printer.prettyPrint(expected) + "] actual["
+			+ printer.prettyPrint(actual) + "]", expectedValue,
+			actualValue);
+		return;
 	    }
+
+	    evaluate(expected.getGrouped(), actual.getGrouped());
 	} catch (AvpDataException e) {
 	    throw new IllegalArgumentException(e);
+	}
+    }
+
+    /**
+     * Asserts simple type values
+     * 
+     * @param message
+     * @param expected
+     * @param actual
+     */
+    private void assertEquals(String message, Object expected, Object actual) {
+	if (expected == actual) {
+	    return;
+	}
+	if ((expected != null && !expected.equals(actual))) {
+	    throw new RuntimeException(message
+		    + " expected different that actual : " + "expected: "
+		    + expected + ", actual: " + actual);
 	}
     }
 
@@ -137,13 +141,14 @@ public class DiameterMessageComparator implements MessageComparator {
      * @param actual
      */
     private void assertEquals(Object expected, Object actual) {
-	if (expected == actual) {
-	    return;
-	}
-	if ((expected != null && !expected.equals(actual))) {
-	    throw new RuntimeException("expected different that actual : "
-		    + "expected: " + expected + ", actual: " + actual);
-	}
+	assertEquals("", expected, actual);
     }
 
+    /**
+     * @param printer
+     *            AvpPrinter
+     */
+    public void setPrinter(AvpPrinter printer) {
+	this.printer = printer;
+    }
 }

@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CREDIT_CONTROL_REQUEST vendorId="193" authApplicationId="4" destinationRealm="eliot.cca.org">
-	<SERVICE_CONTEXT_ID type="string" value="version1.12645.000.000.6.32270@3gpp.org"/>
+	<SERVICE_CONTEXT_ID type="string" value="version1.12645.000.000.6.32270@3gpp.org" asOctetString="false"/>
 	<CC_REQUEST_TYPE type="enum" value="EVENT_REQUEST"/>
 	<REQUESTED_ACTION type="int" value="2"/>
 	<CC_REQUEST_NUMBER type="long" asUnsignedInt32="true" value="0"/>
 	<EVENT_TIMESTAMP type="time" value="2009-08-07 00:00:00"/>
 	<SUBSCRIPTION_ID>
 		<SUBSCRIPTION_ID_TYPE type="enum" value="END_USER_E164"/>
-		<SUBSCRIPTION_ID_DATA type="string" value="49173100400020"/>
+		<SUBSCRIPTION_ID_DATA type="string" value="49173100400020" asOctetString="false"/>
 	</SUBSCRIPTION_ID>
 	<SERVICE_IDENTIFIER type="int" value="123" />
 	<GPP_SERVICE_INFORMATION vendor="3GPP">
 		<GPP_PS_INFORMATION>
-			<GPP_CHARGING_ID type="string" value="12345"/>
-			<GPP_SGSN_ADDRESS type="string" value="223.123.123.64"/>
-			<GPP_GGSN_ADDRESS type="string" value="123.123.123.64"/>
-			<GPP_USER_LOCATION_INFO type="string" value="0x0062F220"/>
+			<GPP_CHARGING_ID type="int" value="12345"/>
+			<GPP_SGSN_ADDRESS type="address" value="223.123.123.64"/>
+			<GPP_GGSN_ADDRESS type="address" value="123.123.123.64"/>
+			<GPP_USER_LOCATION_INFO type="string" value="0x0062F220" asOctetString="false"/>
 		</GPP_PS_INFORMATION>
 		<GPP_MMS_INFORMATION>
 			<GPP_ORIGINATOR_ADDRESS>
 				<GPP_ADDRESS_TYPE type="enum" value="MSISDN" />
 				<GPP_ADDRESSEE_TYPE type="enum" value="TO" />
-				<GPP_ADDRESS_DATA type="string" value="49173100400020"/>
+				<GPP_ADDRESS_DATA type="string" value="49173100400020" asOctetString="false"/>
 				<GPP_ADDRESS_DOMAIN>
-					<GPP_DOMAIN_NAME type="string" value="mms.vodafone.de"/>
-					<GPP_IMSI_MCC_MNC type="string" value="262002"/>
+					<GPP_DOMAIN_NAME type="string" value="mms.vodafone.de" asOctetString="false"/>
+					<GPP_IMSI_MCC_MNC type="string" value="262002" asOctetString="false"/>
 				</GPP_ADDRESS_DOMAIN>
 			</GPP_ORIGINATOR_ADDRESS>
 			<GPP_RECIPIENT_ADDRESS cardinality="0..n">
 				<GPP_ADDRESS_TYPE type="enum" value="MSISDN" />
 				<GPP_ADDRESSEE_TYPE type="enum" value="TO" />
-				<GPP_ADDRESS_DATA type="string" value="98765"/>
+				<GPP_ADDRESS_DATA type="string" value="98765" asOctetString="false"/>
 				<GPP_ADDRESS_DOMAIN>
-					<GPP_DOMAIN_NAME type="string" value="mms.vodafone.de"/>
-					<GPP_IMSI_MCC_MNC type="string" value="987654"/>
+					<GPP_DOMAIN_NAME type="string" value="mms.vodafone.de" asOctetString="false"/>
+					<GPP_IMSI_MCC_MNC type="string" value="987654" asOctetString="false"/>
 				</GPP_ADDRESS_DOMAIN>
 			</GPP_RECIPIENT_ADDRESS>
 			<GPP_MESSAGE_TYPE type="enum" value="SEND_REQUEST"/>

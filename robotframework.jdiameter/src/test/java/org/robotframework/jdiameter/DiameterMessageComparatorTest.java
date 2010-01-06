@@ -9,6 +9,7 @@ import java.util.Random;
 
 import mockit.Expectations;
 import mockit.Mocked;
+import mockit.NonStrict;
 import mockit.integration.junit4.JMockit;
 
 import org.jdiameter.api.ApplicationId;
@@ -24,6 +25,7 @@ import org.jdiameter.client.impl.helpers.XMLConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robotframework.jdiameter.mapper.AvpPrinter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -119,6 +121,7 @@ public class DiameterMessageComparatorTest {
     
     @Mocked Message actual;
     @Mocked Message expected;
+    @NonStrict AvpPrinter printer;
     
     @Test(expected=RuntimeException.class)
     public void testEvaluateMessage_NullActualAvp() throws Exception {
@@ -164,7 +167,7 @@ public class DiameterMessageComparatorTest {
 		returns(null);
 	    }
 	};
-	
+	testObj.setPrinter(printer);
 	testObj.evaluateMessage(expected, actual);
     }
     
