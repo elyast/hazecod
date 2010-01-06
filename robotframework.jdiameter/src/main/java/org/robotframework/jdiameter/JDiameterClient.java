@@ -1,14 +1,9 @@
 package org.robotframework.jdiameter;
 
 import java.io.InputStream;
-import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.jdiameter.api.ApplicationId;
-import org.jdiameter.api.Avp;
-import org.jdiameter.api.AvpDataException;
-import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Configuration;
 import org.jdiameter.api.Message;
 import org.jdiameter.api.Mode;
@@ -17,10 +12,7 @@ import org.jdiameter.api.Session;
 import org.jdiameter.api.SessionFactory;
 import org.jdiameter.api.Stack;
 import org.jdiameter.client.impl.helpers.XMLConfiguration;
-import org.robotframework.jdiameter.mapper.AvpCodeResolver;
 import org.robotframework.jdiameter.mapper.AvpPrinter;
-import org.robotframework.jdiameter.mapper.AvpTypeResolver;
-import org.robotframework.jdiameter.mapper.DataType;
 import org.robotframework.protocol.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
