@@ -27,6 +27,7 @@
 		<DwaTimeOut value="10000" />
 		<DpaTimeOut value="5000" />
 		<RecTimeOut value="10000" />
+		<ThreadPool/>
 	</Parameters>
 	<Network>
 		<Peers>
