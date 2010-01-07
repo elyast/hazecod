@@ -21,7 +21,6 @@ import org.jdiameter.api.Message;
 import org.jdiameter.api.Request;
 import org.jdiameter.api.ResultCode;
 import org.jdiameter.api.Session;
-import org.jdiameter.api.URI;
 import org.robotframework.jdiameter.mapper.AvpCodeResolver;
 import org.robotframework.jdiameter.mapper.AvpEnumResolver;
 import org.robotframework.jdiameter.mapper.GlobalDefaults;
@@ -304,8 +303,9 @@ public class DiameterCodec implements ProtocolCodec {
 	
 	if (URI.equals(type)) {
 	    try {
-		value = new URI(valueText);
-		avps.addAvp(code, (URI) value, vendor, true, false);
+		value = new org.jdiameter.api.URI(valueText);
+		avps.addAvp(code, (org.jdiameter.api.URI) value, 
+			vendor, true, false);
 	    } catch (UnknownServiceException e) {
 		throw new IllegalArgumentException(e);
 	    } catch (URISyntaxException e) {
