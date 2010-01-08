@@ -14,32 +14,22 @@
   
   <properties>
     <bundle.symbolicName>org.eliot.hazecod.protocol.diameter</bundle.symbolicName>
-    <wrapped.groupId>org.jdiameter</wrapped.groupId>
-    <wrapped.artifactId>server-impl</wrapped.artifactId>
-    <wrapped.version>1.5.3.1_351</wrapped.version>
+    <wrapped.groupId>org.mobicents.servers.diameter</wrapped.groupId>
+    <wrapped.artifactId>jdiameter-impl</wrapped.artifactId>
+    <wrapped.version>1.5.3.0-build350</wrapped.version>
   </properties>
   
   <dependencies>    
   	<dependency>
-      <groupId>org.jdiameter</groupId>
-      <artifactId>server-impl</artifactId>
-      <version>1.5.3.1_351</version>
+      <groupId>org.mobicents.servers.diameter</groupId>
+      <artifactId>jdiameter-impl</artifactId>
+      <version>1.5.3.0-build350</version>
     </dependency>
   	<dependency>
-      <groupId>org.jdiameter</groupId>
-      <artifactId>server-api</artifactId>
-      <version>1.5.3</version>
-    </dependency>   
-    <dependency>
-      <groupId>org.jdiameter</groupId>
-      <artifactId>client-impl</artifactId>
-      <version>1.5.3.1_350</version>
-    </dependency>
-  	<dependency>
-      <groupId>org.jdiameter</groupId>
-      <artifactId>client-api</artifactId>
-      <version>1.5.3</version>
-    </dependency>      
+      <groupId>org.mobicents.servers.diameter</groupId>
+      <artifactId>jdiameter-api</artifactId>
+      <version>1.5.3.0-build350</version>
+    </dependency>       
     
   </dependencies>
   
