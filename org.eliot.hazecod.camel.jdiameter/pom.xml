@@ -27,8 +27,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eliot</groupId>
-			<artifactId>org.eliot.org.jdiameter</artifactId>
-			<version>1.5.3.0-build350</version>
+			<artifactId>org.eliot.hazecod.protocol.diameter</artifactId>
+			<version>1.5.3</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

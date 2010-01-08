@@ -12,8 +12,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
-			<groupId>org.robotframework</groupId>
-			<artifactId>javalib-jdiameter</artifactId>
+			<groupId>robotframework</groupId>
+			<artifactId>robotframework.jdiameter</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
