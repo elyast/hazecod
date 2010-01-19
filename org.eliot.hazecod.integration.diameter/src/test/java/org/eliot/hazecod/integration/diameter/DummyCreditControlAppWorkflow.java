@@ -1,6 +1,6 @@
-package org.eliot.hazecod.integration.diameter.internal;
+package org.eliot.hazecod.integration.diameter;
 
-import org.eliot.hazecod.integration.diameter.ServiceBroker;
+import org.eliot.hazecod.integration.diameter.ServiceWorkflow;
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Request;
@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
  * @author Eliot
  * 
  */
-public class DiameterServiceBroker implements ServiceBroker {
+public class DummyCreditControlAppWorkflow implements ServiceWorkflow<Request, Answer> {
 
-    static Logger logger = LoggerFactory.getLogger(DiameterServiceBroker.class);
+    static Logger logger = LoggerFactory.getLogger(DummyCreditControlAppWorkflow.class);
     static final int EVENT_REQUEST = 4;
     static final int CC_REQUEST_NO = 415;
     static final int CC_REQUEST_TYPE = 416;
@@ -25,8 +25,7 @@ public class DiameterServiceBroker implements ServiceBroker {
      * @return Diameter Answer
      */
     @Override
-    public Object handle(Object parameter) {
-	Request request = (Request) parameter;
+    public Answer handle(Request request) {
 	logger.error("DiameterServiceBroker - fatal error");
 	logger.info("DiameterServiceBroker - fatal error");
 	Answer answer = request.createAnswer(ResultCode.SUCCESS);

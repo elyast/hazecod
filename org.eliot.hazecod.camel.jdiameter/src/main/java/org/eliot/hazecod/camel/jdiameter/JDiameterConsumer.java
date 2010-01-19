@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.impl.DefaultConsumer;
 import org.apache.camel.util.ExchangeHelper;
@@ -25,12 +26,30 @@ import org.jdiameter.server.impl.helpers.Parameters;
  */
 public class JDiameterConsumer extends DefaultConsumer {
 
+    public static final String APPLICATION_HEADER_NAME = "Application";
+
+    public static final String HOP_BY_HOP_ID_HEADER_NAME = "HopByHopId";
+
+    public static final String END_TO_END_ID_HEADER_NAME = "EndToEndId";
+
+    public static final String COMMAND_CODE_HEADER_NAME = "CommandCode";
+
+    public static final String SESSION_ID_HEADER_NAME = "SessionId";
+
+    public static final String APPLICATION_ID_HEADER_NAME = "ApplicationId";
+
+    static final int CCR_CCA_CODE = 272;
+
+    static final int CCA_APP_ID = 4;
+
     class NetworkListener implements NetworkReqListener {
 	static final String ANSWER = "Answer";
 
 	public Answer processRequest(Request request) {
 	    Exchange exchange = endpoint.createExchange();
-	    exchange.getIn().setBody(request);
+	    Message inMsg = exchange.getIn();
+	    inMsg.setBody(request);
+	    setHeader(inMsg, request);
 	    try {
 		getProcessor().process(exchange);
 	    } catch (Exception e) {
@@ -40,7 +59,7 @@ public class JDiameterConsumer extends DefaultConsumer {
 	    if (ExchangeHelper.isOutCapable(exchange)) {
 		body = exchange.getOut().getBody();
 	    } else {
-		body = exchange.getIn().getBody();
+		body = inMsg.getBody();
 	    }
 	    ObjectHelper.notNull(body, ANSWER);
 	    return (Answer) body;
@@ -69,6 +88,24 @@ public class JDiameterConsumer extends DefaultConsumer {
 	super(endpoint, processor);
 	this.endpoint = endpoint;
 	this.configuration = configuration;
+    }
+
+    void setHeader(Message msg, Request request) {
+	long appId = request.getApplicationId();
+	int commandCode = request.getCommandCode();
+	String sessionId = request.getSessionId();
+	long e2eId = request.getEndToEndIdentifier();
+	long hbhId = request.getHopByHopIdentifier();
+	msg.setHeader(APPLICATION_ID_HEADER_NAME, appId);
+	msg.setHeader(SESSION_ID_HEADER_NAME, sessionId);
+	msg.setHeader(COMMAND_CODE_HEADER_NAME, commandCode);
+	msg.setHeader(END_TO_END_ID_HEADER_NAME, e2eId);
+	msg.setHeader(HOP_BY_HOP_ID_HEADER_NAME, hbhId);
+	Application app = Application.UNKNOWN;
+	if (appId == CCA_APP_ID && commandCode == CCR_CCA_CODE) {
+	    app = Application.CCA;
+	}
+	msg.setHeader(APPLICATION_HEADER_NAME, app.toString());
     }
 
     protected void doStart() throws Exception {
