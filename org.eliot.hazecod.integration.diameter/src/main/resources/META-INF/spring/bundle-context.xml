@@ -14,10 +14,18 @@
 	-->
 
 	<camelosgi:camelContext id="camel">
-
-		<camel:route id="diameter">
+		<camel:route>
 			<camel:from ref="diameterEndpoint" />
-			<camel:bean ref="serviceBroker" method="handle" />
+			<camel:choice>
+				<camel:when>
+					<camel:simple>${in.header.Application}=='CCA'</camel:simple>
+					<camel:bean ref="creditControlAppWorkflow" method="handle" />
+				</camel:when>
+				<camel:otherwise>
+					<camel:bean ref="serviceUnavailableWorkflow" method="handle" />
+				</camel:otherwise>
+			</camel:choice>
+			<camel:to uri="mock:result" />
 		</camel:route>
 	</camelosgi:camelContext>
 
@@ -28,7 +36,5 @@
 	<bean id="diameterEndpoint" factory-bean="jdiameterFactory"
 		factory-method="createEndpoint">		
 	</bean>
-	
-	<bean id="serviceBroker" class="org.eliot.hazecod.integration.diameter.internal.DiameterServiceBroker"></bean>
 
 </beans>

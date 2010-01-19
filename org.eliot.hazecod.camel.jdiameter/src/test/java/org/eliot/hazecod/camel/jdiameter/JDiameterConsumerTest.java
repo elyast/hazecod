@@ -81,13 +81,17 @@ public class JDiameterConsumerTest {
 		endpoint.createExchange();
 		returns(exchange);
 		exchange.getIn();
-		returns(message);
+		returns(message);		
 		message.setBody(request);
+		message.setHeader(JDiameterConsumer.APPLICATION_ID_HEADER_NAME, withAny(0L));
+		message.setHeader(JDiameterConsumer.SESSION_ID_HEADER_NAME, withAny(""));
+		message.setHeader(JDiameterConsumer.COMMAND_CODE_HEADER_NAME, withAny(0));
+		message.setHeader(JDiameterConsumer.END_TO_END_ID_HEADER_NAME, withAny(0L));
+		message.setHeader(JDiameterConsumer.HOP_BY_HOP_ID_HEADER_NAME, withAny(0L));
+		message.setHeader(JDiameterConsumer.APPLICATION_HEADER_NAME, withAny(""));
 		processor.process(exchange);
 		exchange.getPattern();
 		returns(ExchangePattern.InOnly);
-		exchange.getIn();
-		returns(message);
 		message.getBody();
 		returns(answer);
 	    }
