@@ -12,16 +12,6 @@
 		bundle outside of an OSGi container
 	-->
 
-	<osgi:reference bean-name="userSessionFactory" id="userSessionFactoryService"
-		interface="org.eliot.hazecod.session.UserSessionFactory">
-	</osgi:reference>
-	
-	<osgi:reference bean-name="billingEngine" id="billingEngineService"
-		interface="org.eliot.hazecod.billing.BillingEngine">
-	</osgi:reference>
-	
-	<osgi:reference bean-name="userService" id="userBeanService"
-		interface="org.eliot.hazecod.management.user.UserManagementService">
-	</osgi:reference>	
-
+	<osgi:service ref="userService" interface="org.eliot.hazecod.management.user.UserManagementService">
+	</osgi:service>
 </beans>

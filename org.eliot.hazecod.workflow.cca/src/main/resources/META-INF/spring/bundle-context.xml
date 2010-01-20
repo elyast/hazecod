@@ -7,6 +7,7 @@
 		<property name="converter" ref="converterBean"></property>
 		<property name="sessionFactory" ref="userSessionFactoryService"></property>
 		<property name="billingEngine" ref="billingEngineService"></property>
+		<property name="userService" ref="userBeanService"></property>
 	</bean>
 	
 	<bean id="converterBean" class="org.eliot.hazecod.workflow.cca.internal.DiameterMessageToBilliableEventConverter">

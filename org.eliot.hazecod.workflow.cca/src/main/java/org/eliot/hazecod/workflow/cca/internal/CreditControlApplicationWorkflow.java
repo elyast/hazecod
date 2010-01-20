@@ -107,5 +107,12 @@ public class CreditControlApplicationWorkflow implements
     public void setSessionFactory(UserSessionFactory sessionFactory) {
 	this.sessionFactory = sessionFactory;
     }
+    
+    /**
+     * @param userService User Service
+     */
+    public void setUserService(UserManagementService userService) {
+	this.userService = userService;
+    }
 
 }
