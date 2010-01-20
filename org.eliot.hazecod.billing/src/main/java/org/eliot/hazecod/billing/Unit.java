@@ -1,11 +1,27 @@
 package org.eliot.hazecod.billing;
 
-public interface Unit {
+/**
+ * @author Eliot
+ * @param <V> Value Type
+ *
+ */
+public interface Unit<V> {
 
+    /**
+     * @author Eliot
+     *
+     */
     public enum UnitType {
-	TIME, MONEY, BYTES_SENT, BYTES_RECEIVED, BYTES, OTHER 
+	TIME, MONEY, BYTES_SENT, BYTES_RECEIVED, BYTES, SPECIFIC_UNIT 
     }
     
+    /**
+     * @return Type of unit
+     */
     UnitType getType();
-    long getValue();
+    
+    /**
+     * @return Value of units
+     */
+    V getValue();
 }
