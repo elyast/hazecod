@@ -13,14 +13,14 @@
 		<module>parent</module>
 		<module>robotframework.jdiameter</module>
 		<module>org.eliot.hazecod.protocol.diameter</module>
-		<module>org.eliot.hazecod.camel.jdiameter</module>
-		<module>org.eliot.hazecod.integration.diameter</module>
-		<module>tests</module>
-		<module>org.eliot.hazecod.workflow.cca</module>
-		<module>org.eliot.hazecod.billing</module>
-		<module>org.eliot.hazecod.session</module>
+		<module>org.eliot.hazecod.camel.jdiameter</module>		
 		<module>org.eliot.hazecod.management.user</module>
+		<module>org.eliot.hazecod.billing</module>
+		<module>org.eliot.hazecod.session</module>		
 		<module>org.eliot.hazecod.lifecycle.user</module>
+		<module>org.eliot.hazecod.workflow.cca</module>
+		<module>org.eliot.hazecod.integration.diameter</module>
+		<module>tests</module>		
 	</modules>
 
 </project>
