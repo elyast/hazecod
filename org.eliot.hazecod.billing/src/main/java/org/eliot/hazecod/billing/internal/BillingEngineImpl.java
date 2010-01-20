@@ -5,14 +5,26 @@ import org.eliot.hazecod.billing.BillingEngine;
 import org.eliot.hazecod.billing.BillingResult;
 import org.eliot.hazecod.management.user.User;
 
+/**
+ * @author Eliot
+ *
+ */
 public class BillingEngineImpl implements BillingEngine {
 
+    /** 
+     * @param user User
+     * @return Event to be billable
+     */
     @Override
     public BillableEvent createEmptyBillingEvent(User user) {
 	// TODO Auto-generated method stub
 	return null;
     }
 
+    /**
+     * @param billableEvent event to be billed
+     * @return result of do the billing
+     */
     @Override
     public BillingResult process(BillableEvent billableEvent) {
 	// TODO Auto-generated method stub
