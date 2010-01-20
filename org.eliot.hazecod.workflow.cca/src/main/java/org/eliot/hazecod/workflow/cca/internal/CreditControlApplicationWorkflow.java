@@ -85,5 +85,27 @@ public class CreditControlApplicationWorkflow implements
 	    throw new IllegalArgumentException(e);
 	}
     }
+    
+    /**
+     * @param billingEngine BillingEngine
+     */
+    public void setBillingEngine(BillingEngine billingEngine) {
+	this.billingEngine = billingEngine;
+    }
+    
+    /**
+     * @param converter Converter
+     */
+    public void setConverter(
+	    DiameterMessageToBilliableEventConverter converter) {
+	this.converter = converter;
+    }
+    
+    /**
+     * @param sessionFactory SessionFactory
+     */
+    public void setSessionFactory(UserSessionFactory sessionFactory) {
+	this.sessionFactory = sessionFactory;
+    }
 
 }
