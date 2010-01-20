@@ -1,16 +1,75 @@
 package org.eliot.hazecod.billing;
 
+import java.util.Date;
 import java.util.List;
 
+import org.eliot.hazecod.billing.Unit.UnitType;
 import org.eliot.hazecod.management.user.User;
 
+/**
+ * @author Eliot
+ *
+ */
 public interface BillableEvent {
 
+    /**
+     * @author Eliot
+     *
+     */
+    public enum BillType {
+	CHARGE_ONLY, GRANT_ONLY, CHARGE_GRANT, CALCULATION_ONLY, GRANT_CHECK;
+
+	/**
+	 * @return If this event will be charged
+	 */
+	public boolean isChargeable() {
+	    return CHARGE_ONLY.equals(this) || CHARGE_GRANT.equals(this);
+	}
+    }
+    
+    /**
+     * @return User
+     */
     User getUser();
     
-    long getEventTimestamp();
+    /**
+     * @return Timestamp of charge
+     */
+    Date getEventTimestamp();
     
-    List<Unit> getUsedUnits();
+    /**
+     * @param event EventTimeStamp
+     */
+    void setEventTimestamp(Date event);
     
-    List<Unit> getRequestedUnits();
+    /**
+     * @return Used Units
+     */
+    List<Unit<?>> getUsedUnits();
+    
+    /**
+     * @param unitType type
+     * @param unitValue value
+     */
+    void addUsedUnit(UnitType unitType, Object unitValue);
+    
+    /**
+     * @return Billing Type
+     */
+    BillType getType();
+    
+    /**
+     * @param type Billing Type
+     */
+    void setType(BillType type);
+    
+    /**
+     * @return Interpretation context
+     */
+    String getContext();
+
+    /**
+     * @param context Interpretation context
+     */
+    void setContext(String context);
 }

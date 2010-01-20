@@ -55,8 +55,9 @@ public class CreditControlApplicationWorkflow implements
 	    user = setupUser(request, userSession);
 	}
 
-	BillableEvent billableEvent = converter.createBillableEvent(request,
-		user);
+	BillableEvent billableEvent = billingEngine
+		.createEmptyBillingEvent(user);
+	converter.fillBillableEvent(billableEvent, request);
 	BillingResult billingResult = billingEngine.process(billableEvent);
 
 	boolean isSuccess = billingResult.isSucceded();
