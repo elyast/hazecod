@@ -17,8 +17,7 @@ public class BillingEngineImpl implements BillingEngine {
      */
     @Override
     public BillableEvent createEmptyBillingEvent(User user) {
-	// TODO Auto-generated method stub
-	return null;
+	return new BillingEvent(user);
     }
 
     /**

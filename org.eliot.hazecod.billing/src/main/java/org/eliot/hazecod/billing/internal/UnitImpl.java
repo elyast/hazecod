@@ -9,13 +9,23 @@ import org.eliot.hazecod.billing.Unit;
  */
 public class UnitImpl<V> implements Unit<V> {
 
+    UnitType unitType;
+    V unitValue;
+    /**
+     * @param unitType Unit Type
+     * @param unitValue Unit Value
+     */
+    public UnitImpl(UnitType unitType, V unitValue) {
+	this.unitType = unitType;
+	this.unitValue = unitValue;
+    }
+
     /**
      * @return unit type
      */
     @Override
     public org.eliot.hazecod.billing.Unit.UnitType getType() {
-	// TODO Auto-generated method stub
-	return null;
+	return unitType;
     }
 
     /**
@@ -23,8 +33,7 @@ public class UnitImpl<V> implements Unit<V> {
      */
     @Override
     public V getValue() {
-	// TODO Auto-generated method stub
-	return null;
+	return unitValue;
     }
 
 }

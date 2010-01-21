@@ -1,5 +1,7 @@
 package org.eliot.hazecod.billing.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -14,15 +16,30 @@ import org.eliot.hazecod.management.user.User;
  */
 public class BillingEvent implements BillableEvent {
 
+    User user;
+    List<Unit<?>> usedUnits;
+    BillType type;
+    String context;
+    Date eventTime;
+    
     /**
+     * @param user User to be charged
+     */
+    public BillingEvent(User user) {
+	this.user = user;
+	this.usedUnits = new ArrayList<Unit<?>>();
+    }
+
+    /**
+     * @param <V> Value Type
      * @param unitType Unit Type
      * @param unitValue Unit Value
      * 
      */
     @Override
-    public void addUsedUnit(UnitType unitType, Object unitValue) {
-	// TODO Auto-generated method stub
-
+    public <V> void addUsedUnit(UnitType unitType, V  unitValue) {
+	UnitImpl<?> unit = new UnitImpl<V>(unitType, unitValue);
+	usedUnits.add(unit);
     }
 
     /**
@@ -30,8 +47,7 @@ public class BillingEvent implements BillableEvent {
      */
     @Override
     public String getContext() {
-	// TODO Auto-generated method stub
-	return null;
+	return context;
     }
 
     /** 
@@ -39,8 +55,7 @@ public class BillingEvent implements BillableEvent {
      */
     @Override
     public Date getEventTimestamp() {
-	// TODO Auto-generated method stub
-	return null;
+	return eventTime;
     }
     
     /** 
@@ -48,8 +63,7 @@ public class BillingEvent implements BillableEvent {
      */
     @Override
     public BillType getType() {
-	// TODO Auto-generated method stub
-	return null;
+	return type;
     }
 
     /** 
@@ -57,8 +71,7 @@ public class BillingEvent implements BillableEvent {
      */
     @Override
     public List<Unit<?>> getUsedUnits() {
-	// TODO Auto-generated method stub
-	return null;
+	return Collections.unmodifiableList(usedUnits);
     }
 
     /** 
@@ -66,8 +79,7 @@ public class BillingEvent implements BillableEvent {
      */
     @Override
     public User getUser() {
-	// TODO Auto-generated method stub
-	return null;
+	return user;
     }
 
     /** 
@@ -75,8 +87,7 @@ public class BillingEvent implements BillableEvent {
      */
     @Override
     public void setContext(String context) {
-	// TODO Auto-generated method stub
-
+	this.context = context;
     }
 
     /** 
@@ -84,8 +95,7 @@ public class BillingEvent implements BillableEvent {
      */
     @Override
     public void setEventTimestamp(Date event) {
-	// TODO Auto-generated method stub
-
+	this.eventTime = event;
     }
 
     /** 
@@ -93,8 +103,7 @@ public class BillingEvent implements BillableEvent {
      */
     @Override
     public void setType(BillType type) {
-	// TODO Auto-generated method stub
-
+	this.type = type;
     }
 
 }
