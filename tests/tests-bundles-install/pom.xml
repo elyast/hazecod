@@ -23,9 +23,34 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eliot.hazecod</groupId>
-			<artifactId>org.eliot.hazecod.integration.diameter</artifactId>
+			<artifactId>org.eliot.hazecod.lifecycle.user</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.eliot.hazecod</groupId>
+			<artifactId>org.eliot.hazecod.management.user</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.eliot.hazecod</groupId>
+			<artifactId>org.eliot.hazecod.session</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eliot.hazecod</groupId>
+			<artifactId>org.eliot.hazecod.billing</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.eliot.hazecod</groupId>
+			<artifactId>org.eliot.hazecod.workflow.cca</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.eliot.hazecod</groupId>
+			<artifactId>org.eliot.hazecod.integration.diameter</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>		
 	</dependencies>
 
 	<properties>
