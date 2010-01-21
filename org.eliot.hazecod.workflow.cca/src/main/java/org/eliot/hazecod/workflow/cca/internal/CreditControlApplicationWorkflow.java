@@ -66,7 +66,26 @@ public class CreditControlApplicationWorkflow implements
 	    resultCode = DIAMETER_RATING_FAILED;
 	}
 	Answer answer = request.createAnswer(resultCode);
+	addMandatoryAvps(answer, request);
 	return answer;
+    }
+
+    void addMandatoryAvps(Answer answer, Request request) {
+	AvpSet avps = request.getAvps();
+	try {
+	    int requestType = converter.getRequestType(avps).id();
+	    AvpSet avpsAnsw = answer.getAvps();
+	    avpsAnsw.addAvp(
+		    DiameterMessageToBilliableEventConverter.CC_REQUEST_TYPE, 
+		    requestType);
+	    long requestNo = converter.getRequestNo(avps);
+	    avpsAnsw.addAvp(
+		    DiameterMessageToBilliableEventConverter.CC_REQUEST_NUMBER, 
+		    requestNo, true);
+	} catch (AvpDataException e) {
+	    throw new IllegalArgumentException(e);
+	}
+	
     }
 
     User setupUser(Request request, UserSession userSession) {
