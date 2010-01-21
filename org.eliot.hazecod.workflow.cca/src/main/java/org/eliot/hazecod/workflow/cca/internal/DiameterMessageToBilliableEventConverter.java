@@ -150,10 +150,10 @@ public class DiameterMessageToBilliableEventConverter {
 	}
     }
 
-//    long getRequestNo(AvpSet avps) throws AvpDataException {
-//	Avp requestNoAvp = avps.getAvp(CC_REQUEST_NUMBER);
-//	return requestNoAvp.getUnsigned32();
-//    }
+    long getRequestNo(AvpSet avps) throws AvpDataException {
+	Avp requestNoAvp = avps.getAvp(CC_REQUEST_NUMBER);
+	return requestNoAvp.getUnsigned32();
+    }
 
     CCRequestType getRequestType(AvpSet avps) throws AvpDataException {
 	Avp requestTypeAvp = avps.getAvp(CC_REQUEST_TYPE);

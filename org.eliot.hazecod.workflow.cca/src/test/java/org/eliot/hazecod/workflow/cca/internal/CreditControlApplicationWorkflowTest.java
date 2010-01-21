@@ -2,6 +2,7 @@ package org.eliot.hazecod.workflow.cca.internal;
 
 import static org.junit.Assert.*;
 import static org.eliot.hazecod.workflow.cca.internal.CreditControlApplicationWorkflow.*;
+import static org.eliot.hazecod.workflow.cca.internal.DiameterMessageToBilliableEventConverter.CC_REQUEST_NUMBER;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -14,6 +15,7 @@ import org.eliot.hazecod.management.user.User;
 import org.eliot.hazecod.management.user.UserManagementService;
 import org.eliot.hazecod.session.UserSession;
 import org.eliot.hazecod.session.UserSessionFactory;
+import org.eliot.hazecod.workflow.cca.internal.DiameterMessageToBilliableEventConverter.CCRequestType;
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpDataException;
@@ -31,6 +33,7 @@ public class CreditControlApplicationWorkflowTest {
         
     @Mocked Request request;
     @Mocked UserSession userSession;
+    @Mocked AvpSet avpsAnswer;
     @Mocked AvpSet avps;
     @Mocked Avp subscriptionIdAvp;
     @Mocked Avp subscriptionData;
@@ -56,7 +59,7 @@ public class CreditControlApplicationWorkflowTest {
     }
 
     @Test
-    public void testHandle_BillingOK() {
+    public void testHandle_BillingOK() throws AvpDataException {
 	new Expectations() {{
 	    request.getSessionId();
 	    returns("xx");
@@ -66,19 +69,30 @@ public class CreditControlApplicationWorkflowTest {
 	    returns(user);
 	    billing.createEmptyBillingEvent(user);
 	    returns(billableEvent);
+	    converter.fillBillableEvent(billableEvent, request);
 	    billing.process(billableEvent);
 	    returns(billingResult);
 	    billingResult.isSucceded();
 	    returns(true);
 	    request.createAnswer(ResultCode.SUCCESS);
 	    returns(answer);
+	    request.getAvps();
+	    returns(avps);
+	    converter.getRequestType(avps);
+	    returns(CCRequestType.EVENT_REQUEST);
+	    answer.getAvps();
+	    returns(avpsAnswer);
+	    avpsAnswer.addAvp(CC_REQUEST_TYPE, 4);
+	    converter.getRequestNo(avps);
+	    returns(0L);
+	    avpsAnswer.addAvp(CC_REQUEST_NUMBER, 0L, true);
 	}};
 	Answer answer = testObj.handle(request);
 	assertNotNull(answer);
     }
     
     @Test
-    public void testHandle_BillingNOK() {
+    public void testHandle_BillingNOK() throws AvpDataException {
 	new Expectations() {{
 	    request.getSessionId();
 	    returns("xx");
@@ -88,12 +102,23 @@ public class CreditControlApplicationWorkflowTest {
 	    returns(user);
 	    billing.createEmptyBillingEvent(user);
 	    returns(billableEvent);
+	    converter.fillBillableEvent(billableEvent, request);
 	    billing.process(billableEvent);
 	    returns(billingResult);
 	    billingResult.isSucceded();
 	    returns(false);
 	    request.createAnswer(DIAMETER_RATING_FAILED);
 	    returns(answer);
+	    request.getAvps();
+	    returns(avps);
+	    converter.getRequestType(avps);
+	    returns(CCRequestType.EVENT_REQUEST);
+	    answer.getAvps();
+	    returns(avpsAnswer);
+	    avpsAnswer.addAvp(CC_REQUEST_TYPE, 4);
+	    converter.getRequestNo(avps);
+	    returns(0L);
+	    avpsAnswer.addAvp(CC_REQUEST_NUMBER, 0L, true);
 	}};
 	Answer answer = testObj.handle(request);
 	assertNotNull(answer);
