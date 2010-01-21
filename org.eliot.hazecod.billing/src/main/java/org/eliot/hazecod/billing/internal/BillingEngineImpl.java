@@ -26,8 +26,9 @@ public class BillingEngineImpl implements BillingEngine {
      */
     @Override
     public BillingResult process(BillableEvent billableEvent) {
-	// TODO Auto-generated method stub
-	return null;
+	BillingResultImpl result = new BillingResultImpl();
+	result.setSucceeded(true);
+	return result;
     }
 
 }
