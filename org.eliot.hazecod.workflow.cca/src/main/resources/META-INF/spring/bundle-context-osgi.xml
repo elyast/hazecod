@@ -23,5 +23,8 @@
 	<osgi:reference bean-name="userService" id="userBeanService"
 		interface="org.eliot.hazecod.management.user.UserManagementService">
 	</osgi:reference>	
+	
+	<osgi:service ref="creditControlAppWorkflow" interface="org.eliot.hazecod.integration.diameter.ServiceWorkflow">
+	</osgi:service>
 
 </beans>

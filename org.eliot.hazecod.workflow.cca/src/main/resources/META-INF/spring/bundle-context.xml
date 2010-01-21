@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 	
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="ccaWorkflow" class="org.eliot.hazecod.workflow.cca.internal.CreditControlApplicationWorkflow">
+	<bean id="creditControlAppWorkflow" class="org.eliot.hazecod.workflow.cca.internal.CreditControlApplicationWorkflow">
 		<property name="converter" ref="converterBean"></property>
 		<property name="sessionFactory" ref="userSessionFactoryService"></property>
 		<property name="billingEngine" ref="billingEngineService"></property>

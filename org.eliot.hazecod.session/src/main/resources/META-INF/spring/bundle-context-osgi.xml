@@ -12,7 +12,7 @@
 		bundle outside of an OSGi container
 	-->
 
-	<osgi:service ref="sessionFactory" interface="org.eliot.hazecod.session.UserSessionFactory">
+	<osgi:service ref="userSessionFactory" interface="org.eliot.hazecod.session.UserSessionFactory">
 	</osgi:service>
 	
 </beans>
