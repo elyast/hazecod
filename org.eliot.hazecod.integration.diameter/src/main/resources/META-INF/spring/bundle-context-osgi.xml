@@ -18,6 +18,6 @@
 
 	<osgi:reference id="serviceUnavailableWorkflow"
 		interface="org.eliot.hazecod.integration.diameter.ServiceWorkflow"
-		bean-name="serviceUnavailableWorkflow" />
+		bean-name="serviceUnavailableWorkflow" cardinality="0..1"/>
 
 </beans>
