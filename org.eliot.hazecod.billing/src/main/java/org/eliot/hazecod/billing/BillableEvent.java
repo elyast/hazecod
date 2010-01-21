@@ -48,10 +48,11 @@ public interface BillableEvent {
     List<Unit<?>> getUsedUnits();
     
     /**
+     * @param <V> Value Type
      * @param unitType type
      * @param unitValue value
      */
-    void addUsedUnit(UnitType unitType, Object unitValue);
+    <V> void addUsedUnit(UnitType unitType, V unitValue);
     
     /**
      * @return Billing Type
