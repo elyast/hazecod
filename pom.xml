@@ -12,6 +12,7 @@
 		<module>build-tools</module>
 		<module>parent</module>
 		<module>robotframework.jdiameter</module>
+		<module>org.apache.servicemix.bundles.aspectj</module>
 		<module>org.eliot.hazecod.protocol.diameter</module>
 		<module>org.eliot.hazecod.camel.jdiameter</module>		
 		<module>org.eliot.hazecod.management.user</module>

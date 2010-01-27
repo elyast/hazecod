@@ -67,6 +67,7 @@ public class OSGiIntegrationTest {
 	for (ServiceReference serviceReference : sr5) {
 	    System.out.println("Serivce References: " + serviceReference);
 	}
+	
 	ServiceReference[] sr = waitForServices(5, 
 		ConfigurableOsgiBundleApplicationContext.class.getName(), 10000);
 	
