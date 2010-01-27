@@ -77,7 +77,7 @@
 			<artifactId>org.eliot.hazecod.lifecycle.user</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.eliot.hazecod</groupId>
 			<artifactId>org.eliot.hazecod.management.user</artifactId>
@@ -95,14 +95,14 @@
 			<artifactId>org.eliot.hazecod.billing</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>provided</scope>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>org.eliot.hazecod</groupId>
 			<artifactId>org.eliot.hazecod.workflow.cca</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>provided</scope>
-		</dependency>							
-		
+		</dependency>
+
 		<dependency>
 			<groupId>org.eliot.hazecod</groupId>
 			<artifactId>org.eliot.hazecod.integration.diameter</artifactId>
@@ -149,6 +149,18 @@
 			<groupId>org.springframework.osgi</groupId>
 			<artifactId>spring-osgi-annotation</artifactId>
 			<version>1.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.aspectj</artifactId>
+			<version>1.6.8_1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
