@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>robotframework</groupId>
 	<artifactId>robotframework.jdiameter</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>Robotframework JDiameter</name>
 	<properties>
 		<libraryClass>org.robotframework.jdiameter.keyword.JDiameterLibrary</libraryClass>
@@ -12,6 +11,11 @@
 		<jmockit.version>0.993</jmockit.version>
 		<jdiameter.version>1.5.3.0-build350</jdiameter.version>
 	</properties>
+	
+	<scm>
+		<developerConnection>scm:hg:https://hazecod.googlecode.com/hg/</developerConnection>
+	</scm>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -129,11 +133,11 @@
 	<repositories>
 		<repository>
 			<id>jboss</id>
-			<url>http://repository.jboss.org/maven2/</url>
+			<url>http://repository.jboss.org/maven2</url>
 		</repository>
 		<repository>
 			<id>java.net</id>
-			<url>http://download.java.net/maven/2/</url>
+			<url>http://download.java.net/maven/2</url>
 		</repository>
 	</repositories>
 	
